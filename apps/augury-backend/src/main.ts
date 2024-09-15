@@ -11,7 +11,7 @@ const app = express();
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to augury-backend!' });
+  res.send({ message: 'Welcome to augury-backend!!!' });
 });
 
 const port = process.env.PORT || 3333;

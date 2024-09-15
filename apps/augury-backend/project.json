@@ -5,10 +5,21 @@
   "projectType": "application",
   "tags": [],
   "targets": {
+    "start-nodemon": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": [
+          "npx nodemon --legacy-watch apps/augury-backend/src/main.ts"
+        ],
+        "parallel": false
+      }
+    },
     "serve": {
       "executor": "@nx/js:node",
       "defaultConfiguration": "development",
-      "dependsOn": ["build"],
+      "dependsOn": [
+        "build"
+      ],
       "options": {
         "buildTarget": "augury-backend:build",
         "runBuildTargetDependencies": false
