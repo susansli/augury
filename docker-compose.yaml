@@ -1,0 +1,18 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: ./apps/augury/Dockerfile
+    ports:
+      - "4200:4200"
+    env_file:
+      - ./.env
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./apps/augury-backend/Dockerfile
+    ports:
+      - "3333:3333"
+    env_file:
+      - ./.env
