@@ -3,5 +3,7 @@ Augury is a web application that uses AI to help users decide which stocks to bu
 
 ## Team
 Susan Li (A01067674)
+
 Dakaro Mueller (A01294207)
+
 Bertram Nocon (A00971990)
