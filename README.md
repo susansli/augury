@@ -9,3 +9,5 @@ Dakaro Mueller (A01294207)
 Bertram Nocon (A00971990)
 
 Crystal Giesbrecht (A01326101)
+
+Emma Meredith-Black (A01329913)
