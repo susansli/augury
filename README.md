@@ -11,3 +11,13 @@ Bertram Nocon (A00971990)
 Crystal Giesbrecht (A01326101)
 
 Emma Meredith-Black (A01329913)
+
+## Starting the Project Locally
+1. `cd` into the root directory
+2. Open up a terminal window and run `pnpm run-dev`
+
+## Starting Docker
+1. `cd` into the root directory
+2. Open up a terminal window and run `docker-compose up --build`
+
+Note: Due to Windows limitations (e.g. how Docker is forced to run via WSL2), you will not be able to access hot reloading via Nodemon in the way you could if you run it locally. Docker is there for our CI/CD pipeline when we deploy the application since we can easily just push a Docker image with our `docker-compose`.
