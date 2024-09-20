@@ -10,6 +10,7 @@ import App from './app/app';
 const { Button } = chakraTheme.components;
 
 // Add components to base theme ONLY as needed
+// This prevents loading initial stylesheets we dont need
 const theme = extendBaseTheme({
   components: {
     Button,
