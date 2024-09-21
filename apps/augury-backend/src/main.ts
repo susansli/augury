@@ -3,6 +3,7 @@
  * This is only a minimal backend to get started.
  */
 
+import 'dotenv/config';
 import express from 'express';
 import * as path from 'path';
 import mongoose from 'mongoose';
