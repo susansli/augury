@@ -5,6 +5,22 @@
 
 import express from 'express';
 import * as path from 'path';
+import mongoose from 'mongoose';
+
+mongoose.set('strictQuery', false);
+mongoose.connect(`${process.env.MONGO_URL}`);
+const db = mongoose.connection;
+
+db.on(
+  'error',
+  console.error.bind(
+    console,
+    'Could not connect to Mongo - restart the server.'
+  )
+);
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 const app = express();
 
