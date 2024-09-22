@@ -7,11 +7,25 @@ import 'dotenv/config';
 import express from 'express';
 import * as path from 'path';
 import mongoose from 'mongoose';
+import compression from 'compression';
+
+// Security middleware
+import helmet from 'helmet';
+import cors from 'cors';
 
 const app = express();
 
+// Using Express built-in middleware to parse JSON body and URL encoded parameters available since 4.16
+// https://expressjs.com/en/guide/using-middleware.html#middleware.built-in
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+app.use(helmet());
+app.use(compression());
+// Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+// API Routes
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to augury-backend!' });
 });
