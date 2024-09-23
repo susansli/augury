@@ -5,7 +5,7 @@ export default class ClientError extends ApplicationError {
     constructor( message, statusCode ) {
 
       super(message || "Bad request");
-      this._code = statusCode | 500;
+      this._code = statusCode || 500;
 
       Object.setPrototypeOf(this, ClientError.prototype);
     }

@@ -13,8 +13,8 @@ export default class ApiError extends ApplicationError {
     constructor( message, statusCode, severity ) {
 
       super(message || "Bad request");
-      this._code = statusCode | 500;
-      this.severity = severity | SEVERITY.LOW;
+      this._code = statusCode || 500;
+      this.severity = severity || SEVERITY.LOW;
 
       Object.setPrototypeOf(this, ApiError.prototype);
     }
