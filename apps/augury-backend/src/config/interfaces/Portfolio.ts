@@ -1,9 +1,9 @@
 import { Document } from 'mongoose';
 
 export enum PortfolioRisk {
-  Conservative = 'Conservative',
-  Moderate = 'Moderate',
-  Aggressive = 'Aggressive',
+  CONSERVATIVE = 'Conservative',
+  MODERATE = 'Moderate',
+  AGGRESSIVE = 'Aggressive',
 }
 
 export default interface Portfolio extends Document {
