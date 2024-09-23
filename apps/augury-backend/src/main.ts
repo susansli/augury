@@ -22,4 +22,5 @@ const server = app.listen(port, () => {
 });
 server.on('error', console.error);
 
+//error controller MUST be last middleware
 app.use(errorController);
