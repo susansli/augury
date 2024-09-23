@@ -41,3 +41,8 @@ const server = app.listen(port, () => {
 });
 
 server.on('error', console.error);
+
+// Routing
+import {router as userRouter} from './routes/UserRoutes';
+
+app.use('/api/user', userRouter);
