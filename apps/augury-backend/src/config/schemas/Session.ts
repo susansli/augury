@@ -5,12 +5,12 @@ const schema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
     ref: 'User',
-    unique: true,
   },
 
   token: {
     type: String,
     required: true,
+    unique: true,
   },
 
   created: {
