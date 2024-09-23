@@ -1,5 +1,4 @@
-import { Document } from 'mongoose';
-import { ObjectId } from 'mongoose';
+import { Document, ObjectId } from 'mongoose';
 
 export enum Color {
   WHITE = 'white',
