@@ -8,7 +8,6 @@ import express from 'express';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import { errorController } from './middlewares/errorController';
-import { error } from 'console';
 
 mongoose.set('strictQuery', false);
 mongoose.connect(`${process.env.MONGO_URL}`);
