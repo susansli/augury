@@ -6,6 +6,9 @@ import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
 
+// Routers
+import { router as userRouter } from './routes/UserRoutes';
+
 const app = express();
 
 // Using Express built-in middleware to parse JSON body and URL encoded parameters available since 4.16
@@ -18,6 +21,9 @@ app.use(compression());
 
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+// Route Bindings
+app.use('/api/user', userRouter);
 
 const port = process.env.PORT || 3333;
 
@@ -41,8 +47,3 @@ const server = app.listen(port, () => {
 });
 
 server.on('error', console.error);
-
-// Routing
-import {router as userRouter} from './routes/UserRoutes';
-
-app.use('/api/user', userRouter);
