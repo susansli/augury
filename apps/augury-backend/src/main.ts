@@ -3,10 +3,25 @@
  * This is only a minimal backend to get started.
  */
 
+import 'dotenv/config';
 import express from 'express';
 import * as path from 'path';
-import {errorController} from './middlewares/errorController'
+import mongoose from 'mongoose';
+import { errorController } from './middlewares/errorController';
+mongoose.set('strictQuery', false);
+mongoose.connect(`${process.env.MONGO_URL}`);
+const db = mongoose.connection;
 
+db.on(
+  'error',
+  console.error.bind(
+    console,
+    'Could not connect to Mongo - restart the server.'
+  )
+);
+db.once('open', () => {
+  console.log('Connected to MongoDB');
+});
 
 const app = express();
 
@@ -22,5 +37,4 @@ const server = app.listen(port, () => {
 });
 server.on('error', console.error);
 
-//error controller MUST be last middleware
 app.use(errorController);
