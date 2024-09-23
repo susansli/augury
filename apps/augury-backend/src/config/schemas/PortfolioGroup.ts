@@ -16,7 +16,7 @@ const schema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Portfolio',
+    ref: 'User',
     unique: true,
   },
 });
