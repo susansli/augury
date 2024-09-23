@@ -8,8 +8,8 @@ const schema = new mongoose.Schema({
 
   risk: {
     type: String,
-    enum: ['Low', 'Medium', 'High'], // Enum definition
-    default: 'Low', // Default value for status
+    enum: ['Conservative', 'Moderate', 'Aggressive'], // Enum definition
+    default: 'Conservative', // Default value for status
     required: true,
   },
 });
