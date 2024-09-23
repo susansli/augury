@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
+import { ObjectId } from 'mongoose';
 
 export default interface Stock extends Document {
-  portfolioId: string;
+  portfolioId: ObjectId;
   symbol: string;
 }
