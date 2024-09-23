@@ -1,7 +1,8 @@
 import  ApiError  from "../errors/ApiError";
+import {SEVERITY} from "../errors/ApiError";
 import ClientError from "../errors/ClientError";
 
-module.exports = (err, req, res, next) => {
+    export function errorController(err, req, res, next) {
     err.statusCode = err.statusCode || 500;
     err.message = err.message || "Internal Server Error";
 
@@ -22,18 +23,12 @@ module.exports = (err, req, res, next) => {
         const message = 'JWT Error';
         err = new ClientError(message, 500);
     }
-
-    // jwt expire error
-    if (err.code === "JsonWebTokenError") {
-        const message = 'JWT is Expired';
-        err = new ClientError(message, 500);
-    }
     if (err.statusCode === 404) {
         const message = '404 not found'
-        err = new ApiError(message, 404, 2)
+        err = new ApiError(message, 404, SEVERITY.LOW)
     }
     res.status(err.statusCode).json({
         success: false,
         message: err.message,
-    });
+    }).next(err);
 }
