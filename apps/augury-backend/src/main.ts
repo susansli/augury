@@ -1,15 +1,8 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import 'dotenv/config';
 import express from 'express';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-
-// Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
 
@@ -22,15 +15,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(helmet());
 app.use(compression());
+
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-// API Routes
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to augury-backend!' });
-});
-
 const port = process.env.PORT || 3333;
+
 const server = app.listen(port, () => {
   mongoose.set('strictQuery', false);
   mongoose.connect(`${process.env.MONGO_URL}`).catch(() => {
@@ -49,4 +39,5 @@ const server = app.listen(port, () => {
 
   console.log(`Listening at http://localhost:${port}/api`);
 });
+
 server.on('error', console.error);
