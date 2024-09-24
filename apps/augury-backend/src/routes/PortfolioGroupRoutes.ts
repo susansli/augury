@@ -4,5 +4,8 @@ export const router: Router = express.Router();
 import PortfolioGroupController from '../controllers/auth/PortfolioGroupController';
 
 router
-  .route('/getPortfolioGroup')
-  .get(PortfolioGroupController.getPortfolioGroup);
+  .route('/portfolioGroup')
+  .get(PortfolioGroupController.getPortfolioGroup)
+  .post(PortfolioGroupController.createPortfolioGroup)
+  .put(PortfolioGroupController.updatePortfolioGroup)
+  .delete(PortfolioGroupController.deletePorfolioGroup);
