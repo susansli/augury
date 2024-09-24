@@ -14,6 +14,6 @@ const schema = new mongoose.Schema<Stock>({
   },
 });
 
-const StockSchema = mongoose.model<Stock>('Stock', schema);
+const StockSchema = mongoose.model('Stock', schema);
 
 export default StockSchema;

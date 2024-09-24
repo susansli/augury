@@ -15,7 +15,7 @@ const schema = new mongoose.Schema<PortfolioGroupRelation>({
   },
 });
 
-const PortfolioGroupRelationSchema = mongoose.model<PortfolioGroupRelation>(
+const PortfolioGroupRelationSchema = mongoose.model(
   'PortfolioGroupRelation',
   schema
 );
