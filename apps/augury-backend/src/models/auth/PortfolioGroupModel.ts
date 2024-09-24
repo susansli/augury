@@ -1,20 +1,19 @@
-const getPortfolioGroup = (): string => {
-  // Run logic here, e.g. (assuming this function takes a parameter, email)
+import mongoose from 'mongoose';
+import PortfolioGroup from '../../config/interfaces/PortfolioGroup';
+import PortfolioGroupSchema from '../../config/schemas/PortfolioGroup';
 
-  // const user = await UserSchema.findOne({email: email});
+const getPortfolioGroup = async (id: string): Promise<PortfolioGroup> => {
+  const portfolioGroup: PortfolioGroup = await PortfolioGroupSchema.findOne(
+    new mongoose.Types.ObjectId(id)
+  );
 
-  // if (!user) {
-  //  throw new ClientError('This email does not exist.');
-  // }
+  if (!portfolioGroup) {
+    // TODO: Replace when merged with error handling middlware
+    // throw new ApiError('This portfolio group does not exist.');
+    throw new Error('This portfolio group does not exist.');
+  }
 
-  // Do more stuff with the user...
-
-  // Let's say we are trying to fetch something from the DB by using the user's id as FK but we don't find it
-  // This means something went wrong with our DB or an error in our records...
-  // Then we throw an error like this example:
-  // throw new ApiError(`There was an error fetching buying history for user ${user._id}`);
-
-  return 'This is a portfolio group object...';
+  return portfolioGroup;
 };
 
 export default module.exports = {
