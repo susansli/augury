@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import PortfolioGroup, { Color } from '../interfaces/PortfolioGroup';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<PortfolioGroup>({
   name: {
     type: String,
     required: true,

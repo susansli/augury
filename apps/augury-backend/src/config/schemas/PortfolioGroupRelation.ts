@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import PortfolioGroupRelation from '../interfaces/PortfolioGroupRelation';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<PortfolioGroupRelation>({
   portfolioId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

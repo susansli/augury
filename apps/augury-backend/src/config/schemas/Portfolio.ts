@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import Portfolio, { PortfolioRisk } from '../interfaces/Portfolio';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<Portfolio>({
   name: {
     type: String,
     required: true,
