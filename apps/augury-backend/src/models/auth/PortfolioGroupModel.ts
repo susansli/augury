@@ -4,7 +4,7 @@ import { Color } from '../../config/interfaces/PortfolioGroup';
 import PortfolioGroupSchema from '../../config/schemas/PortfolioGroup';
 
 const getPortfolioGroup = async (id: string): Promise<PortfolioGroup> => {
-  const portfolioGroup: PortfolioGroup = await PortfolioGroupSchema.findById(
+  const portfolioGroup = await PortfolioGroupSchema.findById(
     new mongoose.Types.ObjectId(id)
   );
 
