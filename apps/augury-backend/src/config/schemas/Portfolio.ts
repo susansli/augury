@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { PortfolioRisk } from '../interfaces/Portfolio';
+import Portfolio, { PortfolioRisk } from '../interfaces/Portfolio';
 
 const schema = new mongoose.Schema({
   name: {
@@ -15,6 +15,6 @@ const schema = new mongoose.Schema({
   },
 });
 
-const PortfolioSchema = mongoose.model('Portfolio', schema);
+const PortfolioSchema = mongoose.model<Portfolio>('Portfolio', schema);
 
 export default PortfolioSchema;

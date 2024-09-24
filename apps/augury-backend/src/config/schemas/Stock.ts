@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Stock from '../interfaces/Stock';
 
 const schema = new mongoose.Schema({
   portfolioId: {
@@ -13,6 +14,6 @@ const schema = new mongoose.Schema({
   },
 });
 
-const StockSchema = mongoose.model('Stock', schema);
+const StockSchema = mongoose.model<Stock>('Stock', schema);
 
 export default StockSchema;

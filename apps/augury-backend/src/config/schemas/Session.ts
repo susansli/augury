@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Session from '../interfaces/Session';
 
 const schema = new mongoose.Schema({
   userId: {
@@ -24,6 +25,6 @@ const schema = new mongoose.Schema({
   },
 });
 
-const SessionSchema = mongoose.model('Session', schema);
+const SessionSchema = mongoose.model<Session>('Session', schema);
 
 export default SessionSchema;

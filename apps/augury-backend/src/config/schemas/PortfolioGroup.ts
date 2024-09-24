@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { Color } from '../interfaces/PortfolioGroup';
+import PortfolioGroup, { Color } from '../interfaces/PortfolioGroup';
 
 const schema = new mongoose.Schema({
   name: {
@@ -21,6 +21,9 @@ const schema = new mongoose.Schema({
   },
 });
 
-const PortfolioGroupSchema = mongoose.model('PortfolioGroup', schema);
+const PortfolioGroupSchema = mongoose.model<PortfolioGroup>(
+  'PortfolioGroup',
+  schema
+);
 
 export default PortfolioGroupSchema;

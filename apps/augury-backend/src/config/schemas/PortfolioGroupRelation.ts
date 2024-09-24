@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import PortfolioGroupRelation from '../interfaces/PortfolioGroupRelation';
 
 const schema = new mongoose.Schema({
   portfolioId: {
@@ -14,7 +15,7 @@ const schema = new mongoose.Schema({
   },
 });
 
-const PortfolioGroupRelationSchema = mongoose.model(
+const PortfolioGroupRelationSchema = mongoose.model<PortfolioGroupRelation>(
   'PortfolioGroupRelation',
   schema
 );
