@@ -1,12 +1,11 @@
 import mongoose from 'mongoose';
 import PortfolioGroup from '../../config/interfaces/PortfolioGroup';
-import { Color } from '../../config/interfaces/PortfolioGroup';
 import PortfolioGroupSchema from '../../config/schemas/PortfolioGroup';
 
-const getPortfolioGroup = async (id: string): Promise<PortfolioGroup> => {
-  const portfolioGroup = await PortfolioGroupSchema.findById(
-    new mongoose.Types.ObjectId(id)
-  );
+const getPortfolioGroup = async (
+  id: mongoose.Types.ObjectId
+): Promise<PortfolioGroup> => {
+  const portfolioGroup = await PortfolioGroupSchema.findById(id);
 
   if (!portfolioGroup) {
     // TODO: Replace when merged with error handling middlware
@@ -18,15 +17,9 @@ const getPortfolioGroup = async (id: string): Promise<PortfolioGroup> => {
 };
 
 const createPortfolioGroup = async (
-  name: string,
-  color: Color,
-  userId: string
+  data: Partial<PortfolioGroup>
 ): Promise<PortfolioGroup> => {
-  const portfolioGroup = await PortfolioGroupSchema.create({
-    name: name, // Set the name
-    color: color || Color.WHITE, // Set the color (optional, defaults to 'white')
-    userId: new mongoose.Types.ObjectId(userId), // Set the userId
-  });
+  const portfolioGroup = await PortfolioGroupSchema.create(data);
 
   if (!portfolioGroup) {
     // TODO: Replace when merged with error handling middlware
@@ -38,14 +31,10 @@ const createPortfolioGroup = async (
 };
 
 const updatePortfolioGroup = async (
-  id: string,
-  name: string,
-  color: Color,
-  userId: string
+  id: mongoose.Types.ObjectId,
+  data: Partial<PortfolioGroup>
 ): Promise<PortfolioGroup> => {
-  const portfolioGroup: PortfolioGroup = await PortfolioGroupSchema.findById(
-    new mongoose.Types.ObjectId(id)
-  );
+  const portfolioGroup = await PortfolioGroupSchema.findById(id);
 
   if (!portfolioGroup) {
     // TODO: Replace when merged with error handling middlware
@@ -53,9 +42,9 @@ const updatePortfolioGroup = async (
     throw new Error('This portfolio group does not exist.');
   }
 
-  if (name) portfolioGroup.name = name;
-  if (color) portfolioGroup.color = color;
-  if (userId) portfolioGroup.userId = new mongoose.Types.ObjectId(userId);
+  if (data.name) portfolioGroup.name = data.name;
+  if (data.color) portfolioGroup.color = data.color;
+  if (data.userId) portfolioGroup.userId = data.userId;
   const updatedPortfolioGroup = await portfolioGroup.save();
 
   if (!updatedPortfolioGroup) {
@@ -67,11 +56,10 @@ const updatePortfolioGroup = async (
   return updatedPortfolioGroup;
 };
 
-const deletePorfolioGroup = async (id: string): Promise<PortfolioGroup> => {
-  const portfolioGroup: PortfolioGroup =
-    await PortfolioGroupSchema.findByIdAndDelete(
-      new mongoose.Types.ObjectId(id)
-    );
+const deletePorfolioGroup = async (
+  id: mongoose.Types.ObjectId
+): Promise<PortfolioGroup> => {
+  const portfolioGroup = await PortfolioGroupSchema.findByIdAndDelete(id);
 
   if (!portfolioGroup) {
     // TODO: Replace when merged with error handling middlware

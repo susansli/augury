@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 
+import mongoose from 'mongoose';
 import PortfolioGroupModel from '../../models/auth/PortfolioGroupModel';
+import PortfolioGroup from '../../config/interfaces/PortfolioGroup';
 import { Color } from '../../config/interfaces/PortfolioGroup';
 
 const getPortfolioGroup = async (
@@ -10,11 +12,13 @@ const getPortfolioGroup = async (
   interface RequestParams {
     id: string;
   }
-  const { id }: RequestParams = req.query;
+  const { id }: RequestParams = req.query as unknown as RequestParams;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 
-  const response = await PortfolioGroupModel.getPortfolioGroup(id);
+  const response = await PortfolioGroupModel.getPortfolioGroup(
+    new mongoose.Types.ObjectId(id)
+  );
 
   if (response) {
     // send the user back after model runs logic
@@ -32,20 +36,23 @@ const createPortfolioGroup = async (
 ): Promise<void> => {
   interface RequestParams {
     name: string;
-    color: Color;
+    color: string;
     userId: string;
   }
-  const { name, color, userId }: RequestParams = req.query;
+  const { name, color, userId }: RequestParams =
+    req.query as unknown as RequestParams;
   // TODO: Replace once merged in with error handling middleware
   if (!name) throw new Error('Invalid Name Provided'); // ApiError('Invalid Name Provided');
   if (!color) throw new Error('Invalid Color Provided'); // ApiError('Invalid Color Provided');
   if (!userId) throw new Error('Invalid User ID Provided'); // ApiError('Invalid ID Provided');
 
-  const response = PortfolioGroupModel.createPortfolioGroup(
-    name,
-    color,
-    userId
-  );
+  const portfolioGroup: Partial<PortfolioGroup> = {
+    name: name,
+    color: Color[color.toUpperCase() as keyof typeof Color],
+    userId: new mongoose.Types.ObjectId(userId),
+  };
+
+  const response = PortfolioGroupModel.createPortfolioGroup(portfolioGroup);
 
   if (response) {
     // send the user back after model runs logic
@@ -63,18 +70,23 @@ const updatePortfolioGroup = async (
   interface RequestParams {
     id: string;
     name?: string;
-    color?: Color;
+    color?: string;
     userId?: string;
   }
-  const { id, name, color, userId }: RequestParams = req.query;
+  const { id, name, color, userId }: RequestParams =
+    req.query as unknown as RequestParams;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 
+  const portfolioGroup: Partial<PortfolioGroup> = {
+    name: name,
+    color: Color[color.toUpperCase() as keyof typeof Color],
+    userId: new mongoose.Types.ObjectId(userId),
+  };
+
   const response = PortfolioGroupModel.updatePortfolioGroup(
-    id,
-    name,
-    color,
-    userId
+    new mongoose.Types.ObjectId(id),
+    portfolioGroup
   );
 
   if (response) {
@@ -93,11 +105,13 @@ const deletePorfolioGroup = async (
   interface RequestParams {
     id: string;
   }
-  const { id }: RequestParams = req.query;
+  const { id }: RequestParams = req.query as unknown as RequestParams;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 
-  const response = PortfolioGroupModel.deletePorfolioGroup(id);
+  const response = PortfolioGroupModel.deletePorfolioGroup(
+    new mongoose.Types.ObjectId(id)
+  );
 
   if (response) {
     // send the user back after model runs logic
