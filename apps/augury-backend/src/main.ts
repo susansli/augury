@@ -8,6 +8,7 @@ import cors from 'cors';
 
 // Routers
 import { router as userRouter } from './routes/UserRoutes';
+import { router as portfolioGroupRouter } from './routes/PortfolioGroupRoutes';
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Route Bindings
 app.use('/api/user', userRouter);
+app.use('/api/portfolioGroup', portfolioGroupRouter);
 
 const port = process.env.PORT || 3333;
 
