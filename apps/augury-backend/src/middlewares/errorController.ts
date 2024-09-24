@@ -1,8 +1,13 @@
 import ApiError from '../errors/ApiError';
 import ClientError from '../errors/ClientError';
-import { Response, Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
 
-export function errorController(err: Error, req: Request, res: Response) {
+export function errorController(
+  err: Error,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) {
   if (err instanceof ApiError) {
     console.error(err.stack);
     res.send(err.statusCode);
