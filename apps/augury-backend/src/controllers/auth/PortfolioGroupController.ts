@@ -12,7 +12,7 @@ const getPortfolioGroup = async (
   interface RequestParams {
     id: string;
   }
-  const { id }: RequestParams = req.query as unknown as RequestParams;
+  const { id }: RequestParams = req.query;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 
@@ -39,8 +39,7 @@ const createPortfolioGroup = async (
     color: string;
     userId: string;
   }
-  const { name, color, userId }: RequestParams =
-    req.query as unknown as RequestParams;
+  const { name, color, userId }: RequestParams = req.query;
   // TODO: Replace once merged in with error handling middleware
   if (!name) throw new Error('Invalid Name Provided'); // ApiError('Invalid Name Provided');
   if (!color) throw new Error('Invalid Color Provided'); // ApiError('Invalid Color Provided');
@@ -73,8 +72,7 @@ const updatePortfolioGroup = async (
     color?: string;
     userId?: string;
   }
-  const { id, name, color, userId }: RequestParams =
-    req.query as unknown as RequestParams;
+  const { id, name, color, userId }: RequestParams = req.query;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 
@@ -105,7 +103,7 @@ const deletePorfolioGroup = async (
   interface RequestParams {
     id: string;
   }
-  const { id }: RequestParams = req.query as unknown as RequestParams;
+  const { id }: RequestParams = req.query;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 

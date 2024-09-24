@@ -7,7 +7,7 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
   interface RequestParams {
     id: string;
   }
-  const { id }: RequestParams = req.query as unknown as RequestParams;
+  const { id }: RequestParams = req.query;
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 

@@ -1,4 +1,4 @@
-import { Document, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
 export enum Color {
   WHITE = 'white',
@@ -8,7 +8,7 @@ export enum Color {
   YELLOW = 'yellow',
 }
 
-export default interface PortfolioGroup extends Document {
+export default interface PortfolioGroup {
   name: string;
   color: Color;
   userId: Types.ObjectId;
