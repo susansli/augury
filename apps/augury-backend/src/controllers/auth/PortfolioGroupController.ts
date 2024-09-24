@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 
 import PortfolioGroupModel from '../../models/auth/PortfolioGroupModel';
+import { Color } from '../../config/interfaces/PortfolioGroup';
 
 const getPortfolioGroup = async (
   req: Request,
@@ -26,12 +27,25 @@ const getPortfolioGroup = async (
 
 // TODO: Work on these ones after this point
 const createPortfolioGroup = async (
-  _req: Request,
+  req: Request,
   res: Response
 ): Promise<void> => {
-  // Handle validation of request body
+  interface RequestParams {
+    name: string;
+    color: Color;
+    userId: string;
+  }
+  const { name, color, userId }: RequestParams = req.query;
+  // TODO: Replace once merged in with error handling middleware
+  if (!name) throw new Error('Invalid Name Provided'); // ApiError('Invalid ID Provided');
+  if (!color) throw new Error('Invalid Color Provided'); // ApiError('Invalid ID Provided');
+  if (!userId) throw new Error('Invalid User ID Provided'); // ApiError('Invalid ID Provided');
 
-  const response = PortfolioGroupModel.getPortfolioGroup();
+  const response = PortfolioGroupModel.createPortfolioGroup(
+    name,
+    color,
+    userId
+  );
 
   if (response) {
     // send the user back after model runs logic
