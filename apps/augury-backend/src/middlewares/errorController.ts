@@ -10,8 +10,8 @@ export function errorController(
 ) {
   if (err instanceof ApiError) {
     console.error(err.stack);
-    res.send(err.statusCode);
+    res.status(err.statusCode).send();
   } else if (err instanceof ClientError) {
-    res.send(err.statusCode);
+    res.status(err.statusCode).send();
   }
 }
