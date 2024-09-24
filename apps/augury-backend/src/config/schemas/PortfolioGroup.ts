@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { Color } from '../interfaces/PortfolioGroup';
 
 const schema = new mongoose.Schema({
   name: {
@@ -8,7 +9,7 @@ const schema = new mongoose.Schema({
 
   color: {
     type: String,
-    enum: ['white', 'red', 'green', 'blue', 'yellow'], // Enum definition
+    enum: Object.values(Color), // Enum definition
     default: 'white', // Default value for status
     required: true,
   },

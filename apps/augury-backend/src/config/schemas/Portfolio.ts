@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import { PortfolioRisk } from '../interfaces/Portfolio';
 
 const schema = new mongoose.Schema({
   name: {
@@ -8,7 +9,7 @@ const schema = new mongoose.Schema({
 
   risk: {
     type: String,
-    enum: ['conservative', 'moderate', 'aggressive'], // Enum definition
+    enum: Object.values(PortfolioRisk), // Enum definition
     default: 'conservative', // Default value for status
     required: true,
   },
