@@ -1,5 +1,5 @@
 import { ApplicationError } from './ApplicationError';
-export enum SEVERITY {
+export enum Severity {
   LOW,
   MED,
   HIGH,
@@ -7,12 +7,12 @@ export enum SEVERITY {
 }
 export default class ApiError extends ApplicationError {
   private readonly _code: number;
-  private readonly severity: SEVERITY;
+  private readonly severity: Severity;
 
-  constructor(message, statusCode, severity) {
+  constructor(message: string, statusCode: number, severity: Severity) {
     super(message || 'Bad request');
     this._code = statusCode || 500;
-    this.severity = severity || SEVERITY.LOW;
+    this.severity = severity || Severity.LOW;
 
     Object.setPrototypeOf(this, ApiError.prototype);
   }

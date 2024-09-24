@@ -2,7 +2,7 @@ import { ApplicationError } from './ApplicationError';
 export default class ClientError extends ApplicationError {
   private readonly _code: number;
 
-  constructor(message, statusCode) {
+  constructor(message: string, statusCode: number) {
     super(message || 'Bad request');
     this._code = statusCode || 500;
 
