@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
   risk: {
     type: String,
     enum: Object.values(PortfolioRisk), // Enum definition
-    default: 'conservative', // Default value for status
+    default: PortfolioRisk.CONSERVATIVE, // Default value for status
     required: true,
   },
 });

@@ -10,7 +10,7 @@ const schema = new mongoose.Schema({
   color: {
     type: String,
     enum: Object.values(Color), // Enum definition
-    default: 'white', // Default value for status
+    default: Color.WHITE, // Default value for status
     required: true,
   },
 
