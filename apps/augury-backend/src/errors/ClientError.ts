@@ -1,19 +1,8 @@
 import { ApplicationError } from './ApplicationError';
 export default class ClientError extends ApplicationError {
-  private readonly _code: number;
-
   constructor(message: string, statusCode: number) {
-    super(message || 'Bad request');
-    this._code = statusCode || 500;
+    super(message, statusCode);
 
     Object.setPrototypeOf(this, ClientError.prototype);
-  }
-
-  get errors() {
-    return [{ message: this.message }];
-  }
-
-  get statusCode() {
-    return this._code;
   }
 }
