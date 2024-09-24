@@ -45,7 +45,7 @@ const createPortfolioGroup = async (
   if (!color) throw new Error('Invalid Color Provided'); // ApiError('Invalid Color Provided');
   if (!userId) throw new Error('Invalid User ID Provided'); // ApiError('Invalid ID Provided');
 
-  const portfolioGroup: Partial<PortfolioGroup> = {
+  const portfolioGroup: PortfolioGroup = {
     name: name,
     color: Color[color.toUpperCase() as keyof typeof Color],
     userId: new mongoose.Types.ObjectId(userId),
@@ -76,7 +76,7 @@ const updatePortfolioGroup = async (
   // TODO: Replace once merged in with error handling middleware
   if (!id) throw new Error('Invalid ID Provided'); // ApiError('Invalid ID Provided');
 
-  const portfolioGroup: Partial<PortfolioGroup> = {
+  const portfolioGroup: PortfolioGroup = {
     name: name,
     color: Color[color.toUpperCase() as keyof typeof Color],
     userId: new mongoose.Types.ObjectId(userId),

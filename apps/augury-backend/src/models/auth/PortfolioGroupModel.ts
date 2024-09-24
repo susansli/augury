@@ -17,7 +17,7 @@ const getPortfolioGroup = async (
 };
 
 const createPortfolioGroup = async (
-  data: Partial<PortfolioGroup>
+  data: PortfolioGroup
 ): Promise<PortfolioGroup> => {
   const portfolioGroup = await PortfolioGroupSchema.create(data);
 
@@ -32,7 +32,7 @@ const createPortfolioGroup = async (
 
 const updatePortfolioGroup = async (
   id: mongoose.Types.ObjectId,
-  data: Partial<PortfolioGroup>
+  data: PortfolioGroup
 ): Promise<PortfolioGroup> => {
   const portfolioGroup = await PortfolioGroupSchema.findById(id);
 
