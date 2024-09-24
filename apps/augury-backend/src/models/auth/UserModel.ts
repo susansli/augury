@@ -1,23 +1,72 @@
-const getUser = (): string => {
+import mongoose from 'mongoose';
+import User from '../../config/interfaces/User';
+import UserSchema from '../../config/schemas/User';
 
-    // Run logic here, e.g. (assuming this function takes a parameter, email)
+const getUser = async (id: string): Promise<User> => {
+  const user: User = await UserSchema.findById(new mongoose.Types.ObjectId(id));
 
-    // const user = await UserSchema.findOne({email: email});
-    
-    // if (!user) {
-    //  throw new ClientError('This email does not exist.'); 
-    // }
+  if (!user) {
+    // TODO: Replace when merged with error handling middlware
+    // throw new ApiError('This user does not exist.');
+    throw new Error('This user does not exist.');
+  }
 
-    // Do more stuff with the user...
+  return user;
+};
 
-    // Let's say we are trying to fetch something from the DB by using the user's id as FK but we don't find it
-    // This means something went wrong with our DB or an error in our records...
-    // Then we throw an error like this example:
-    // throw new ApiError(`There was an error fetching buying history for user ${user._id}`);
+const createUser = async (data: User): Promise<User> => {
+  const user = await UserSchema.create(data);
 
-    return "This is a user object..."; 
+  if (!user) {
+    // TODO: Replace when merged with error handling middlware
+    // throw new ApiError('This user could not be created.');
+    throw new Error('This user could not be created.');
+  }
+
+  return user;
+};
+
+const updateUser = async (id: string, data: User): Promise<User> => {
+  const user: User = await UserSchema.findById(new mongoose.Types.ObjectId(id));
+
+  if (!user) {
+    // TODO: Replace when merged with error handling middlware
+    // throw new ApiError('This user does not exist.');
+    throw new Error('This user does not exist.');
+  }
+
+  if (data.email) user.email = data.email;
+  if (data.password) user.password = data.password;
+  if (data.firstName) user.firstName = data.firstName;
+  if (data.lastName) user.lastName = data.lastName;
+  const updatedUser = await user.save();
+
+  if (!updatedUser) {
+    // TODO: Replace when merged with error handling middlware
+    // throw new ApiError('This user could not be updated.');
+    throw new Error('This user could not be updated.');
+  }
+
+  return updatedUser;
+};
+
+const deleteUser = async (id: string): Promise<User> => {
+  const user: User = await UserSchema.findByIdAndDelete(
+    new mongoose.Types.ObjectId(id)
+  );
+
+  if (!user) {
+    // TODO: Replace when merged with error handling middlware
+    // throw new ApiError('This user does not exist.');
+    throw new Error('This user does not exist.');
+  }
+
+  return user;
 };
 
 export default module.exports = {
-    getUser
+  getUser,
+  createUser,
+  updateUser,
+  deleteUser,
 };
