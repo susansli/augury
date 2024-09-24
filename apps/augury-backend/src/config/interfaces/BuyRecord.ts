@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export default interface BuyRecord extends Document {
-  stockId: mongoose.Types.ObjectId;
+  stockId: Types.ObjectId;
   shares: number;
   boughtAtPrice: number;
 }

@@ -1,8 +1,7 @@
-import mongoose from 'mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export default interface Session extends Document {
-  userId: mongoose.Types.ObjectId;
+  userId: Types.ObjectId;
   token: string;
   created: number;
   expires: number;

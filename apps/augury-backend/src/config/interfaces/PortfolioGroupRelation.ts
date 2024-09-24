@@ -1,7 +1,6 @@
-import mongoose from 'mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose';
 
 export default interface PortfolioGroupRelation extends Document {
-  portfolioId: mongoose.Types.ObjectId;
-  portfolioGroupId: mongoose.Types.ObjectId;
+  portfolioId: Types.ObjectId;
+  portfolioGroupId: Types.ObjectId;
 }
