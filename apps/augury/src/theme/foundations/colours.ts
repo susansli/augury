@@ -4,26 +4,20 @@ import { flavors } from "@catppuccin/palette";
 const palette = flavors.mocha.colors;
 
 const colors = {
-  main: {
-    500: '#02558B', // this is to just set default button color to usafa
-    warning: '#EE580D',
-    mediumWarning: '#FFD000',
-    lightGrey: '#EBEBEB',
-  },
   background: {
     // Background pane
-    100: palette.crust.hex,
+    crust: palette.crust.hex,
     // Secondary panes
-    200: palette.mantle.hex,
-    300: palette.base.hex,
+    mantle: palette.mantle.hex,
+    base: palette.base.hex,
     // Surface elements
-    400: palette.surface0.hex,
-    500: palette.surface1.hex,
-    600: palette.surface2.hex,
+    surface0: palette.surface0.hex,
+    surface1: palette.surface1.hex,
+    surface2: palette.surface2.hex,
     // overlays
-    700: palette.overlay0.hex,
-    800: palette.overlay1.hex,
-    900: palette.overlay2.hex,
+    overlay0: palette.overlay0.hex,
+    overlay1: palette.overlay1.hex,
+    overlay2: palette.overlay2.hex,
   },
   text: {
     body: palette.text.hex,
