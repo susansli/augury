@@ -1,12 +1,14 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import styles from './app.module.scss';
 
-import NxWelcome from './nx-welcome';
+import {
+  Button
+} from '@chakra-ui/react';
 
 export function App() {
   return (
-    <div>
-      <NxWelcome title="augury" />
+    <div id='root'>
+      <Button bg="main.500" color="white">Button</Button>
     </div>
   );
 }
