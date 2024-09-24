@@ -2,8 +2,8 @@ import mongoose from 'mongoose';
 import User from '../../config/interfaces/User';
 import UserSchema from '../../config/schemas/User';
 
-const getUser = async (id: string): Promise<User> => {
-  const user: User = await UserSchema.findById(new mongoose.Types.ObjectId(id));
+const getUser = async (id: mongoose.Types.ObjectId): Promise<User> => {
+  const user = await UserSchema.findById(id);
 
   if (!user) {
     // TODO: Replace when merged with error handling middlware
@@ -26,8 +26,11 @@ const createUser = async (data: User): Promise<User> => {
   return user;
 };
 
-const updateUser = async (id: string, data: User): Promise<User> => {
-  const user: User = await UserSchema.findById(new mongoose.Types.ObjectId(id));
+const updateUser = async (
+  id: mongoose.Types.ObjectId,
+  data: User
+): Promise<User> => {
+  const user = await UserSchema.findById(id);
 
   if (!user) {
     // TODO: Replace when merged with error handling middlware
@@ -50,10 +53,8 @@ const updateUser = async (id: string, data: User): Promise<User> => {
   return updatedUser;
 };
 
-const deleteUser = async (id: string): Promise<User> => {
-  const user: User = await UserSchema.findByIdAndDelete(
-    new mongoose.Types.ObjectId(id)
-  );
+const deleteUser = async (id: mongoose.Types.ObjectId): Promise<User> => {
+  const user: User = await UserSchema.findByIdAndDelete(id);
 
   if (!user) {
     // TODO: Replace when merged with error handling middlware
