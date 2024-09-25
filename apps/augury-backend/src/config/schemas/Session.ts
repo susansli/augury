@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import Session from '../interfaces/Session';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<Session>({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,
