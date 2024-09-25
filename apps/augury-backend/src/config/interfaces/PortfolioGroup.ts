@@ -1,15 +1,8 @@
 import { Document, ObjectId } from 'mongoose';
-
-export enum Color {
-  WHITE = 'white',
-  RED = 'red',
-  GREEN = 'green',
-  BLUE = 'blue',
-  YELLOW = 'yellow',
-}
+import { PortfolioColor } from '../enums/PortfolioColor';
 
 export default interface PortfolioGroup extends Document {
   name: string;
-  color: Color;
+  color: PortfolioColor;
   userId: ObjectId;
 }
