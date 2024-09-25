@@ -1,10 +1,6 @@
 import { ApplicationError } from './ApplicationError';
-export enum Severity {
-  LOW,
-  MED,
-  HIGH,
-  SEVERE,
-}
+import { Severity } from '../config/enums/Severity';
+
 export default class ApiError extends ApplicationError {
   private readonly severity: Severity;
 
