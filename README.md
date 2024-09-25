@@ -15,6 +15,8 @@ Emma Meredith-Black (A01329913)
 ## Starting the Project Locally
 1. `cd` into the root directory
 2. Open up a terminal window and run `pnpm run-dev`
+3. Alternatively, run `npx nx run augury-backend:start-nodemon` to start the backend
+4. Or run `npx nx serve augury` to start the frontend
 
 ## Starting Docker
 1. `cd` into the root directory
