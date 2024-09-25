@@ -1,6 +1,6 @@
-import { Document, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
-export default interface Stock extends Document {
-  portfolioId: ObjectId;
+export default interface Stock {
+  portfolioId: Types.ObjectId;
   symbol: string;
 }

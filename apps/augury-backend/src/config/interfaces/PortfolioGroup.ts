@@ -1,8 +1,8 @@
-import { Document, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 import { PortfolioColor } from '../enums/PortfolioColor';
 
-export default interface PortfolioGroup extends Document {
+export default interface PortfolioGroup {
   name: string;
   color: PortfolioColor;
-  userId: ObjectId;
+  userId: Types.ObjectId;
 }
