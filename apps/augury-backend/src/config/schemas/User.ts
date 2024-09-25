@@ -23,6 +23,11 @@ const schema = new mongoose.Schema<User>({
   lastName: {
     type: String,
   },
+
+  balance: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const UserSchema = mongoose.model('User', schema);

@@ -3,4 +3,5 @@ export default interface User {
   password: string;
   firstName?: string;
   lastName?: string;
+  balance: number;
 }
