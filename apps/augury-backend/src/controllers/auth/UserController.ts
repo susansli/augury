@@ -3,55 +3,45 @@ import { Request, Response } from 'express';
 import mongoose from 'mongoose';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
+import StatusCode from '../../config/enums/StatusCode';
+import ApiError from '../../errors/ApiError';
+import { assertExists, assertNumber } from '../../config/utils/validation';
+import { Severity } from '../../config/enums/Severity';
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
   interface RequestParams {
     id: string;
   }
   const { id }: RequestParams = req.query;
-  // TODO: Replace once merged in with error handling middleware
-  if (!id) {
-    throw new Error('Invalid ID Provided');
-  } // ApiError('Invalid ID Provided');
-
-  const response = await UserModel.getUser(new mongoose.Types.ObjectId(id));
+  // Assert the request format was valid
+  assertExists(id, 'Invalid ID Provided');
+  // Retrieve data from the DB using request parameters/data
+  const userId = new mongoose.Types.ObjectId(id);
+  const response = await UserModel.getUser(userId);
 
   if (response) {
     // send the user back after model runs logic
-    res.status(200).send({ user: response });
+    res.status(StatusCode.OK).send({ user: response });
   } else {
     // we throw an API error since this means something errored out with our server end
-    // throw new ApiError('Unable to retrieve records for this user');
+    throw new ApiError(
+      'Unable to retrieve records for this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
   }
 };
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
-  interface RequestParams {
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    balance: string;
-  }
-  const { email, password, firstName, lastName, balance }: RequestParams =
+  const { email, password, firstName, lastName, balance }: Required<User> =
     req.query;
-  // TODO: Replace once merged in with error handling middleware
-  if (!email) {
-    throw new Error('Invalid Email Provided');
-  } // ApiError('Invalid Name Provided');
-  if (!password) {
-    throw new Error('Invalid Password Provided');
-  } // ApiError('Invalid Password Provided');
-  if (!firstName) {
-    throw new Error('Invalid First Name Provided');
-  } // ApiError('Invalid First Name Provided');
-  if (!lastName) {
-    throw new Error('Invalid Last Name Provided');
-  } // ApiError('Invalid Last Name Provided');
-  if (!balance || balance.trim() == '' || isNaN(Number(balance))) {
-    throw new Error('Invalid Balance Provided');
-  } // ApiError('Invalid Balance Provided');
-
+  // Assert the request format was valid
+  assertExists(email, 'Invalid Email Provided');
+  assertExists(password, 'Invalid Password Provided');
+  assertExists(firstName, 'Invalid First Name Provided');
+  assertExists(lastName, 'Invalid Last Name Provided');
+  assertNumber(balance, 'Invalid Balance Provided');
+  // Create a User in the DB using request parameters/data
   const user: User = {
     email: email,
     password: password,
@@ -64,29 +54,26 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 
   if (response) {
     // send the user back after model runs logic
-    res.status(200).send({ user: response });
+    res.status(StatusCode.OK).send({ user: response });
   } else {
     // we throw an API error since this means something errored out with our server end
-    // throw new ApiError('Unable to create this user');
+    throw new ApiError(
+      'Unable to create user!',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
   }
 };
 
 const updateUser = async (req: Request, res: Response): Promise<void> => {
-  interface RequestParams {
+  interface RequestParams extends Partial<User> {
     id: string;
-    email?: string;
-    password?: string;
-    firstName?: string;
-    lastName?: string;
-    balance?: string;
   }
   const { id, email, password, firstName, lastName, balance }: RequestParams =
     req.query;
-  // TODO: Replace once merged in with error handling middleware
-  if (!id) {
-    throw new Error('Invalid ID Provided');
-  } // ApiError('Invalid ID Provided');
-
+  // Assert the request format was valid
+  assertExists(id, 'Invalid ID provided!');
+  // Update the User in the DB using request parameters/data
   const user: User = {
     email: email || undefined,
     password: password || undefined,
@@ -94,15 +81,19 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     lastName: lastName || undefined,
     balance: balance ? Number(balance) : undefined,
   };
-
-  const response = UserModel.updateUser(new mongoose.Types.ObjectId(id), user);
+  const userId = new mongoose.Types.ObjectId(id);
+  const response = UserModel.updateUser(userId, user);
 
   if (response) {
     // send the user back after model runs logic
-    res.status(200).send({ user: response });
+    res.status(StatusCode.OK).send({ user: response });
   } else {
     // we throw an API error since this means something errored out with our server end
-    // throw new ApiError('Unable to update this user');
+    throw new ApiError(
+      'Unable to update this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
   }
 };
 
@@ -111,19 +102,22 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
     id: string;
   }
   const { id }: RequestParams = req.query;
-  // TODO: Replace once merged in with error handling middleware
-  if (!id) {
-    throw new Error('Invalid ID Provided');
-  } // ApiError('Invalid ID Provided');
-
-  const response = UserModel.deleteUser(new mongoose.Types.ObjectId(id));
+  // Assert the request format was valid
+  assertExists(id, 'Invalid ID provided');
+  // Delete the User from the DB
+  const userId = new mongoose.Types.ObjectId(id);
+  const response = UserModel.deleteUser(userId);
 
   if (response) {
     // send the user back after model runs logic
-    res.status(200).send({ user: response });
+    res.status(StatusCode.OK).send({ user: response });
   } else {
     // we throw an API error since this means something errored out with our server end
-    // throw new ApiError('Unable to delete this user');
+    throw new ApiError(
+      'Unable to delete this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
   }
 };
 
