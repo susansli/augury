@@ -8,6 +8,21 @@ import UserModel from '../models/auth/UserModel';
 import Session from '../config/interfaces/Session';
 import SessionModel from '../models/auth/SessionModel';
 import mongoose from 'mongoose';
+import { signJwt } from '../config/utils/jwt';
+
+const accessCookieOptions: CookieOptions = {
+  maxAge: 900000, // 15 mins
+  httpOnly: true,
+  domain: 'localhost',
+  path: '/',
+  sameSite: 'lax',
+  secure: false,
+};
+
+const refreshCookieOptions: CookieOptions = {
+  ...accessCookieOptions,
+  maxAge: 3.154e10, // 1 year
+};
 
 interface GoogleTokensResult {
   access_token: string;
@@ -88,7 +103,7 @@ export async function googleOauthHandler(req: Request, res: Response) {
   const googleUser = await getGoogleUser({ id_token, access_token });
   console.log(googleUser);
 
-  let response: User;
+  let response;
   try {
     response = await UserModel.getUserByGoogleId(googleUser.id);
   } catch (error: any) {
@@ -109,13 +124,26 @@ export async function googleOauthHandler(req: Request, res: Response) {
   console.log(response);
 
   //create a session
-  //const response = await createSession(...);
+  const session = await createSession(
+    response._id,
+    req.get('user-agent' || '')
+  );
   //JSON.stringify(response);
   //console.log(response);
 
   //create access & refressh token
-
+  const accessToken = signJwt(
+    { ...response._id, session: session.token },
+    { expiresIn: '15m' } // 15 minutes
+  );
+  const refreshToken = signJwt(
+    { ...response._id, session: session.token },
+    { expiresIn: '1y' } // 1 year
+  );
   //set cookie
+  res.cookie('accessToken', accessToken, accessCookieOptions);
 
+  res.cookie('refreshToken', refreshToken, refreshCookieOptions);
   //redirect back to client
+  res.redirect('http://localhost:4200');
 }
