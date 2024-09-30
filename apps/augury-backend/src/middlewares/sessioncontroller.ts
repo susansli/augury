@@ -8,6 +8,7 @@ import ApiError from '../errors/ApiError';
 import ClientError from '../errors/ClientError';
 import jwt from 'jsonwebtoken';
 import SessionSchema from '../config/schemas/Session';
+import UserModel from '../models/auth/UserModel';
 
 interface GoogleTokensResult {
   access_token: string;
@@ -91,22 +92,16 @@ export async function googleOauthHandler(req: Request, res: Response) {
 
   console.log(googleUser);
   //upsert the user
-  const user = await findAndUpdateUser(
-    {
-      email: googleUser.email,
-    },
-    {
-      email: googleUser.email,
-      password: googleUser.id,
-      firstName: googleUser.given_name,
-      lastName: googleUser.family_name,
-    },
-    {
-      upsert: true,
-      new: true,
-    }
-  );
-  console.log(user);
+  const user: User = {
+    email: googleUser.email,
+    password: googleUser.id,
+    firstName: googleUser.given_name,
+    lastName: googleUser.family_name,
+    balance: 0,
+  };
+
+  const response = await UserModel.createUser(user);
+  console.log(response);
   //create a session
 
   //create access & refressh token
