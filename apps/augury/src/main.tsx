@@ -1,13 +1,14 @@
 import { StrictMode } from 'react';
-import * as ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
 import router from './navigation/router';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from './theme';
+import { createRoot } from 'react-dom/client';
 
-const root = ReactDOM.createRoot(
+const root = createRoot(
   document.getElementById('root') as HTMLElement
 );
+
 root.render(
   <StrictMode>
     <ChakraProvider theme={theme}>
