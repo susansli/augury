@@ -6,6 +6,9 @@ import ApiError from '../errors/ApiError';
 //import jwt from 'jsonwebtoken';
 import SessionSchema from '../config/schemas/Session';
 import UserModel from '../models/auth/UserModel';
+import SessionModel from '../models/auth/SessionModel';
+import Session from '../config/interfaces/Session';
+import mongoose from 'mongoose';
 
 interface GoogleTokensResult {
   access_token: string;
@@ -63,10 +66,16 @@ export async function getGoogleUser({ id_token, access_token }) {
   }
 }
 
-export async function createSession(userId: any, userAgent: string) {
-  const session = await SessionSchema.create({ user: userId, userAgent });
-  // TODO: use SessionModel.createSession
-  return session.toJSON();
+export async function createSession(id: string, userAgent: string) {
+  const userId = new mongoose.Types.ObjectId(id);
+  const session: Session = {
+    userId: userId,
+    token: userAgent,
+  };
+
+  const response = await SessionModel.createSession(session);
+
+  return JSON.stringify(response);
 }
 
 export async function googleOauthHandler(req: Request, res: Response) {

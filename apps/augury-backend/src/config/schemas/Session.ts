@@ -13,16 +13,6 @@ const schema = new mongoose.Schema<Session>({
     required: true,
     unique: true,
   },
-
-  created: {
-    type: Number,
-    required: true,
-  },
-
-  expires: {
-    type: Number,
-    required: true,
-  },
 });
 
 const SessionSchema = mongoose.model('Session', schema);
