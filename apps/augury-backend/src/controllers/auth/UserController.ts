@@ -33,18 +33,18 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createUser = async (req: Request, res: Response): Promise<void> => {
-  const { email, password, firstName, lastName, balance }: Required<User> =
+  const { email, googleId, firstName, lastName, balance }: Required<User> =
     req.query;
   // Assert the request format was valid
   assertExists(email, 'Invalid Email Provided');
-  assertExists(password, 'Invalid Password Provided');
+  assertExists(googleId, 'Invalid Google ID Provided');
   assertExists(firstName, 'Invalid First Name Provided');
   assertExists(lastName, 'Invalid Last Name Provided');
   assertNumber(balance, 'Invalid Balance Provided');
   // Create a User in the DB using request parameters/data
   const user: User = {
     email: email,
-    password: password,
+    googleId: googleId,
     firstName: firstName,
     lastName: lastName,
     balance: Number(balance),
@@ -69,14 +69,14 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
   interface RequestParams extends Partial<User> {
     id: string;
   }
-  const { id, email, password, firstName, lastName, balance }: RequestParams =
+  const { id, email, googleId, firstName, lastName, balance }: RequestParams =
     req.query;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID provided!');
   // Update the User in the DB using request parameters/data
   const user: User = {
     email: email || undefined,
-    password: password || undefined,
+    googleId: googleId || undefined,
     firstName: firstName || undefined,
     lastName: lastName || undefined,
     balance: balance ? Number(balance) : undefined,

@@ -9,11 +9,9 @@ const schema = new mongoose.Schema<User>({
     match: /.+@.+\..+/, // Basic email format validation
   },
 
-  password: {
+  googleId: {
     type: String,
     required: true,
-    min: 8,
-    max: 64,
   },
 
   firstName: {

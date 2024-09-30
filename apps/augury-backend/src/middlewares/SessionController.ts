@@ -1,12 +1,9 @@
-import { FilterQuery, ObjectId, QueryOptions, UpdateQuery } from 'mongoose';
-import UserSchema from '../config/schemas/User';
 import User from '../config/interfaces/User';
 import { CookieOptions, Request, Response } from 'express';
 import axios from 'axios';
 import qs from 'querystring';
 import ApiError from '../errors/ApiError';
-import ClientError from '../errors/ClientError';
-import jwt from 'jsonwebtoken';
+//import jwt from 'jsonwebtoken';
 import SessionSchema from '../config/schemas/Session';
 import UserModel from '../models/auth/UserModel';
 
@@ -66,17 +63,9 @@ export async function getGoogleUser({ id_token, access_token }) {
   }
 }
 
-export async function findAndUpdateUser(
-  query: FilterQuery<User>,
-  update: UpdateQuery<User>,
-  options: QueryOptions = {}
-) {
-  return UserSchema.findOneAndUpdate(query, update, options);
-}
-
 export async function createSession(userId: any, userAgent: string) {
   const session = await SessionSchema.create({ user: userId, userAgent });
-
+  // TODO: use SessionModel.createSession
   return session.toJSON();
 }
 
@@ -89,19 +78,28 @@ export async function googleOauthHandler(req: Request, res: Response) {
 
   //get user with tokens
   const googleUser = await getGoogleUser({ id_token, access_token });
-
   console.log(googleUser);
-  //upsert the user
-  const user: User = {
-    email: googleUser.email,
-    password: googleUser.id,
-    firstName: googleUser.given_name,
-    lastName: googleUser.family_name,
-    balance: 0,
-  };
 
-  const response = await UserModel.createUser(user);
+  let response: User;
+  try {
+    response = await UserModel.getUserByGoogleId(googleUser.id);
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      const user: User = {
+        email: googleUser.email,
+        googleId: googleUser.id,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+        balance: 0,
+      };
+      response = await UserModel.createUser(user);
+    } else {
+      throw error;
+    }
+  }
+
   console.log(response);
+
   //create a session
 
   //create access & refressh token
