@@ -5,31 +5,56 @@ import NotFound from '../pages/NotFound';
 import Onboarding from '../pages/Onboarding';
 import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
+import BaseWrapper from '../components/baseLayout/BaseWrapper';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element: <Home />,
+    element: (
+      <BaseWrapper>
+        <Home />
+      </BaseWrapper>
+    ),
   },
   {
     path: '/login',
-    element: <Login />,
+    element: (
+      <BaseWrapper>
+        <Login />
+      </BaseWrapper>
+    ),
   },
   {
     path: '/onboarding',
-    element: <Onboarding />,
+    element: (
+      <BaseWrapper>
+        <Onboarding />
+      </BaseWrapper>
+    ),
   },
   {
     path: '/portfolio',
-    element: <Portfolio />,
+    element: (
+      <BaseWrapper>
+        <Portfolio />
+      </BaseWrapper>
+    ),
   },
   {
     path: '/settings',
-    element: <Settings />,
+    element: (
+      <BaseWrapper>
+        <Settings />
+      </BaseWrapper>
+    ),
   },
   {
-    path: '/not-found',
-    element: <NotFound />,
+    path: '/404',
+    element: (
+      <BaseWrapper>
+        <NotFound />
+      </BaseWrapper>
+    ),
   },
   {
     path: '/*',
