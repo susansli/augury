@@ -1,6 +1,5 @@
 import { flavors } from "@catppuccin/palette";
 
-// TODO: potentially find way to switch themes?
 const palette = flavors.mocha.colors;
 
 const colors = {
