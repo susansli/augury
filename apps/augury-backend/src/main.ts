@@ -8,8 +8,8 @@ import express from 'express';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import { errorController } from './middlewares/ErrorController';
-import { googleOauthHandler } from './middlewares/Sessioncontroller';
+import { errorController } from './middlewares/errorController';
+import { googleOauthHandler } from './middlewares/sessioncontroller';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
