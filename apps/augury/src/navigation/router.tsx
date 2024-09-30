@@ -23,7 +23,9 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <BaseWrapper>
-        <Login />
+        <PageWrapper>
+          <Login />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -31,7 +33,9 @@ const router = createBrowserRouter([
     path: '/onboarding',
     element: (
       <BaseWrapper>
-        <Onboarding />
+        <PageWrapper>
+          <Onboarding />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -39,7 +43,9 @@ const router = createBrowserRouter([
     path: '/portfolio',
     element: (
       <BaseWrapper>
-        <Portfolio />
+        <PageWrapper>
+          <Portfolio />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -47,7 +53,9 @@ const router = createBrowserRouter([
     path: '/settings',
     element: (
       <BaseWrapper>
-        <Settings />
+        <PageWrapper>
+          <Settings />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -55,7 +63,9 @@ const router = createBrowserRouter([
     path: '/404',
     element: (
       <BaseWrapper>
-        <NotFound />
+        <PageWrapper>
+          <NotFound />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
