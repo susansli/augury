@@ -124,10 +124,7 @@ export async function googleOauthHandler(req: Request, res: Response) {
   console.log(response);
 
   //create a session
-  const session = await createSession(
-    response._id,
-    req.get('user-agent' || '')
-  );
+  const session = await createSession(response._id, response.googleIdpn);
   //JSON.stringify(response);
   //console.log(response);
 
