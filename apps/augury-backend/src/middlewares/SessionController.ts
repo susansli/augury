@@ -87,7 +87,22 @@ export async function createSession(id: string, token: string) {
     token: token,
   };
 
-  const response = await SessionModel.createSession(session);
+  //const response = await SessionModel.createSession(session);
+
+  let response;
+  try {
+    response = await SessionModel.updateSession(session);
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      const session: Session = {
+        userId: userId,
+        token: token,
+      };
+      response = await SessionModel.createSession(session);
+    } else {
+      throw error;
+    }
+  }
 
   return response;
 }
