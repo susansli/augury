@@ -4,7 +4,6 @@ import axios from 'axios';
 import qs from 'querystring';
 import ApiError from '../errors/ApiError';
 //import jwt from 'jsonwebtoken';
-import SessionSchema from '../config/schemas/Session';
 import UserModel from '../models/auth/UserModel';
 import SessionModel from '../models/auth/SessionModel';
 import Session from '../config/interfaces/Session';
