@@ -1,7 +1,7 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { RouterProvider } from 'react-router-dom';
-import router from './router';
+import router from './navigation/router';
 import { ChakraProvider } from '@chakra-ui/react';
 import theme from './theme';
 

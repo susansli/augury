@@ -1,11 +1,10 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
-
-import Home from './pages/Home';
-import Login from './pages/Login';
-import NotFound from './pages/NotFound';
-import Onboarding from './pages/Onboarding';
-import Portfolio from './pages/Portfolio';
-import Settings from './pages/Settings';
+import Home from '../pages/Home';
+import Login from '../pages/Login';
+import NotFound from '../pages/NotFound';
+import Onboarding from '../pages/Onboarding';
+import Portfolio from '../pages/Portfolio';
+import Settings from '../pages/Settings';
 
 const router = createBrowserRouter([
   {
