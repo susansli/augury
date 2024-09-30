@@ -61,12 +61,13 @@ const updateUser = async (
     );
   }
 
-  const { email, googleId, firstName, lastName }: User = data;
+  const { email, googleId, firstName, lastName, balance }: User = data;
 
   user.email = email || user.email;
   user.googleId = googleId || user.googleId;
   user.firstName = firstName || user.firstName;
   user.lastName = lastName || user.lastName;
+  user.balance = balance || user.balance;
 
   const updatedUser = await user.save();
 

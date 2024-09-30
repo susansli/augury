@@ -15,6 +15,7 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
   const { id }: RequestParams = req.query;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID Provided');
+
   // Retrieve data from the DB using request parameters/data
   const userId = new mongoose.Types.ObjectId(id);
   const response = await UserModel.getUser(userId);
@@ -41,6 +42,7 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
   assertExists(firstName, 'Invalid First Name Provided');
   assertExists(lastName, 'Invalid Last Name Provided');
   assertNumber(balance, 'Invalid Balance Provided');
+
   // Create a User in the DB using request parameters/data
   const user: User = {
     email: email,
@@ -69,16 +71,52 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
   interface RequestParams extends Partial<User> {
     id: string;
   }
-  const { id, email, googleId, firstName, lastName, balance }: RequestParams =
-    req.query;
+  const { id, email, googleId, firstName, lastName }: RequestParams = req.query;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID provided!');
+
   // Update the User in the DB using request parameters/data
   const user: User = {
     email: email || undefined,
     googleId: googleId || undefined,
     firstName: firstName || undefined,
     lastName: lastName || undefined,
+    balance: undefined,
+  };
+  const userId = new mongoose.Types.ObjectId(id);
+  const response = UserModel.updateUser(userId, user);
+
+  if (response) {
+    // send the user back after model runs logic
+    res.status(StatusCode.OK).send({ user: response });
+  } else {
+    // we throw an API error since this means something errored out with our server end
+    throw new ApiError(
+      'Unable to update this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
+  }
+};
+
+const updateUserBalance = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
+  interface RequestParams extends Partial<User> {
+    id: string;
+  }
+  const { id, balance }: RequestParams = req.query;
+  // Assert the request format was valid
+  assertExists(id, 'Invalid ID provided!');
+  assertNumber(balance, 'Invalid Balance Provided');
+
+  // Update the User in the DB using request parameters/data
+  const user: User = {
+    email: undefined,
+    googleId: undefined,
+    firstName: undefined,
+    lastName: undefined,
     balance: balance ? Number(balance) : undefined,
   };
   const userId = new mongoose.Types.ObjectId(id);
@@ -125,5 +163,6 @@ export default module.exports = {
   getUser,
   createUser,
   updateUser,
+  updateUserBalance,
   deleteUser,
 };
