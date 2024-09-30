@@ -9,7 +9,7 @@ import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import { errorController } from './middlewares/errorController';
-
+import { googleOauthHandler } from './middlewares/sessioncontroller';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
@@ -30,6 +30,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to augury-backend!' });
 });
+app.get('/google/callback', googleOauthHandler);
 
 const port = process.env.PORT || 3333;
 const server = app.listen(port, () => {
