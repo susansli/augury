@@ -17,6 +17,7 @@ const colors = {
     overlay0: palette.overlay0.hex,
     overlay1: palette.overlay1.hex,
     overlay2: palette.overlay2.hex,
+    selBg: `${palette.overlay2.hex}33`
   },
   text: {
     body: palette.text.hex,

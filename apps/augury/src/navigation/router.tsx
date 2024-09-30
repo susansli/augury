@@ -6,13 +6,16 @@ import Onboarding from '../pages/Onboarding';
 import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
 import BaseWrapper from '../components/baseLayout/BaseWrapper';
+import PageWrapper from '../components/navigation/PageWrapper';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <BaseWrapper>
-        <Home />
+        <PageWrapper>
+          <Home />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
