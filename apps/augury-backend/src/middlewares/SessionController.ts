@@ -1,12 +1,12 @@
-import User from '../config/interfaces/User';
 import { CookieOptions, Request, Response } from 'express';
 import axios from 'axios';
 import qs from 'querystring';
 import ApiError from '../errors/ApiError';
 //import jwt from 'jsonwebtoken';
+import User from '../config/interfaces/User';
 import UserModel from '../models/auth/UserModel';
-import SessionModel from '../models/auth/SessionModel';
 import Session from '../config/interfaces/Session';
+import SessionModel from '../models/auth/SessionModel';
 import mongoose from 'mongoose';
 
 interface GoogleTokensResult {
@@ -65,16 +65,16 @@ export async function getGoogleUser({ id_token, access_token }) {
   }
 }
 
-export async function createSession(id: string, userAgent: string) {
+export async function createSession(id: string, token: string) {
   const userId = new mongoose.Types.ObjectId(id);
   const session: Session = {
     userId: userId,
-    token: userAgent,
+    token: token,
   };
 
   const response = await SessionModel.createSession(session);
 
-  return JSON.stringify(response);
+  return response;
 }
 
 export async function googleOauthHandler(req: Request, res: Response) {
@@ -109,6 +109,9 @@ export async function googleOauthHandler(req: Request, res: Response) {
   console.log(response);
 
   //create a session
+  //const response = await createSession(...);
+  //JSON.stringify(response);
+  //console.log(response);
 
   //create access & refressh token
 
