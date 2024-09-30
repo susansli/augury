@@ -10,14 +10,9 @@ export default function LoginComponents(): JSX.Element {
       <Text fontFamily="monospace" fontSize="sm">
         invest like a pro, with AI in tow
       </Text>
-      <Button 
-      marginTop='5'
-        leftIcon={<GoogleIcon />}
-      >
+      <Button marginTop="5" leftIcon={<GoogleIcon />}>
         <Flex>
-          <Text>
-            Continue With Google
-          </Text>
+          <Text>Continue With Google</Text>
         </Flex>
       </Button>
     </Flex>
