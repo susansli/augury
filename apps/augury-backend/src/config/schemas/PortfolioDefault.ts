@@ -1,8 +1,14 @@
 import mongoose from 'mongoose';
-import Portfolio from '../interfaces/Portfolio';
+import PortfolioDefault from '../interfaces/PortfolioDefault';
 import { PortfolioRisk } from '../enums/PortfolioRisk';
 
-const schema = new mongoose.Schema<Portfolio>({
+const schema = new mongoose.Schema<PortfolioDefault>({
+  userId: {
+    type: mongoose.Schema.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+
   name: {
     type: String,
     required: true,
@@ -16,6 +22,6 @@ const schema = new mongoose.Schema<Portfolio>({
   },
 });
 
-const PortfolioSchema = mongoose.model('Portfolio', schema);
+const PortfolioDefaultSchema = mongoose.model('Portfolio', schema);
 
-export default PortfolioSchema;
+export default PortfolioDefaultSchema;

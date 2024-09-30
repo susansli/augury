@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import BuyRecord from '../interfaces/BuyRecord';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<BuyRecord>({
   stockId: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

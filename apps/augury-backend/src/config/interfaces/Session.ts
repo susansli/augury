@@ -1,7 +1,7 @@
-import { Document, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
-export default interface Session extends Document {
-  userId: ObjectId;
+export default interface Session {
+  userId: Types.ObjectId;
   token: string;
   created: number;
   expires: number;

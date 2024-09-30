@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
-    "start:augury-backend": "npx nodemon --legacy-watch apps/augury-backend/src/main.ts",
+    "start:augury-backend": "npx nx run augury-backend:start-nodemon",
     "start:augury-frontend": "npx nx serve augury",
     "run-dev": "concurrently \"pnpm start:augury-backend\" \"pnpm start:augury-frontend\""
   },

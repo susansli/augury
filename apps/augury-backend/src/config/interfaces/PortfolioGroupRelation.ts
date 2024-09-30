@@ -1,6 +1,6 @@
-import { Document, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
-export default interface PortfolioGroupRelation extends Document {
-  portfolioId: ObjectId;
-  portfolioGroupId: ObjectId;
+export default interface PortfolioGroupRelation {
+  portfolioId: Types.ObjectId;
+  portfolioGroupId: Types.ObjectId;
 }
