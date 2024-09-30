@@ -87,11 +87,10 @@ export async function createSession(id: string, token: string) {
     token: token,
   };
 
-  //const response = await SessionModel.createSession(session);
-
   let response;
   try {
     response = await SessionModel.updateSession(session);
+    console.log('Updating session...\n' + session);
   } catch (error: any) {
     if (error instanceof ApiError) {
       const session: Session = {
@@ -99,6 +98,7 @@ export async function createSession(id: string, token: string) {
         token: token,
       };
       response = await SessionModel.createSession(session);
+      console.log('Creating session...\n' + session);
     } else {
       throw error;
     }
