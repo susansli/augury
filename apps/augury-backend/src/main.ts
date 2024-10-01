@@ -25,7 +25,13 @@ const app = express();
 // https://expressjs.com/en/guide/using-middleware.html#middleware.built-in
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cors());
+app.use(
+  cors({
+    //TODO: update with production domain
+    origin: 'http://localhost:4200', // Frontend URL
+    credentials: true, // Allows cookies to be sent with the requests
+  })
+);
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());

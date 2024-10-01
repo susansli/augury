@@ -158,6 +158,7 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
   //redirect back to client
   res.redirect('http://localhost:4200');
+  //res.redirect('http://localhost:4200/Test.html');
   //res.redirect('http://localhost:3333/User');
 }
 
@@ -166,20 +167,20 @@ export async function verifyGoogleOauth(
   res: Response,
   next: NextFunction
 ) {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
+  const accessToken = req.cookies.accessToken;
+  if (!accessToken) {
     throw new ApiError(
-      'No refresh token found.',
+      'No acces token found.',
       StatusCode.UNAUTHORIZED,
       Severity.MED
     );
-    //return res.status(StatusCode.UNAUTHORIZED).send('No refresh token found'); // Handle the absence of token
+    //return res.status(StatusCode.UNAUTHORIZED).send('No acces token found'); // Handle the absence of token
   }
 
   try {
     // Verify and decode the JWT
-    const verificationResult = verifyJwt(refreshToken);
-    //const decoded = jwt.decode(refreshToken, { complete: true });
+    const verificationResult = verifyJwt(accessToken);
+    //const decoded = jwt.decode(accessToken, { complete: true });
 
     // Ensure that verificationResult is an object with a decoded property
     if (typeof verificationResult === 'object' && verificationResult !== null) {
@@ -195,6 +196,7 @@ export async function verifyGoogleOauth(
 
         const session: Session = await SessionModel.getSessionByToken(token);
         req.query.id = session.userId; // Attach session to the request
+        console.log('req.query: ' + JSON.stringify(req.query));
         next(); // Pass control to the next middleware
       } else {
         throw new ApiError(
