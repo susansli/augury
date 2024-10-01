@@ -5,14 +5,19 @@
 
 import 'dotenv/config';
 import express from 'express';
+import cookieParser from 'cookie-parser';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import { errorController } from './middlewares/errorController';
-import { googleOauthHandler } from './middlewares/sessioncontroller';
+import {
+  googleOauthHandler,
+  verifyGoogleOauth,
+} from './middlewares/sessioncontroller';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
+import { userRouter } from './routes/UserRoutes';
 
 const app = express();
 
@@ -23,8 +28,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cors());
 app.use(helmet());
 app.use(compression());
+app.use(cookieParser());
+app.use(verifyGoogleOauth);
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
+
+app.use('/', userRouter);
 
 // API Routes
 app.get('/api', (req, res) => {

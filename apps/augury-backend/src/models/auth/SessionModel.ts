@@ -21,6 +21,20 @@ const getSessionByUserId = async (
   return session;
 };
 
+const getSessionByToken = async (token: string): Promise<Session> => {
+  const session = await SessionSchema.findOne({ token: token });
+
+  if (!session) {
+    throw new ApiError(
+      'This session does not exist.',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+
+  return session;
+};
+
 const createSession = async (data: Session): Promise<Session> => {
   const session = await SessionSchema.create(data);
 
@@ -64,6 +78,7 @@ const updateSession = async (data: Session): Promise<Session> => {
 
 export default module.exports = {
   getSessionByUserId,
+  getSessionByToken,
   createSession,
   updateSession,
 };

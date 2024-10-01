@@ -1,14 +1,14 @@
-import { CookieOptions, Request, Response } from 'express';
+import { CookieOptions, Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 import qs from 'querystring';
 import ApiError from '../errors/ApiError';
-//import jwt from 'jsonwebtoken';
 import User from '../config/interfaces/User';
 import UserModel from '../models/auth/UserModel';
 import Session from '../config/interfaces/Session';
 import SessionModel from '../models/auth/SessionModel';
 import mongoose from 'mongoose';
-import { signJwt } from '../config/utils/jwt';
+import { signJwt, verifyJwt } from '../config/utils/jwt';
+import { JwtPayload } from 'jsonwebtoken';
 
 const accessCookieOptions: CookieOptions = {
   maxAge: 900000, // 15 mins
@@ -158,4 +158,53 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
   //redirect back to client
   res.redirect('http://localhost:4200');
+  //res.redirect('http://localhost:3333/User');
+}
+
+export async function verifyGoogleOauth(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  console.log('verifyGoogleOauth');
+
+  const refreshToken = req.cookies.refreshToken;
+  console.log('Refresh Token: ' + refreshToken);
+  if (!refreshToken) {
+    return res.status(401).send('No refresh token found'); // Handle the absence of token
+  }
+
+  try {
+    // Verify and decode the JWT
+    const verificationResult = verifyJwt(refreshToken);
+    //const decoded = jwt.decode(refreshToken, { complete: true });
+
+    // Ensure that verificationResult is an object with a decoded property
+    if (typeof verificationResult === 'object' && verificationResult !== null) {
+      const decodedResult = verificationResult as {
+        valid: boolean;
+        expired: boolean;
+        decoded: JwtPayload;
+      };
+
+      // Check if decoded has session property
+      if (decodedResult.decoded && decodedResult.decoded.session) {
+        const token = decodedResult.decoded.session; // Access session
+
+        console.log('Session:', token);
+
+        const session: Session = await SessionModel.getSessionByToken(token);
+        req.query.id = session.userId; // Attach session to the request
+        console.log('UserId: ' + req.query.id);
+        next(); // Pass control to the next middleware
+      } else {
+        return res.status(403).send('Session not found in refresh token');
+      }
+    } else {
+      return res.status(403).send('Invalid token structure');
+    }
+  } catch (error) {
+    console.error('Invalid refresh token:', error);
+    res.status(403).send('Invalid refresh token'); // Handle invalid token
+  }
 }

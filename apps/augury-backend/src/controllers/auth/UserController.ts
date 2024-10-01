@@ -12,6 +12,7 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
   interface RequestParams {
     id: string;
   }
+  console.log('Req: ' + JSON.stringify(req.query));
   const { id }: RequestParams = req.query;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID Provided');
