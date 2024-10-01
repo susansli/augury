@@ -158,8 +158,8 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
   //redirect back to client
   res.redirect('http://localhost:4200');
-  //res.redirect('http://localhost:4200/Test.html');
-  //res.redirect('http://localhost:3333/User');
+  //res.redirect('http://localhost:4200/Test.html'); // Test update balance
+  //res.redirect('http://localhost:3333/User'); // Test get a user
 }
 
 export async function verifyGoogleOauth(
