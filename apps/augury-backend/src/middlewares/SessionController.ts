@@ -9,6 +9,8 @@ import SessionModel from '../models/auth/SessionModel';
 import mongoose from 'mongoose';
 import { signJwt, verifyJwt } from '../config/utils/jwt';
 import { JwtPayload } from 'jsonwebtoken';
+import StatusCode from '../config/enums/StatusCode';
+import { Severity } from '../config/enums/Severity';
 
 const accessCookieOptions: CookieOptions = {
   maxAge: 900000, // 15 mins
@@ -140,8 +142,6 @@ export async function googleOauthHandler(req: Request, res: Response) {
 
   //create a session
   const session = await createSession(response._id, response.googleId);
-  //JSON.stringify(response);
-  //console.log(response);
 
   //create access & refressh token
   const accessToken = signJwt(
@@ -166,12 +166,14 @@ export async function verifyGoogleOauth(
   res: Response,
   next: NextFunction
 ) {
-  console.log('verifyGoogleOauth');
-
   const refreshToken = req.cookies.refreshToken;
-  console.log('Refresh Token: ' + refreshToken);
   if (!refreshToken) {
-    return res.status(401).send('No refresh token found'); // Handle the absence of token
+    throw new ApiError(
+      'No refresh token found.',
+      StatusCode.UNAUTHORIZED,
+      Severity.MED
+    );
+    //return res.status(StatusCode.UNAUTHORIZED).send('No refresh token found'); // Handle the absence of token
   }
 
   try {
@@ -191,20 +193,34 @@ export async function verifyGoogleOauth(
       if (decodedResult.decoded && decodedResult.decoded.session) {
         const token = decodedResult.decoded.session; // Access session
 
-        console.log('Session:', token);
-
         const session: Session = await SessionModel.getSessionByToken(token);
         req.query.id = session.userId; // Attach session to the request
-        console.log('UserId: ' + req.query.id);
         next(); // Pass control to the next middleware
       } else {
-        return res.status(403).send('Session not found in refresh token');
+        throw new ApiError(
+          'Invalid token structure.',
+          StatusCode.FORBIDDEN,
+          Severity.MED
+        );
+        // return res
+        //   .status(StatusCode.FORBIDDEN)
+        //   .send('Session not found in refresh token');
       }
     } else {
-      return res.status(403).send('Invalid token structure');
+      throw new ApiError(
+        'Invalid token structure.',
+        StatusCode.FORBIDDEN,
+        Severity.MED
+      );
+      //return res.status(StatusCode.FORBIDDEN).send('Invalid token structure');
     }
   } catch (error) {
-    console.error('Invalid refresh token:', error);
-    res.status(403).send('Invalid refresh token'); // Handle invalid token
+    // Catching errors that we have thrown?...
+    throw new ApiError(
+      'Invalid token structure.',
+      StatusCode.FORBIDDEN,
+      Severity.MED
+    );
+    //res.status(StatusCode.FORBIDDEN).send('Invalid refresh token'); // Handle invalid token
   }
 }
