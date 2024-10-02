@@ -1,4 +1,4 @@
-import { Box, Center, VisuallyHidden, Link } from '@chakra-ui/react';
+import { Center, VisuallyHidden, Link } from '@chakra-ui/react';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -20,6 +20,7 @@ export default function PageIcon(props: Props): JSX.Element {
         bg: 'background.selBg',
         color: 'text.body',
       }}
+      href={props?.link}
     >
       <VisuallyHidden>{props?.text}</VisuallyHidden>
       <Center h="full">
