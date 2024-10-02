@@ -22,8 +22,8 @@ const colors = {
   text: {
     body: palette.text.hex,
     header: palette.text.hex,
-    subtitle1: palette.subtext0.hex,
-    subtitle2: palette.subtext1.hex,
+    subtitle0: palette.subtext0.hex,
+    subtitle1: palette.subtext1.hex,
     subtle: palette.overlay1.hex,
     link: palette.blue.hex,
     success: palette.green.hex,
