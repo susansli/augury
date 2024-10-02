@@ -5,10 +5,10 @@ const palette = flavors.mocha.colors;
 const colors = {
   background: {
     // Background pane
-    base: palette.base.hex,
-    // Secondary panes
     crust: palette.crust.hex,
+    // Secondary panes
     mantle: palette.mantle.hex,
+    base: palette.base.hex,
     // Surface elements
     surface0: palette.surface0.hex,
     surface1: palette.surface1.hex,
