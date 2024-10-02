@@ -21,13 +21,14 @@ export default function PageIcon(props: Props): JSX.Element {
       }}
     >
       <VisuallyHidden>{props?.text}</VisuallyHidden>
-      <Center h="100%">
+      <Center h="full">
         <FontAwesomeIcon
           icon={
             props?.activated && props?.iconActivated
               ? props?.iconActivated
               : props?.icon
           }
+          size='xl'
         ></FontAwesomeIcon>
       </Center>
     </Box>
