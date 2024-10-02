@@ -6,13 +6,16 @@ import Onboarding from '../pages/Onboarding';
 import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
 import BaseWrapper from '../components/baseLayout/BaseWrapper';
+import PageWrapper from '../components/navigation/PageWrapper';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
       <BaseWrapper>
-        <Home />
+        <PageWrapper>
+          <Home />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -20,7 +23,9 @@ const router = createBrowserRouter([
     path: '/login',
     element: (
       <BaseWrapper>
-        <Login />
+        <PageWrapper>
+          <Login />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -28,7 +33,9 @@ const router = createBrowserRouter([
     path: '/onboarding',
     element: (
       <BaseWrapper>
-        <Onboarding />
+        <PageWrapper>
+          <Onboarding />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -36,7 +43,9 @@ const router = createBrowserRouter([
     path: '/portfolio',
     element: (
       <BaseWrapper>
-        <Portfolio />
+        <PageWrapper>
+          <Portfolio />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -44,7 +53,9 @@ const router = createBrowserRouter([
     path: '/settings',
     element: (
       <BaseWrapper>
-        <Settings />
+        <PageWrapper>
+          <Settings />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
@@ -52,7 +63,9 @@ const router = createBrowserRouter([
     path: '/404',
     element: (
       <BaseWrapper>
-        <NotFound />
+        <PageWrapper>
+          <NotFound />
+        </PageWrapper>
       </BaseWrapper>
     ),
   },
