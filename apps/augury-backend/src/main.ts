@@ -12,7 +12,7 @@ import compression from 'compression';
 import { errorController } from './middlewares/ErrorController';
 import {
   googleOauthHandler,
-  verifyGoogleOauth,
+  verifyTokenAndAttachUser,
 } from './middlewares/SessionController';
 // Security middleware
 import helmet from 'helmet';
@@ -39,7 +39,7 @@ app.use(
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
-app.use(verifyGoogleOauth);
+app.use(verifyTokenAndAttachUser);
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 

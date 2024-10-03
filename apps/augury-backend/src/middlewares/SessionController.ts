@@ -172,7 +172,7 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.redirect(url);
 }
 
-export async function verifyGoogleOauth(
+export async function verifyTokenAndAttachUser(
   req: Request,
   res: Response,
   next: NextFunction
