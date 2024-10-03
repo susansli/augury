@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+import mongoose, { Document } from 'mongoose';
 import User from '../../config/interfaces/User';
 import UserSchema from '../../config/schemas/User';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 
-const getUser = async (id: mongoose.Types.ObjectId): Promise<User> => {
+const getUser = async (id: mongoose.Types.ObjectId) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -19,7 +19,7 @@ const getUser = async (id: mongoose.Types.ObjectId): Promise<User> => {
   return user;
 };
 
-const getUserByGoogleId = async (googleId: string): Promise<User> => {
+const getUserByGoogleId = async (googleId: string) => {
   const user = await UserSchema.findOne({ googleId: googleId });
 
   if (!user) {
@@ -33,7 +33,7 @@ const getUserByGoogleId = async (googleId: string): Promise<User> => {
   return user;
 };
 
-const createUser = async (data: User): Promise<User> => {
+const createUser = async (data: User) => {
   const user = await UserSchema.create(data);
 
   if (!user) {
@@ -47,10 +47,7 @@ const createUser = async (data: User): Promise<User> => {
   return user;
 };
 
-const updateUser = async (
-  id: mongoose.Types.ObjectId,
-  data: User
-): Promise<User> => {
+const updateUser = async (id: mongoose.Types.ObjectId, data: User) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -82,8 +79,8 @@ const updateUser = async (
   return updatedUser;
 };
 
-const deleteUser = async (id: mongoose.Types.ObjectId): Promise<User> => {
-  const user: User = await UserSchema.findByIdAndDelete(id);
+const deleteUser = async (id: mongoose.Types.ObjectId) => {
+  const user = await UserSchema.findByIdAndDelete(id);
 
   if (!user) {
     throw new ApiError(

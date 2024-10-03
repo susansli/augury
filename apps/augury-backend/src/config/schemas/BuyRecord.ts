@@ -19,6 +19,6 @@ const schema = new mongoose.Schema<BuyRecord>({
   },
 });
 
-const BuyRecordSchema = mongoose.model('BuyRecord', schema);
+const BuyRecordSchema = mongoose.model<BuyRecord>('BuyRecord', schema);
 
 export default BuyRecordSchema;
