@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import mongoose from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
@@ -9,12 +9,11 @@ import { assertExists, assertNumber } from '../../config/utils/validation';
 import Severity from '../../config/enums/Severity';
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.user;
+  const { _id: userId } = req.user as HydratedDocument<User>;
   // Assert the request format was valid
-  assertExists(id, 'Invalid ID Provided');
+  assertExists(userId, 'Invalid ID Provided');
 
   // Retrieve data from the DB using request parameters/data
-  const userId = new mongoose.Types.ObjectId(id);
   const response = await UserModel.getUser(userId);
 
   if (response) {
@@ -65,10 +64,10 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateUser = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.user;
+  const { _id: userId } = req.user as HydratedDocument<User>;
   const { email, googleId, firstName, lastName }: Partial<User> = req.query;
   // Assert the request format was valid
-  assertExists(id, 'Invalid ID provided!');
+  assertExists(userId, 'Invalid ID provided!');
 
   // Update the User in the DB using request parameters/data
   const user: User = {
@@ -78,7 +77,6 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     lastName: lastName || undefined,
     balance: undefined,
   };
-  const userId = new mongoose.Types.ObjectId(id);
   const response = await UserModel.updateUser(userId, user);
 
   if (response) {
@@ -98,10 +96,10 @@ const updateUserBalance = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const { id } = req.user;
+  const { _id: userId } = req.user as HydratedDocument<User>;
   const { balance }: Partial<User> = req.query;
   // Assert the request format was valid
-  assertExists(id, 'Invalid ID provided!');
+  assertExists(userId, 'Invalid ID provided!');
   assertNumber(balance, 'Invalid Balance Provided');
 
   // Update the User in the DB using request parameters/data
@@ -112,7 +110,6 @@ const updateUserBalance = async (
     lastName: undefined,
     balance: balance ? Number(balance) : undefined,
   };
-  const userId = new mongoose.Types.ObjectId(id);
   const response = await UserModel.updateUser(userId, user);
 
   if (response) {
@@ -129,11 +126,10 @@ const updateUserBalance = async (
 };
 
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
-  const { id } = req.user;
+  const { _id: userId } = req.user as HydratedDocument<User>;
   // Assert the request format was valid
-  assertExists(id, 'Invalid ID provided');
+  assertExists(userId, 'Invalid ID provided');
   // Delete the User from the DB
-  const userId = new mongoose.Types.ObjectId(id);
   const response = await UserModel.deleteUser(userId);
 
   if (response) {

@@ -186,7 +186,7 @@ export async function verifyTokenAndAttachUser(
     );
   }
 
-  let verificationResult: any;
+  let verificationResult: ReturnType<typeof verifyJwt>;
 
   try {
     // Verify and decode the JWT
