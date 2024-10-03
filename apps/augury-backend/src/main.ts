@@ -39,11 +39,11 @@ app.use(
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
-app.use(verifyTokenAndAttachUser);
+app.use('/protected', verifyTokenAndAttachUser);
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-app.use('/', userRouter);
+app.use('/protected', userRouter);
 
 // API Routes
 app.get('/api', (req, res) => {
