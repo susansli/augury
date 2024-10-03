@@ -9,11 +9,11 @@ import cookieParser from 'cookie-parser';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import { errorController } from './middlewares/errorController';
+import { errorController } from './middlewares/ErrorController';
 import {
   googleOauthHandler,
   verifyGoogleOauth,
-} from './middlewares/sessioncontroller';
+} from './middlewares/SessionController';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
