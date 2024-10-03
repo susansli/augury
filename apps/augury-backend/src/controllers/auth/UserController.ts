@@ -49,7 +49,7 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
     balance: Number(balance),
   };
 
-  const response = UserModel.createUser(user);
+  const response = await UserModel.createUser(user);
 
   if (response) {
     // send the user back after model runs logic
@@ -79,7 +79,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     balance: undefined,
   };
   const userId = new mongoose.Types.ObjectId(id);
-  const response = UserModel.updateUser(userId, user);
+  const response = await UserModel.updateUser(userId, user);
 
   if (response) {
     // send the user back after model runs logic
@@ -113,7 +113,7 @@ const updateUserBalance = async (
     balance: balance ? Number(balance) : undefined,
   };
   const userId = new mongoose.Types.ObjectId(id);
-  const response = UserModel.updateUser(userId, user);
+  const response = await UserModel.updateUser(userId, user);
 
   if (response) {
     // send the user back after model runs logic
@@ -134,7 +134,7 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
   assertExists(id, 'Invalid ID provided');
   // Delete the User from the DB
   const userId = new mongoose.Types.ObjectId(id);
-  const response = UserModel.deleteUser(userId);
+  const response = await UserModel.deleteUser(userId);
 
   if (response) {
     // send the user back after model runs logic

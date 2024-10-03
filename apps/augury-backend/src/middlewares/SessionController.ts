@@ -114,7 +114,6 @@ export async function getSession(id: string, token: string) {
   let response;
   try {
     response = await SessionModel.updateSession(session);
-    console.log('Updating session...\n' + session);
   } catch (error: any) {
     if (error instanceof ApiError) {
       const session: Session = {
@@ -122,7 +121,6 @@ export async function getSession(id: string, token: string) {
         token: token,
       };
       response = await SessionModel.createSession(session);
-      console.log('Creating session...\n' + session);
     } else {
       throw error;
     }
@@ -179,7 +177,6 @@ export async function verifyGoogleOauth(
   res: Response,
   next: NextFunction
 ) {
-  console.log('req.cookies: ' + JSON.stringify(req.cookies));
   const accessToken = req.cookies.accessToken;
   if (!accessToken) {
     throw new ApiError(
@@ -219,6 +216,5 @@ export async function verifyGoogleOauth(
 
   const session: Session = await SessionModel.getSessionByToken(token);
   req.user = await UserModel.getUser(session.userId);
-  console.log('req.user: ' + JSON.stringify(req.user));
   next(); // Pass control to the next middleware
 }
