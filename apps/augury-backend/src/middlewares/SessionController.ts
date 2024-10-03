@@ -10,7 +10,7 @@ import mongoose from 'mongoose';
 import { signJwt, verifyJwt } from '../config/utils/jwt';
 import { JwtPayload } from 'jsonwebtoken';
 import StatusCode from '../config/enums/StatusCode';
-import { Severity } from '../config/enums/Severity';
+import Severity from '../config/enums/Severity';
 
 const accessCookieOptions: CookieOptions = {
   maxAge: 900000, // 15 mins
@@ -82,7 +82,29 @@ export async function getGoogleUser({ id_token, access_token }) {
   }
 }
 
-export async function createSession(id: string, token: string) {
+export async function getUser(googleUser: any) {
+  let response;
+  try {
+    response = await UserModel.getUserByGoogleId(googleUser.id);
+  } catch (error: any) {
+    if (error instanceof ApiError) {
+      const user: User = {
+        email: googleUser.email,
+        googleId: googleUser.id,
+        firstName: googleUser.given_name,
+        lastName: googleUser.family_name,
+        balance: 0,
+      };
+      response = await UserModel.createUser(user);
+    } else {
+      throw error;
+    }
+  }
+
+  return response;
+}
+
+export async function getSession(id: string, token: string) {
   const userId = new mongoose.Types.ObjectId(id);
   const session: Session = {
     userId: userId,
@@ -120,46 +142,36 @@ export async function googleOauthHandler(req: Request, res: Response) {
   const googleUser = await getGoogleUser({ id_token, access_token });
   console.log(googleUser);
 
-  let response;
-  try {
-    response = await UserModel.getUserByGoogleId(googleUser.id);
-  } catch (error: any) {
-    if (error instanceof ApiError) {
-      const user: User = {
-        email: googleUser.email,
-        googleId: googleUser.id,
-        firstName: googleUser.given_name,
-        lastName: googleUser.family_name,
-        balance: 0,
-      };
-      response = await UserModel.createUser(user);
-    } else {
-      throw error;
-    }
-  }
-
-  console.log(response);
+  const user = await getUser(googleUser);
+  console.log(user);
 
   //create a session
-  const session = await createSession(response._id, response.googleId);
+  const session = await getSession(user._id, user.googleId);
 
   //create access & refressh token
   const accessToken = signJwt(
-    { ...response._id, session: session.token },
+    { ...user._id, session: session.token },
     { expiresIn: '15m' } // 15 minutes
   );
   const refreshToken = signJwt(
-    { ...response._id, session: session.token },
+    { ...user._id, session: session.token },
     { expiresIn: '1y' } // 1 year
   );
   //set cookie
   res.cookie('accessToken', accessToken, accessCookieOptions);
-
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
+
   //redirect back to client
-  res.redirect('http://localhost:4200');
-  //res.redirect('http://localhost:4200/Test.html'); // Test update balance
-  //res.redirect('http://localhost:3333/User'); // Test get a user
+  const clientPort = process.env.CLIENT_PORT || 4200;
+  const url = `${process.env.FRONTEND_URL || 'http://localhost'}:${clientPort}`;
+  // const url = `${
+  //   process.env.FRONTEND_URL || 'http://localhost'
+  // }:${clientPort}/Test.html`;
+  // const serverPort = process.env.SERVER_PORT || 3333;
+  // const url = `${
+  //   process.env.BACKEND_URL || 'http://localhost'
+  // }:${serverPort}/User`;
+  res.redirect(url);
 }
 
 export async function verifyGoogleOauth(
@@ -167,62 +179,46 @@ export async function verifyGoogleOauth(
   res: Response,
   next: NextFunction
 ) {
+  console.log('req.cookies: ' + JSON.stringify(req.cookies));
   const accessToken = req.cookies.accessToken;
   if (!accessToken) {
     throw new ApiError(
-      'No acces token found.',
+      'No access token found.',
       StatusCode.UNAUTHORIZED,
       Severity.MED
     );
-    //return res.status(StatusCode.UNAUTHORIZED).send('No acces token found'); // Handle the absence of token
   }
+
+  let verificationResult: any;
 
   try {
     // Verify and decode the JWT
-    const verificationResult = verifyJwt(accessToken);
-    //const decoded = jwt.decode(accessToken, { complete: true });
-
-    // Ensure that verificationResult is an object with a decoded property
-    if (typeof verificationResult === 'object' && verificationResult !== null) {
-      const decodedResult = verificationResult as {
-        valid: boolean;
-        expired: boolean;
-        decoded: JwtPayload;
-      };
-
-      // Check if decoded has session property
-      if (decodedResult.decoded && decodedResult.decoded.session) {
-        const token = decodedResult.decoded.session; // Access session
-
-        const session: Session = await SessionModel.getSessionByToken(token);
-        req.query.id = session.userId; // Attach session to the request
-        console.log('req.query: ' + JSON.stringify(req.query));
-        next(); // Pass control to the next middleware
-      } else {
-        throw new ApiError(
-          'Invalid token structure.',
-          StatusCode.FORBIDDEN,
-          Severity.MED
-        );
-        // return res
-        //   .status(StatusCode.FORBIDDEN)
-        //   .send('Session not found in refresh token');
-      }
-    } else {
-      throw new ApiError(
-        'Invalid token structure.',
-        StatusCode.FORBIDDEN,
-        Severity.MED
-      );
-      //return res.status(StatusCode.FORBIDDEN).send('Invalid token structure');
-    }
+    verificationResult = verifyJwt(accessToken);
   } catch (error) {
-    // Catching errors that we have thrown?...
     throw new ApiError(
       'Invalid token structure.',
       StatusCode.FORBIDDEN,
       Severity.MED
     );
-    //res.status(StatusCode.FORBIDDEN).send('Invalid refresh token'); // Handle invalid token
   }
+
+  if (
+    typeof verificationResult != 'object' ||
+    verificationResult == null ||
+    typeof verificationResult.decoded === 'string' ||
+    !verificationResult.decoded?.session
+  ) {
+    throw new ApiError(
+      'Invalid token structure.',
+      StatusCode.FORBIDDEN,
+      Severity.MED
+    );
+  }
+
+  const token = (verificationResult.decoded as JwtPayload).session;
+
+  const session: Session = await SessionModel.getSessionByToken(token);
+  req.user = await UserModel.getUser(session.userId);
+  console.log('req.user: ' + JSON.stringify(req.user));
+  next(); // Pass control to the next middleware
 }

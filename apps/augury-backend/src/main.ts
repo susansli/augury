@@ -21,14 +21,18 @@ import { userRouter } from './routes/UserRoutes';
 
 const app = express();
 
+const clientPort = process.env.CLIENT_PORT || 4200;
+const clientURL = `${
+  process.env.FRONTEND_URL || 'http://localhost'
+}:${clientPort}`;
+
 // Using Express built-in middleware to parse JSON body and URL encoded parameters available since 4.16
 // https://expressjs.com/en/guide/using-middleware.html#middleware.built-in
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    //TODO: update with production domain
-    origin: 'http://localhost:4200', // Frontend URL
+    origin: clientURL, // Frontend URL
     credentials: true, // Allows cookies to be sent with the requests
   })
 );
@@ -47,8 +51,8 @@ app.get('/api', (req, res) => {
 });
 app.get('/google/callback', googleOauthHandler);
 
-const port = process.env.PORT || 3333;
-const server = app.listen(port, () => {
+const serverPort = process.env.SERVER_PORT || 3333;
+const server = app.listen(serverPort, () => {
   mongoose.set('strictQuery', false);
   mongoose.connect(`${process.env.MONGO_URL}`).catch(() => {
     console.error(
@@ -64,7 +68,7 @@ const server = app.listen(port, () => {
     console.log('Connected to MongoDB');
   });
 
-  console.log(`Listening at http://localhost:${port}/api`);
+  console.log(`Listening at http://localhost:${serverPort}/api`);
 });
 server.on('error', console.error);
 

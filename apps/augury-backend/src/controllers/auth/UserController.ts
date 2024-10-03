@@ -6,13 +6,10 @@ import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
 import ApiError from '../../errors/ApiError';
 import { assertExists, assertNumber } from '../../config/utils/validation';
-import { Severity } from '../../config/enums/Severity';
+import Severity from '../../config/enums/Severity';
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
-  interface RequestParams {
-    id: string;
-  }
-  const { id }: RequestParams = req.query;
+  const { id } = req.user;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID Provided');
 
@@ -68,10 +65,8 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateUser = async (req: Request, res: Response): Promise<void> => {
-  interface RequestParams extends Partial<User> {
-    id: string;
-  }
-  const { id, email, googleId, firstName, lastName }: RequestParams = req.query;
+  const { id } = req.user;
+  const { email, googleId, firstName, lastName }: Partial<User> = req.query;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID provided!');
 
@@ -103,10 +98,8 @@ const updateUserBalance = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  interface RequestParams extends Partial<User> {
-    id: string;
-  }
-  const { id, balance }: RequestParams = req.query;
+  const { id } = req.user;
+  const { balance }: Partial<User> = req.query;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID provided!');
   assertNumber(balance, 'Invalid Balance Provided');
@@ -136,10 +129,7 @@ const updateUserBalance = async (
 };
 
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
-  interface RequestParams {
-    id: string;
-  }
-  const { id }: RequestParams = req.query;
+  const { id } = req.user;
   // Assert the request format was valid
   assertExists(id, 'Invalid ID provided');
   // Delete the User from the DB

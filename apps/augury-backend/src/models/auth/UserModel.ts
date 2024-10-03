@@ -3,7 +3,7 @@ import User from '../../config/interfaces/User';
 import UserSchema from '../../config/schemas/User';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
-import { Severity } from '../../config/enums/Severity';
+import Severity from '../../config/enums/Severity';
 
 const getUser = async (id: mongoose.Types.ObjectId): Promise<User> => {
   const user = await UserSchema.findById(id);

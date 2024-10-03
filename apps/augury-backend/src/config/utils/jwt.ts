@@ -9,9 +9,7 @@ export function signJwt(object: object, options?: jwt.SignOptions | undefined) {
 
 export function verifyJwt(token: string) {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_PUBLIC, {
-      algorithms: ['RS256'],
-    });
+    const decoded = jwt.verify(token, process.env.JWT_PUBLIC);
     return {
       valid: true,
       expired: false,
