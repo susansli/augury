@@ -15,6 +15,7 @@ import { useRecoilState } from 'recoil';
 import OnboardingBalance from './Balance';
 import OnboardingDefaults from './Defaults';
 import OnboardingDisclaimer from './Disclaimer';
+import { useState } from 'react';
 
 function CustomTab(props: { text: string }): JSX.Element {
   return (
@@ -32,12 +33,22 @@ function CustomTab(props: { text: string }): JSX.Element {
 }
 
 export default function OnboardingUI(): JSX.Element {
-  const [onboardingPage, setOnboardingPage] = useRecoilState(OnboardingPage);
+  const [onboardingPage, setOnboardingPage] = useState(0);
+
+
+  function setPage(index: number): undefined {
+    if (index < 0) {
+      // TODO: Handle "prev" on first page
+      return undefined;
+    }
+    setOnboardingPage(index)
+    return undefined;
+  }
 
   return (
     <Flex direction="column">
       <Box m="10" w="fit-content">
-        <Tabs onChange={(index) => setOnboardingPage(index)} variant="unstyled">
+        <Tabs index={onboardingPage} onChange={setPage} variant="unstyled">
           <TabList gap="5">
             <CustomTab text="Set portfolio defaults" />
             <CustomTab text="Set starting balance" />
@@ -46,7 +57,7 @@ export default function OnboardingUI(): JSX.Element {
 
           <TabPanels>
             <TabPanel p="0" mt="5">
-              <OnboardingDefaults />
+              <OnboardingDefaults setPage={setPage} />
             </TabPanel>
             <TabPanel p="0" mt="5">
               <OnboardingBalance />
