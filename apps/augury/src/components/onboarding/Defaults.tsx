@@ -11,9 +11,14 @@ import {
   NumberIncrementStepper,
   NumberDecrementStepper,
   Button,
+  Flex,
+  Center,
 } from '@chakra-ui/react';
 import { useState } from 'react';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // TODO: Put in better spot
@@ -37,14 +42,15 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
 
   return (
     <FormControl color="text.body">
-      <FormLabel color="text.header" fontSize="28" fontWeight="bold">
-        Set your portfolio defaults
-      </FormLabel>
-      <FormLabel>
-        These will be the default settings applied to the portfolios you make.
-        You can change this at anytime.
-      </FormLabel>
-      <VStack>
+      <Flex direction={'column'} gap={2}>
+        <FormLabel color="text.header" fontSize="28" fontWeight="bold">
+          Set your portfolio defaults
+        </FormLabel>
+        <FormLabel>
+          These will be the default settings applied to the portfolios you make.
+          You can change this at anytime.
+        </FormLabel>
+
         <FormLabel>Risk Level</FormLabel>
         <Select
           defaultValue="Balanced"
@@ -61,14 +67,15 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
         >
           Custom Composition
         </Checkbox>
-        <HStack>
-          <VStack>
+        <Flex gap={2}>
+          <Flex direction={'column'} flex={1}>
             <FormLabel>Stocks</FormLabel>
             <NumberInput
               isDisabled={!customCompEnabled}
               max={100}
               min={0}
               value={customCompValue}
+              step={5}
               onChange={(value) => setCustomCompValue(+value)}
             >
               <NumberInputField />
@@ -77,14 +84,15 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
                 <NumberDecrementStepper />
               </NumberInputStepper>
             </NumberInput>
-          </VStack>
-          <VStack>
+          </Flex>
+          <Flex direction={'column'} flex={1}>
             <FormLabel>Bonds</FormLabel>
             <NumberInput
               isDisabled={!customCompEnabled}
               max={100}
               min={0}
               value={100 - customCompValue}
+              step={5}
               onChange={(value) => setCustomCompValue(100 - +value)}
             >
               <NumberInputField />
@@ -93,19 +101,31 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
                 <NumberDecrementStepper />
               </NumberInputStepper>
             </NumberInput>
-          </VStack>
-        </HStack>
-        <VStack>
-          
-          {/* //TODO: Figure out exactly how this is supposed to work */}
-          <FormLabel>Prefered Sectors</FormLabel>
-          <Select></Select>
-        </VStack>
-        <HStack>
-          <Button leftIcon={<FontAwesomeIcon icon={faChevronLeft}/>} variant="outline" onClick={() => props.setPage(0)}>Prev</Button>
-          <Button rightIcon={<FontAwesomeIcon icon={faChevronRight}/>} bgColor="background.overlay0" onClick={() => props.setPage(1)}>Next</Button>
-        </HStack>
-      </VStack>
+          </Flex>
+        </Flex>
+        {/* //TODO: Figure out exactly how this is supposed to work */}
+        <FormLabel>Prefered Sectors</FormLabel>
+        <Select></Select>
+
+        <Flex width={'100%'} gap={2}>
+          <Button
+            flex={1}
+            leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}
+            variant="outline"
+            onClick={() => props.setPage(-1)}
+          >
+            Prev
+          </Button>
+          <Button
+            flex={1}
+            rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
+            bgColor="background.surface1"
+            onClick={() => props.setPage(1)}
+          >
+            Next
+          </Button>
+        </Flex>
+      </Flex>
     </FormControl>
   );
 }

@@ -1,17 +1,13 @@
 import {
   Box,
   Flex,
-  Heading,
   Tab,
-  TabIndicator,
   TabList,
   TabPanel,
   TabPanels,
   Tabs,
   VisuallyHidden,
 } from '@chakra-ui/react';
-import { OnboardingPage } from '../../atoms/onboarding/atom';
-import { useRecoilState } from 'recoil';
 import OnboardingBalance from './Balance';
 import OnboardingDefaults from './Defaults';
 import OnboardingDisclaimer from './Disclaimer';
@@ -35,19 +31,19 @@ function CustomTab(props: { text: string }): JSX.Element {
 export default function OnboardingUI(): JSX.Element {
   const [onboardingPage, setOnboardingPage] = useState(0);
 
-
   function setPage(index: number): undefined {
-    if (index < 0) {
-      // TODO: Handle "prev" on first page
+    if (index < 0 || index > 2) {
+      // TODO: Handle moving to other pages
+      // Need to find out what pages they'll go to
       return undefined;
     }
-    setOnboardingPage(index)
+    setOnboardingPage(index);
     return undefined;
   }
 
   return (
     <Flex direction="column">
-      <Box m="10" w="fit-content">
+      <Box m="10">
         <Tabs index={onboardingPage} onChange={setPage} variant="unstyled">
           <TabList gap="5">
             <CustomTab text="Set portfolio defaults" />
@@ -60,10 +56,10 @@ export default function OnboardingUI(): JSX.Element {
               <OnboardingDefaults setPage={setPage} />
             </TabPanel>
             <TabPanel p="0" mt="5">
-              <OnboardingBalance />
+              <OnboardingBalance setPage={setPage} />
             </TabPanel>
             <TabPanel p="0" mt="5">
-              <OnboardingDisclaimer />
+              <OnboardingDisclaimer setPage={setPage} />
             </TabPanel>
           </TabPanels>
         </Tabs>
