@@ -1,10 +1,8 @@
 import {
   FormControl,
   FormLabel,
-  VStack,
   Select,
   Checkbox,
-  HStack,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
@@ -12,7 +10,6 @@ import {
   NumberDecrementStepper,
   Button,
   Flex,
-  Center,
 } from '@chakra-ui/react';
 import { useState } from 'react';
 import {
