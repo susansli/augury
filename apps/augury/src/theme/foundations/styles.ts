@@ -7,7 +7,7 @@ const styles = {
   global: (props: any) => ({
     body: {
       color: mode('#000', '#FFF')(props),
-      bg: mode('#FFF', palette.crust.hex)(props),
+      bg: mode('#FFF', palette.base.hex)(props),
     },
   }),
 };

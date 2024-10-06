@@ -1,5 +1,5 @@
 import { faHouse, faBriefcase, faGear } from "@fortawesome/free-solid-svg-icons";
-import { NavbarPage } from "./Navbar";
+import { NavbarPage } from "./PageWrapper";
 
 export const navbarPages: NavbarPage[] = [
   {

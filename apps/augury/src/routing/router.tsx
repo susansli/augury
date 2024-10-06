@@ -5,68 +5,55 @@ import NotFound from '../pages/NotFound';
 import Onboarding from '../pages/Onboarding';
 import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
-import BaseWrapper from '../components/baseLayout/BaseWrapper';
-import PageWrapper from '../components/navigation/Navbar';
+import PageWrapper from '../components/navigation/PageWrapper';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: (
-      <BaseWrapper>
-        <PageWrapper>
-          <Home />
-        </PageWrapper>
-      </BaseWrapper>
+      <PageWrapper>
+        <Home />
+      </PageWrapper>
     ),
   },
   {
     path: '/login',
     element: (
-      <BaseWrapper>
-        <PageWrapper>
-          <Login />
-        </PageWrapper>
-      </BaseWrapper>
+      <PageWrapper>
+        <Login />
+      </PageWrapper>
     ),
   },
   {
     path: '/onboarding',
     element: (
-      <BaseWrapper>
-        <PageWrapper>
-          <Onboarding />
-        </PageWrapper>
-      </BaseWrapper>
+      <PageWrapper>
+        <Onboarding />
+      </PageWrapper>
     ),
   },
   {
     path: '/portfolio',
     element: (
-      <BaseWrapper>
-        <PageWrapper>
-          <Portfolio />
-        </PageWrapper>
-      </BaseWrapper>
+      <PageWrapper>
+        <Portfolio />
+      </PageWrapper>
     ),
   },
   {
     path: '/settings',
     element: (
-      <BaseWrapper>
-        <PageWrapper>
-          <Settings />
-        </PageWrapper>
-      </BaseWrapper>
+      <PageWrapper>
+        <Settings />
+      </PageWrapper>
     ),
   },
   {
     path: '/404',
     element: (
-      <BaseWrapper>
-        <PageWrapper>
-          <NotFound />
-        </PageWrapper>
-      </BaseWrapper>
+      <PageWrapper>
+        <NotFound />
+      </PageWrapper>
     ),
   },
   {
