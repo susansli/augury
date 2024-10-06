@@ -22,6 +22,9 @@ const schema = new mongoose.Schema<PortfolioGroup>({
   },
 });
 
-const PortfolioGroupSchema = mongoose.model('PortfolioGroup', schema);
+const PortfolioGroupSchema = mongoose.model<PortfolioGroup>(
+  'PortfolioGroup',
+  schema
+);
 
 export default PortfolioGroupSchema;

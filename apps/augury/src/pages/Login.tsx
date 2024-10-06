@@ -1,5 +1,9 @@
+import getGoogleOauthUrl from '../utils/getGoogleUrl';
+
 export default function Login(): JSX.Element {
-    return (
-        <></>
-    );
+  return (
+    <>
+      <a href={getGoogleOauthUrl()}>LOG IN</a>
+    </>
+  );
 }
