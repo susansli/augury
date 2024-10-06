@@ -1,6 +1,6 @@
 export default interface User {
   email: string;
-  password: string;
+  googleId: string;
   firstName?: string;
   lastName?: string;
   balance: number;

@@ -9,11 +9,9 @@ const schema = new mongoose.Schema<User>({
     match: /.+@.+\..+/, // Basic email format validation
   },
 
-  password: {
+  googleId: {
     type: String,
     required: true,
-    min: 8,
-    max: 64,
   },
 
   firstName: {
@@ -30,6 +28,6 @@ const schema = new mongoose.Schema<User>({
   },
 });
 
-const UserSchema = mongoose.model('User', schema);
+const UserSchema = mongoose.model<User>('User', schema);
 
 export default UserSchema;

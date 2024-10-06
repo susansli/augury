@@ -1,5 +1,5 @@
 import { ApplicationError } from './ApplicationError';
-import { Severity } from '../config/enums/Severity';
+import Severity from '../config/enums/Severity';
 
 export default class ApiError extends ApplicationError {
   private readonly severity: Severity;
