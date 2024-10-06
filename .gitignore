@@ -17,6 +17,7 @@ node_modules
 *.launch
 .settings/
 *.sublime-workspace
+*.code-workspace
 
 # IDE - VSCode
 .vscode/*
@@ -41,4 +42,3 @@ Thumbs.db
 
 .nx/cache
 .nx/workspace-data
-augury.code-workspace
