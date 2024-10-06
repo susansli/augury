@@ -7,6 +7,6 @@ userRouter
   .route('/User')
   .get(UserController.getUser)
   .post(UserController.createUser)
-  .put(UserController.updateUser)
-  .delete(UserController.deleteUser);
+  .put(UserController.updateUser);
+// .delete(UserController.deleteUser);
 userRouter.route('/User/Balance').put(UserController.updateUserBalance);
