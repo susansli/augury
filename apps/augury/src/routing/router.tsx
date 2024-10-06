@@ -6,7 +6,7 @@ import Onboarding from '../pages/Onboarding';
 import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
 import BaseWrapper from '../components/baseLayout/BaseWrapper';
-import PageWrapper from '../components/navigation/PageWrapper';
+import PageWrapper from '../components/navigation/Navbar';
 
 const router = createBrowserRouter([
   {

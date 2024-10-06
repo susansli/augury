@@ -3,7 +3,7 @@ import { RouterProvider } from 'react-router-dom';
 import { ChakraProvider, ColorModeScript } from '@chakra-ui/react';
 import theme from './theme';
 import { createRoot } from 'react-dom/client';
-import router from './navigation/router';
+import router from './routing/router';
 import { RecoilRoot } from 'recoil';
 
 const root = createRoot(document.getElementById('root') as HTMLElement);

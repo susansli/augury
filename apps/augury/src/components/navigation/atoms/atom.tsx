@@ -1,14 +1,13 @@
 import { atom } from 'recoil';
 
-// TODO: handle logic with this
 // Show navbar
-export const navbarShowState = atom({
-  key: 'navbarShowState',
+export const navbarShowAtom = atom<boolean>({
+  key: 'navbarShowAtom',
   default: true,
 });
 
 // Shows which button on the navbar is considered 'active'
-export const navbarPageState = atom({
+export const navbarPageAtom = atom<number>({
   key: 'navbarPageState',
   default: 0,
 });
