@@ -8,43 +8,65 @@ import {
   Tabs,
   VisuallyHidden,
 } from '@chakra-ui/react';
-import OnboardingBalance from './Balance';
-import OnboardingDefaults from './Defaults';
-import OnboardingDisclaimer from './Disclaimer';
+import OnboardingBalance from './OnboardingBalance';
+import OnboardingDefaults from './OnboardingDefaults';
+import OnboardingDisclaimer from './OnboardingDisclaimer';
 import { useState } from 'react';
 
-function CustomTab(props: { text: string }): JSX.Element {
-  return (
-    <Tab
-      w="20"
-      h="1"
-      overflow="hidden"
-      bg="background.overlay0"
-      _selected={{ bg: 'color.lavender' }}
-      borderRadius="10"
-    >
-      <VisuallyHidden>{props.text}</VisuallyHidden>
-    </Tab>
-  );
+export enum OnboardingStages {
+  DEFAULTS,
+  BALANCE,
+  DISCLAIMER,
 }
 
 export default function OnboardingUI(): JSX.Element {
-  const [onboardingPage, setOnboardingPage] = useState(0);
+  const [onboardingStage, setOnboardingStage] = useState<OnboardingStages>(
+    OnboardingStages.DEFAULTS
+  );
 
-  function setPage(index: number): undefined {
-    if (index < 0 || index > 2) {
-      // TODO: Handle moving to other pages
-      // Need to find out what pages they'll go to
-      return undefined;
+  function CustomTab(props: { text: string }): JSX.Element {
+    return (
+      <Tab
+        w="20"
+        h="1"
+        overflow="hidden"
+        bg="background.overlay0"
+        borderRadius="10"
+        _selected={{ bg: 'color.lavender' }}
+      >
+        <VisuallyHidden>{props.text}</VisuallyHidden>
+      </Tab>
+    );
+  }
+
+  function setCurrentStage(currStage: OnboardingStages): void {
+    setOnboardingStage(currStage);
+  }
+
+  function getCurrentStageEnum(index: number) {
+    switch (index) {
+      case 0:
+        return OnboardingStages.DEFAULTS;
+      case 1:
+        return OnboardingStages.BALANCE;
+      case 2:
+        return OnboardingStages.DISCLAIMER;
+      default:
+        return OnboardingStages.DEFAULTS;
     }
-    setOnboardingPage(index);
-    return undefined;
   }
 
   return (
     <Flex direction="column">
       <Box m="10">
-        <Tabs index={onboardingPage} onChange={setPage} variant="unstyled">
+        <Tabs
+          index={onboardingStage}
+          onChange={(e) => {
+            const clickedStage: OnboardingStages = getCurrentStageEnum(e);
+            setOnboardingStage(clickedStage);
+          }}
+          variant="unstyled"
+        >
           <TabList gap="5">
             <CustomTab text="Set portfolio defaults" />
             <CustomTab text="Set starting balance" />
@@ -53,13 +75,19 @@ export default function OnboardingUI(): JSX.Element {
 
           <TabPanels>
             <TabPanel p="0" mt="5">
-              <OnboardingDefaults setPage={setPage} />
+              <OnboardingDefaults
+                setStage={setCurrentStage}
+              />
             </TabPanel>
             <TabPanel p="0" mt="5">
-              <OnboardingBalance setPage={setPage} />
+              <OnboardingBalance
+                setStage={setCurrentStage}
+              />
             </TabPanel>
             <TabPanel p="0" mt="5">
-              <OnboardingDisclaimer setPage={setPage} />
+              <OnboardingDisclaimer
+                setStage={setCurrentStage}
+              />
             </TabPanel>
           </TabPanels>
         </Tabs>

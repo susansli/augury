@@ -12,16 +12,16 @@ import {
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
+import { formatValues, parseValues } from '../../helpers/format';
+import { OnboardingStages } from './Onboarding';
 
 interface PageProps {
-  setPage: (page: number) => undefined;
+  setStage: (currStage: OnboardingStages) => void;
 }
 
 export default function OnboardingBalance(props: PageProps): JSX.Element {
-  const format = (val: string) => `$` + parseFloat(val).toFixed(2);
-  const parse = (val: string) => val.replace(/^\$/, '');
 
-  const [value, setValue] = useState('100.00');
+  const [value, setValue] = useState<string>('100.00');
 
   return (
     <FormControl color="text.body">
@@ -34,8 +34,8 @@ export default function OnboardingBalance(props: PageProps): JSX.Element {
           change or add to this amount as you wish.
         </FormLabel>
         <NumberInput
-          onChange={(valueString) => setValue(parse(valueString))}
-          value={format(value)}
+          onChange={(valueString) => setValue(parseValues(valueString))}
+          value={formatValues(value)}
           step={10}
         >
           <NumberInputField />
@@ -49,7 +49,7 @@ export default function OnboardingBalance(props: PageProps): JSX.Element {
           flex={1}
             leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}
             variant="outline"
-            onClick={() => props.setPage(0)}
+            onClick={() => props.setStage(OnboardingStages.DEFAULTS)}
           >
             Prev
           </Button>
@@ -57,7 +57,7 @@ export default function OnboardingBalance(props: PageProps): JSX.Element {
           flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
-            onClick={() => props.setPage(2)}
+            onClick={() => props.setStage(OnboardingStages.DISCLAIMER)}
           >
             Next
           </Button>

@@ -4,12 +4,17 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { OnboardingStages } from './Onboarding';
+import { useNavigate } from 'react-router-dom';
 
 interface PageProps {
-  setPage: (page: number) => undefined;
+  setStage: (currStage: OnboardingStages) => void;
 }
 
 export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
+
+  const navigate = useNavigate();
+
   return (
     <FormControl color="text.body">
       <Flex direction={'column'} gap={2}>
@@ -29,7 +34,7 @@ export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
             flex={1}
             leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}
             variant="outline"
-            onClick={() => props.setPage(1)}
+            onClick={() => props.setStage(OnboardingStages.BALANCE)}
           >
             Prev
           </Button>
@@ -37,7 +42,7 @@ export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
             flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
-            onClick={() => props.setPage(3)}
+            onClick={() => navigate('/home')}
           >
             I understand
           </Button>

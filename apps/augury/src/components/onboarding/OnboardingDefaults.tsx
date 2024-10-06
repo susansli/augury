@@ -17,17 +17,28 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useNavigate } from 'react-router-dom';
+import { OnboardingStages } from './Onboarding';
 
 // TODO: Put in better spot
 const standardCompositionValues = [90, 50, 10];
 
+// These represent % equities for the portfolio composition
+enum CompositionValues {
+  AGGRESIVE = 90,
+  BALANCED = 80,
+  CONSERVATIVE = 60
+}
+
 interface PageProps {
-  setPage: (page: number) => undefined;
+  setStage: (currStage: OnboardingStages) => void;
 }
 
 export default function OnboardingDefaults(props: PageProps): JSX.Element {
   const [customCompEnabled, setCustomCompEnabled] = useState(false);
   const [customCompValue, setCustomCompValue] = useState(50);
+
+  const navigate = useNavigate();
 
   function ChangeCustomCompEnabled(enabled: boolean) {
     setCustomCompEnabled(enabled);
@@ -109,7 +120,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
             flex={1}
             leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}
             variant="outline"
-            onClick={() => props.setPage(-1)}
+            onClick={() => navigate('/')}
           >
             Prev
           </Button>
@@ -117,7 +128,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
             flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
-            onClick={() => props.setPage(1)}
+            onClick={() => props.setStage(OnboardingStages.BALANCE)}
           >
             Next
           </Button>
