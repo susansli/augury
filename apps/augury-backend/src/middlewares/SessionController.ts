@@ -199,23 +199,32 @@ export async function googleOauthHandler(req: Request, res: Response) {
 
 export async function verifyTokenAndAttachUser(
   req: Request,
-  res: Response,
+  _res: Response,
   next: NextFunction
 ) {
-  const accessToken = req.cookies.accessToken;
+  const accessToken = req?.cookies?.accessToken;
   if (!accessToken) {
     throw new ApiError(
       'No access token found.',
       StatusCode.UNAUTHORIZED,
-      Severity.MED
+      Severity.LOW
     );
   }
 
-  let verificationResult: ReturnType<typeof verifyJwt>;
-
   try {
     // Verify and decode the JWT
-    verificationResult = verifyJwt(accessToken);
+    const verificationResult = verifyJwt(accessToken);
+    if (
+      typeof verificationResult.decoded === 'string' ||
+      !verificationResult?.decoded?.session
+    ) {
+      throw new Error();
+    }
+    const token = verificationResult.decoded.session;
+    const session: Session = await SessionModel.getSessionByToken(token);
+    // Attach the data and pass control to the next middleware/handler
+    req.user = await UserModel.getUser(session.userId);
+    next();
   } catch (error) {
     throw new ApiError(
       'Invalid token structure.',
@@ -223,23 +232,4 @@ export async function verifyTokenAndAttachUser(
       Severity.MED
     );
   }
-
-  if (
-    typeof verificationResult != 'object' ||
-    verificationResult == null ||
-    typeof verificationResult.decoded === 'string' ||
-    !verificationResult.decoded?.session
-  ) {
-    throw new ApiError(
-      'Invalid token structure.',
-      StatusCode.FORBIDDEN,
-      Severity.MED
-    );
-  }
-
-  const token = (verificationResult.decoded as JwtPayload).session;
-
-  const session: Session = await SessionModel.getSessionByToken(token);
-  req.user = await UserModel.getUser(session.userId);
-  next(); // Pass control to the next middleware
 }
