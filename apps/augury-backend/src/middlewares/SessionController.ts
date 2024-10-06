@@ -34,11 +34,9 @@ interface GoogleTokensResult {
   id_token: string;
 }
 
-export async function getGoogleOAuthTokens({
-  code,
-}: {
-  code: string;
-}): Promise<GoogleTokensResult> {
+export async function getGoogleOAuthTokens(
+  code: string
+): Promise<GoogleTokensResult> {
   const url = 'https://oauth2.googleapis.com/token';
 
   const values = {
@@ -132,7 +130,7 @@ export async function getSession(id: string, token: string) {
 export async function googleOauthHandler(req: Request, res: Response) {
   //get code from query string
   const code = req.query.code as string;
-  const { id_token, access_token } = await getGoogleOAuthTokens({ code });
+  const { id_token, access_token } = await getGoogleOAuthTokens(code);
   console.log({ id_token, access_token });
   //get the id and access token
 
