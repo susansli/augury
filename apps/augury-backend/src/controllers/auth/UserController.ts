@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import mongoose, { HydratedDocument } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
@@ -70,12 +70,11 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
   assertExists(userId, 'Invalid ID provided!');
 
   // Update the User in the DB using request parameters/data
-  const user: User = {
+  const user: Partial<User> = {
     email: email || undefined,
     googleId: googleId || undefined,
     firstName: firstName || undefined,
     lastName: lastName || undefined,
-    balance: undefined,
   };
   const response = await UserModel.updateUser(userId, user);
 
@@ -103,11 +102,7 @@ const updateUserBalance = async (
   assertNumber(balance, 'Invalid Balance Provided');
 
   // Update the User in the DB using request parameters/data
-  const user: User = {
-    email: undefined,
-    googleId: undefined,
-    firstName: undefined,
-    lastName: undefined,
+  const user: Partial<User> = {
     balance: balance ? Number(balance) : undefined,
   };
   const response = await UserModel.updateUser(userId, user);
@@ -118,7 +113,7 @@ const updateUserBalance = async (
   } else {
     // we throw an API error since this means something errored out with our server end
     throw new ApiError(
-      'Unable to update this user',
+      'Unable to update user balance',
       StatusCode.INTERNAL_ERROR,
       Severity.LOW
     );

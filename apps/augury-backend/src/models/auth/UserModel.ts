@@ -47,7 +47,7 @@ const createUser = async (data: User) => {
   return user;
 };
 
-const updateUser = async (id: mongoose.Types.ObjectId, data: User) => {
+const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -58,7 +58,7 @@ const updateUser = async (id: mongoose.Types.ObjectId, data: User) => {
     );
   }
 
-  const { email, googleId, firstName, lastName, balance }: User = data;
+  const { email, googleId, firstName, lastName, balance }: Partial<User> = data;
 
   user.email = email || user.email;
   user.googleId = googleId || user.googleId;
