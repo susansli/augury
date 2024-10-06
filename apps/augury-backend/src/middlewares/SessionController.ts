@@ -2,7 +2,6 @@ import { CookieOptions, Request, Response, NextFunction } from 'express';
 import axios, { AxiosError } from 'axios';
 import qs from 'querystring';
 import { HydratedDocument, Types } from 'mongoose';
-import { JwtPayload } from 'jsonwebtoken';
 import { signJwt, verifyJwt } from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import User from '../config/interfaces/User';
