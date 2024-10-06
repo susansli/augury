@@ -111,7 +111,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
             </NumberInput>
           </Flex>
         </Flex>
-        {/* //TODO: Figure out exactly how this is supposed to work */}
+        {/* //TODO: Replace with multiselect */}
         <FormLabel>Prefered Sectors</FormLabel>
         <Select></Select>
 
