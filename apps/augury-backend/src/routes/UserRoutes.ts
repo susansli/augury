@@ -2,11 +2,14 @@ import express, { Router } from 'express';
 export const userRouter: Router = express.Router();
 
 import UserController from '../controllers/auth/UserController';
+import { verifyTokenAndAttachUser } from '../middlewares/SessionController';
+
+userRouter.use(verifyTokenAndAttachUser);
 
 userRouter
-  .route('/User')
+  .route('/')
   .get(UserController.getUser)
   .post(UserController.createUser)
   .put(UserController.updateUser);
 // .delete(UserController.deleteUser);
-userRouter.route('/User/Balance').put(UserController.updateUserBalance);
+userRouter.route('/Balance').put(UserController.updateUserBalance);

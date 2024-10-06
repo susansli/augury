@@ -10,10 +10,7 @@ import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import { errorController } from './middlewares/ErrorController';
-import {
-  googleOauthHandler,
-  verifyTokenAndAttachUser,
-} from './middlewares/SessionController';
+import { googleOauthHandler } from './middlewares/SessionController';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
@@ -39,11 +36,10 @@ app.use(
 app.use(helmet());
 app.use(compression());
 app.use(cookieParser());
-app.use('/protected', verifyTokenAndAttachUser);
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-app.use('/protected', userRouter);
+app.use('/User', userRouter);
 
 // API Routes
 app.get('/api', (req, res) => {
