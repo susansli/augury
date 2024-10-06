@@ -1,7 +1,7 @@
 import { CookieOptions, Request, Response, NextFunction } from 'express';
 import axios, { AxiosError } from 'axios';
 import qs from 'querystring';
-import mongoose from 'mongoose';
+import { HydratedDocument, Types } from 'mongoose';
 import { JwtPayload } from 'jsonwebtoken';
 import { signJwt, verifyJwt } from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
@@ -101,12 +101,15 @@ export async function getGoogleUser(
   }
 }
 
-export async function getUser(googleUser: any) {
+export async function getUserByGoogleId(
+  googleUser: GoogleUserResult
+): Promise<HydratedDocument<User>> {
   let response;
   try {
     response = await UserModel.getUserByGoogleId(googleUser.id);
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof ApiError) {
+      // Create the user on our end.
       const user: User = {
         email: googleUser.email,
         googleId: googleUser.id,
@@ -115,33 +118,34 @@ export async function getUser(googleUser: any) {
         balance: 0,
       };
       response = await UserModel.createUser(user);
+    } else if (error instanceof AxiosError) {
+      throw new Error(error.message);
     } else {
-      throw error;
+      throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
     }
   }
 
   return response;
 }
 
-export async function getSession(id: string, token: string) {
-  const userId = new mongoose.Types.ObjectId(id);
+export async function getSession(
+  id: Types.ObjectId,
+  token: string
+): Promise<HydratedDocument<Session>> {
+  let response;
   const session: Session = {
-    userId: userId,
+    userId: id,
     token: token,
   };
-
-  let response;
   try {
     response = await SessionModel.updateSession(session);
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof ApiError) {
-      const session: Session = {
-        userId: userId,
-        token: token,
-      };
       response = await SessionModel.createSession(session);
+    } else if (error instanceof AxiosError) {
+      throw new Error(error.message);
     } else {
-      throw error;
+      throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
     }
   }
 
@@ -149,18 +153,20 @@ export async function getSession(id: string, token: string) {
 }
 
 export async function googleOauthHandler(req: Request, res: Response) {
+  if (!req?.query?.code || typeof req.query.code !== 'string') {
+    throw new Error('Invalid code provided with OAuth query!');
+  }
   //get code from query string
   const code = req.query.code as string;
   const { id_token, access_token } = await getGoogleOAuthTokens(code);
-  console.log({ id_token, access_token });
+  // console.log({ id_token, access_token });
   //get the id and access token
 
   //get user with tokens
   const googleUser = await getGoogleUser(id_token, access_token);
-  console.log(googleUser);
-
-  const user = await getUser(googleUser);
-  console.log(user);
+  // console.log(googleUser);
+  const user = await getUserByGoogleId(googleUser);
+  // console.log(user);
 
   //create a session
   const session = await getSession(user._id, user.googleId);
