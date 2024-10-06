@@ -1,14 +1,14 @@
 import { CookieOptions, Request, Response, NextFunction } from 'express';
 import axios from 'axios';
 import qs from 'querystring';
+import mongoose from 'mongoose';
+import { JwtPayload } from 'jsonwebtoken';
+import { signJwt, verifyJwt } from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import User from '../config/interfaces/User';
-import UserModel from '../models/auth/UserModel';
 import Session from '../config/interfaces/Session';
+import UserModel from '../models/auth/UserModel';
 import SessionModel from '../models/auth/SessionModel';
-import mongoose from 'mongoose';
-import { signJwt, verifyJwt } from '../config/utils/jwt';
-import { JwtPayload } from 'jsonwebtoken';
 import StatusCode from '../config/enums/StatusCode';
 import Severity from '../config/enums/Severity';
 
