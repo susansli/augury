@@ -42,7 +42,7 @@ export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
             flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
-            onClick={() => navigate('/home')}
+            onClick={() => navigate('/portfolio')}
           >
             I understand
           </Button>
