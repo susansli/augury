@@ -9,7 +9,10 @@ import {
   NumberInputField,
   NumberInputStepper,
 } from '@chakra-ui/react';
-import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import {
+  faChevronLeft,
+  faChevronRight,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
 import { formatValues, parseValues } from '../../helpers/format';
@@ -20,12 +23,11 @@ interface PageProps {
 }
 
 export default function OnboardingBalance(props: PageProps): JSX.Element {
-
   const [value, setValue] = useState<string>('1000.00');
 
   return (
     <FormControl color="text.body">
-      <Flex direction={'column'} gap={2}>
+      <Flex direction="column" gap={2}>
         <FormLabel color="text.header" fontSize="28" fontWeight="bold">
           Set starting balance
         </FormLabel>
@@ -44,9 +46,9 @@ export default function OnboardingBalance(props: PageProps): JSX.Element {
             <NumberDecrementStepper />
           </NumberInputStepper>
         </NumberInput>
-        <Flex width={"100%"} gap={2}>
+        <Flex width="100%" gap={2}>
           <Button
-          flex={1}
+            flex={1}
             leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}
             variant="outline"
             onClick={() => props.setStage(OnboardingStages.DEFAULTS)}
@@ -54,7 +56,7 @@ export default function OnboardingBalance(props: PageProps): JSX.Element {
             Prev
           </Button>
           <Button
-          flex={1}
+            flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
             onClick={() => props.setStage(OnboardingStages.DISCLAIMER)}

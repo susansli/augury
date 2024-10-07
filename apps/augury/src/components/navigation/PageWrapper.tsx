@@ -3,10 +3,9 @@ import { ReactNode } from 'react';
 import PageIcon from './NavbarIcon';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { useRecoilValue } from 'recoil';
-import { navbarShowAtom, navbarPageAtom } from './atoms/atom';
+import { navbarShowAtom, navbarPageAtom } from './atoms/navigationAtoms';
 import { navbarPages } from './navbarPagesData';
 import { Toaster } from 'react-hot-toast';
-
 
 interface Props {
   children?: ReactNode;

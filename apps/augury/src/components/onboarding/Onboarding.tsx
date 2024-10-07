@@ -13,7 +13,8 @@ import OnboardingDefaults from './OnboardingDefaults';
 import OnboardingDisclaimer from './OnboardingDisclaimer';
 import { useState, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
-import { navbarShowAtom } from '../navigation/atoms/atom';
+import { navbarShowAtom } from '../navigation/atoms/navigationAtoms';
+import { tabTitles } from './onboardingData';
 
 export enum OnboardingStages {
   DEFAULTS,
@@ -22,7 +23,6 @@ export enum OnboardingStages {
 }
 
 export default function OnboardingUI(): JSX.Element {
-
   const [onboardingStage, setOnboardingStage] = useState<OnboardingStages>(
     OnboardingStages.DEFAULTS
   );
@@ -34,20 +34,21 @@ export default function OnboardingUI(): JSX.Element {
     return () => setNavbarVisible(true);
   }, []);
 
-
-  function CustomTab(props: { text: string }): JSX.Element {
-    return (
-      <Tab
-        w="20"
-        h="1"
-        overflow="hidden"
-        bg="background.overlay0"
-        borderRadius="10"
-        _selected={{ bg: 'color.lavender' }}
-      >
-        <VisuallyHidden>{props.text}</VisuallyHidden>
-      </Tab>
-    );
+  function renderCustomTabs(): JSX.Element[] {
+    return tabTitles.map((title) => {
+      return (
+        <Tab
+          w="20"
+          h="1"
+          overflow="hidden"
+          bg="background.overlay0"
+          borderRadius="10"
+          _selected={{ bg: 'color.lavender' }}
+        >
+          <VisuallyHidden>{title}</VisuallyHidden>
+        </Tab>
+      );
+    });
   }
 
   function setCurrentStage(currStage: OnboardingStages): void {
@@ -79,26 +80,18 @@ export default function OnboardingUI(): JSX.Element {
           variant="unstyled"
         >
           <TabList gap="5">
-            <CustomTab text="Set portfolio defaults" />
-            <CustomTab text="Set starting balance" />
-            <CustomTab text="Disclamer" />
+            {renderCustomTabs()}
           </TabList>
 
           <TabPanels>
             <TabPanel p="0" mt="5">
-              <OnboardingDefaults
-                setStage={setCurrentStage}
-              />
+              <OnboardingDefaults setStage={setCurrentStage} />
             </TabPanel>
             <TabPanel p="0" mt="5">
-              <OnboardingBalance
-                setStage={setCurrentStage}
-              />
+              <OnboardingBalance setStage={setCurrentStage} />
             </TabPanel>
             <TabPanel p="0" mt="5">
-              <OnboardingDisclaimer
-                setStage={setCurrentStage}
-              />
+              <OnboardingDisclaimer setStage={setCurrentStage} />
             </TabPanel>
           </TabPanels>
         </Tabs>

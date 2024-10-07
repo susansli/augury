@@ -3,7 +3,7 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { navbarPageAtom } from './atoms/atom';
+import { navbarPageAtom } from './atoms/navigationAtoms';
 import { useNavigate } from 'react-router-dom';
 
 interface Props {
