@@ -2,7 +2,7 @@ import express, { Router } from 'express';
 export const userRouter: Router = express.Router();
 
 import UserController from '../controllers/auth/UserController';
-import { verifyTokenAndAttachUser } from '../middlewares/SessionController';
+import { verifyTokenAndAttachUser } from '../middlewares/AttachUserHandler';
 
 userRouter.use(verifyTokenAndAttachUser);
 
