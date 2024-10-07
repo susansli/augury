@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import { HydratedDocument } from 'mongoose';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
@@ -9,7 +8,7 @@ import { assertExists, assertNumber } from '../../config/utils/validation';
 import Severity from '../../config/enums/Severity';
 
 const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
+  const { _id: userId } = req.user;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID Provided');
 
@@ -29,7 +28,10 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const createUser = async (req: Request, res: Response): Promise<void> => {
+const createUser = async (
+  req: Request<unknown, unknown, unknown, Required<User>>,
+  res: Response
+): Promise<void> => {
   const { email, googleId, firstName, lastName, balance }: Required<User> =
     req.query;
   // Assert the request format was valid
@@ -63,8 +65,11 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const updateUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
+const updateUser = async (
+  req: Request<unknown, unknown, unknown, Partial<User>>,
+  res: Response
+): Promise<void> => {
+  const { _id: userId } = req.user;
   const { email, googleId, firstName, lastName }: Partial<User> = req.query;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
@@ -92,10 +97,10 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateUserBalance = async (
-  req: Request,
+  req: Request<unknown, unknown, unknown, Partial<User>>,
   res: Response
 ): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
+  const { _id: userId } = req.user;
   const { balance }: Partial<User> = req.query;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
@@ -121,7 +126,7 @@ const updateUserBalance = async (
 };
 
 const deleteUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
+  const { _id: userId } = req.user;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Delete the User from the DB
