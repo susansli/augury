@@ -1,7 +1,7 @@
-import { Document, ObjectId } from 'mongoose';
+import { Types } from 'mongoose';
 
-export default interface BuyRecord extends Document {
-  stockId: ObjectId;
+export default interface BuyRecord {
+  stockId: Types.ObjectId;
   shares: number;
   boughtAtPrice: number;
 }

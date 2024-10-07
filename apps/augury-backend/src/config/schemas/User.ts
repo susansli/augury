@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
+import User from '../interfaces/User';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<User>({
   email: {
     type: String,
     required: true,
@@ -8,11 +9,9 @@ const schema = new mongoose.Schema({
     match: /.+@.+\..+/, // Basic email format validation
   },
 
-  password: {
+  googleId: {
     type: String,
     required: true,
-    min: 8,
-    max: 64,
   },
 
   firstName: {
@@ -22,8 +21,13 @@ const schema = new mongoose.Schema({
   lastName: {
     type: String,
   },
+
+  balance: {
+    type: Number,
+    default: 0,
+  },
 });
 
-const UserSchema = mongoose.model('User', schema);
+const UserSchema = mongoose.model<User>('User', schema);
 
 export default UserSchema;

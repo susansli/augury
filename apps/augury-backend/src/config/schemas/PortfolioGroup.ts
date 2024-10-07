@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
+import PortfolioGroup from '../interfaces/PortfolioGroup';
+import { PortfolioColor } from '../enums/PortfolioColor';
 
-const schema = new mongoose.Schema({
+const schema = new mongoose.Schema<PortfolioGroup>({
   name: {
     type: String,
     required: true,
@@ -8,8 +10,8 @@ const schema = new mongoose.Schema({
 
   color: {
     type: String,
-    enum: ['white', 'red', 'green', 'blue', 'yellow'], // Enum definition
-    default: 'white', // Default value for status
+    enum: Object.values(PortfolioColor), // Enum definition
+    default: PortfolioColor.WHITE, // Default value for status
     required: true,
   },
 
@@ -20,6 +22,9 @@ const schema = new mongoose.Schema({
   },
 });
 
-const PortfolioGroupSchema = mongoose.model('PortfolioGroup', schema);
+const PortfolioGroupSchema = mongoose.model<PortfolioGroup>(
+  'PortfolioGroup',
+  schema
+);
 
 export default PortfolioGroupSchema;

@@ -9,6 +9,8 @@ import sizes from './foundations/sizes';
 import transition from './foundations/transition';
 import typography from './foundations/typography';
 import zIndices from './foundations/z-index';
+import config from './foundations/config';
+import styles from './foundations/styles';
 
 const theme = extendTheme({
   borders,
@@ -19,6 +21,8 @@ const theme = extendTheme({
   transition,
   typography,
   zIndices,
+  styles,
+  config
 });
 
 export default theme;
