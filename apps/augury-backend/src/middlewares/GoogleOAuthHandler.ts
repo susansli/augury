@@ -1,13 +1,12 @@
 import { CookieOptions, Request, Response } from 'express';
 import axios, { AxiosError } from 'axios';
 import qs from 'querystring';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument } from 'mongoose';
 import { signJwt } from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import User from '../config/interfaces/User';
-import Session from '../config/interfaces/Session';
-import SessionModel from '../models/auth/SessionModel';
 import UserModel from '../models/auth/UserModel';
+import { getSession } from '../controllers/auth/SessionController';
 
 interface GoogleTokensResult {
   access_token: string;
@@ -42,11 +41,11 @@ const refreshCookieOptions: CookieOptions = {
 };
 
 export async function googleOauthHandler(req: Request, res: Response) {
-  if (!req?.query?.code || typeof req.query.code !== 'string') {
+  if (typeof req?.query?.code !== 'string') {
     throw new Error('Invalid code provided with OAuth query!');
   }
   //get code from query string
-  const code = req.query.code as string;
+  const code = req.query.code;
   const { id_token, access_token } = await getGoogleOAuthTokens(code);
   // console.log({ id_token, access_token });
   //get the id and access token
@@ -86,9 +85,7 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.redirect(url);
 }
 
-export async function getGoogleOAuthTokens(
-  code: string
-): Promise<GoogleTokensResult> {
+async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
   const url = 'https://oauth2.googleapis.com/token';
 
   const values = {
@@ -120,7 +117,7 @@ export async function getGoogleOAuthTokens(
   }
 }
 
-export async function getGoogleUser(
+async function getGoogleUser(
   id_token: string,
   access_token: string
 ): Promise<GoogleUserResult> {
@@ -143,7 +140,7 @@ export async function getGoogleUser(
   }
 }
 
-export async function getUserByGoogleId(
+async function getUserByGoogleId(
   googleUser: GoogleUserResult
 ): Promise<HydratedDocument<User>> {
   let response;
@@ -160,30 +157,6 @@ export async function getUserByGoogleId(
         balance: 0,
       };
       response = await UserModel.createUser(user);
-    } else if (error instanceof AxiosError) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
-    }
-  }
-
-  return response;
-}
-
-export async function getSession(
-  id: Types.ObjectId,
-  token: string
-): Promise<HydratedDocument<Session>> {
-  let response;
-  const session: Session = {
-    userId: id,
-    token: token,
-  };
-  try {
-    response = await SessionModel.updateSession(session);
-  } catch (error: unknown) {
-    if (error instanceof ApiError) {
-      response = await SessionModel.createSession(session);
     } else if (error instanceof AxiosError) {
       throw new Error(error.message);
     } else {
