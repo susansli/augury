@@ -10,7 +10,7 @@ import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
 import { errorHandler } from './middlewares/CustomErrorHandler';
-import { googleOauthHandler } from './middlewares/SessionController';
+import { googleOauthHandler } from './middlewares/GoogleOAuthHandler';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
