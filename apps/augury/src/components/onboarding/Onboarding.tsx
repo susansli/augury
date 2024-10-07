@@ -11,7 +11,9 @@ import {
 import OnboardingBalance from './OnboardingBalance';
 import OnboardingDefaults from './OnboardingDefaults';
 import OnboardingDisclaimer from './OnboardingDisclaimer';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSetRecoilState } from 'recoil';
+import { navbarShowAtom } from '../navigation/atoms/atom';
 
 export enum OnboardingStages {
   DEFAULTS,
@@ -20,9 +22,18 @@ export enum OnboardingStages {
 }
 
 export default function OnboardingUI(): JSX.Element {
+
   const [onboardingStage, setOnboardingStage] = useState<OnboardingStages>(
     OnboardingStages.DEFAULTS
   );
+
+  const setNavbarVisible = useSetRecoilState(navbarShowAtom);
+
+  useEffect(() => {
+    setNavbarVisible(false);
+    return () => setNavbarVisible(true);
+  }, []);
+
 
   function CustomTab(props: { text: string }): JSX.Element {
     return (
