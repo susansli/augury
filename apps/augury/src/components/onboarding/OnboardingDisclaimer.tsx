@@ -12,24 +12,19 @@ interface PageProps {
 }
 
 export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
-
   const navigate = useNavigate();
 
   return (
     <FormControl color="text.body">
-      <Flex direction={'column'} gap={2}>
+      <Flex direction="column" gap={2}>
         <FormLabel color="text.header" fontSize="28" fontWeight="bold">
           Augury is not financial advice
         </FormLabel>
         <FormLabel>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam elementum
-          risus rhoncus leo pretium pretium. Suspendisse fringilla magna at
-          commodo bibendum. Sed faucibus, elit mattis blandit cursus, massa
-          felis mattis nisl, eget ullamcorper tortor arcu consequat eros.
-          Aliquam et magna augue.
+          Augury is powered by AI, which is prone to making mistakes. Please consult a financial advisor before using Augury's suggestions when it comes to your own portfolio!
         </FormLabel>
 
-        <Flex width={'100%'} gap={2}>
+        <Flex width="100%" gap={2}>
           <Button
             flex={1}
             leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}

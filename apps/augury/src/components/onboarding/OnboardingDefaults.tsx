@@ -43,6 +43,11 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
     setCustomCompEnabled(enabled);
   }
 
+  function setNumSpinnerValue(value: string): void {
+    const newCustomValue = 100 - parseInt(value);
+    setCompValue(newCustomValue);
+  }
+
   return (
     <FormControl color="text.body">
       <Flex direction="column" gap={2}>
@@ -98,10 +103,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
               min={0}
               value={100 - compValue}
               step={5}
-              onChange={(value) => {
-                const newCustomValue = 100 - parseInt(value);
-                setCompValue(newCustomValue);
-              }}
+              onChange={setNumSpinnerValue}
             >
               <NumberInputField />
               <NumberInputStepper>
