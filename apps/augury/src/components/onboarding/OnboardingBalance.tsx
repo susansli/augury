@@ -21,7 +21,7 @@ interface PageProps {
 
 export default function OnboardingBalance(props: PageProps): JSX.Element {
 
-  const [value, setValue] = useState<string>('100.00');
+  const [value, setValue] = useState<string>('1000.00');
 
   return (
     <FormControl color="text.body">

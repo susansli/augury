@@ -20,14 +20,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { OnboardingStages } from './Onboarding';
 
-// TODO: Put in better spot
-const standardCompositionValues = [90, 50, 10];
-
 // These represent % equities for the portfolio composition
 enum CompositionValues {
   AGGRESIVE = 90,
   BALANCED = 80,
-  CONSERVATIVE = 60
+  CONSERVATIVE = 60,
 }
 
 interface PageProps {
@@ -35,8 +32,10 @@ interface PageProps {
 }
 
 export default function OnboardingDefaults(props: PageProps): JSX.Element {
-  const [customCompEnabled, setCustomCompEnabled] = useState(false);
-  const [customCompValue, setCustomCompValue] = useState(50);
+  const [customCompEnabled, setCustomCompEnabled] = useState<boolean>(false);
+  const [compValue, setCompValue] = useState<CompositionValues | number>(
+    CompositionValues.BALANCED
+  );
 
   const navigate = useNavigate();
 
@@ -44,13 +43,9 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
     setCustomCompEnabled(enabled);
   }
 
-  function ChangeStandardComp(index: number) {
-    setCustomCompValue(standardCompositionValues[index]);
-  }
-
   return (
     <FormControl color="text.body">
-      <Flex direction={'column'} gap={2}>
+      <Flex direction="column" gap={2}>
         <FormLabel color="text.header" fontSize="28" fontWeight="bold">
           Set your portfolio defaults
         </FormLabel>
@@ -63,11 +58,13 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
         <Select
           defaultValue="Balanced"
           isDisabled={customCompEnabled}
-          onChange={(index) => ChangeStandardComp(index.target.selectedIndex)}
+          onChange={(e) => {
+            setCompValue(parseInt(e.target.value));
+          }}
         >
-          <option>Aggressive</option>
-          <option>Balanced</option>
-          <option>Safe</option>
+          <option value={CompositionValues.AGGRESIVE}>Aggressive</option>
+          <option value={CompositionValues.BALANCED}>Balanced</option>
+          <option value={CompositionValues.CONSERVATIVE}>Conservative</option>
         </Select>
         <Checkbox
           isChecked={customCompEnabled}
@@ -76,15 +73,15 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
           Custom Composition
         </Checkbox>
         <Flex gap={2}>
-          <Flex direction={'column'} flex={1}>
+          <Flex direction="column" flex={1}>
             <FormLabel>Stocks</FormLabel>
             <NumberInput
               isDisabled={!customCompEnabled}
               max={100}
               min={0}
-              value={customCompValue}
+              value={compValue}
               step={5}
-              onChange={(value) => setCustomCompValue(+value)}
+              onChange={(value) => setCompValue(parseInt(value))}
             >
               <NumberInputField />
               <NumberInputStepper>
@@ -93,15 +90,18 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
               </NumberInputStepper>
             </NumberInput>
           </Flex>
-          <Flex direction={'column'} flex={1}>
+          <Flex direction="column" flex={1}>
             <FormLabel>Bonds</FormLabel>
             <NumberInput
               isDisabled={!customCompEnabled}
               max={100}
               min={0}
-              value={100 - customCompValue}
+              value={100 - compValue}
               step={5}
-              onChange={(value) => setCustomCompValue(100 - +value)}
+              onChange={(value) => {
+                const newCustomValue = 100 - parseInt(value);
+                setCompValue(newCustomValue);
+              }}
             >
               <NumberInputField />
               <NumberInputStepper>
@@ -113,9 +113,15 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
         </Flex>
         {/* //TODO: Replace with multiselect */}
         <FormLabel>Prefered Sectors</FormLabel>
-        <Select></Select>
+        <Select>
+          <option>Technology</option>
+          <option>Real Estate</option>
+          <option>Financial Institutions</option>
+          <option>Security</option>
+          <option>Natural Resources</option>
+        </Select>
 
-        <Flex width={'100%'} gap={2}>
+        <Flex width="100%" gap={2}>
           <Button
             flex={1}
             leftIcon={<FontAwesomeIcon icon={faChevronLeft} />}
