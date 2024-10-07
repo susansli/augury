@@ -9,7 +9,7 @@ import cookieParser from 'cookie-parser';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import { errorController } from './middlewares/ErrorController';
+import { errorHandler } from './middlewares/CustomErrorHandler';
 import { googleOauthHandler } from './middlewares/SessionController';
 // Security middleware
 import helmet from 'helmet';
@@ -68,4 +68,4 @@ const server = app.listen(serverPort, () => {
 });
 server.on('error', console.error);
 
-app.use(errorController);
+app.use(errorHandler);
