@@ -56,7 +56,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
 
         <FormLabel>Risk Level</FormLabel>
         <Select
-          defaultValue="Balanced"
+          defaultValue={CompositionValues.BALANCED}
           isDisabled={customCompEnabled}
           onChange={(e) => {
             setCompValue(parseInt(e.target.value));
