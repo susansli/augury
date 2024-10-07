@@ -6,7 +6,7 @@ export default function Home(): JSX.Element {
     <Box height="100%" width="100%">
       <Center height="100%" width="100%">
         <Flex flexDir="column" alignItems="center">
-          <Image src="https://i.imgur.com/dpeDiTE.png" alt="mascot" width="15rem" />
+          <Image src="https://i.imgur.com/uHb3zUK.png" alt="mascot" width="15rem" />
           <LoginComponents />
         </Flex>
       </Center>
