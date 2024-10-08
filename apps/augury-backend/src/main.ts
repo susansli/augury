@@ -9,8 +9,8 @@ import cookieParser from 'cookie-parser';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import { errorController } from './middlewares/ErrorController';
-import { googleOauthHandler } from './middlewares/SessionController';
+import { errorHandler } from './middlewares/CustomErrorHandler';
+import { googleOauthHandler } from './middlewares/GoogleOAuthHandler';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
@@ -39,7 +39,7 @@ app.use(cookieParser());
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-app.use('/User', userRouter);
+app.use('/', userRouter);
 
 // API Routes
 app.get('/api', (req, res) => {
@@ -68,4 +68,4 @@ const server = app.listen(serverPort, () => {
 });
 server.on('error', console.error);
 
-app.use(errorController);
+app.use(errorHandler);
