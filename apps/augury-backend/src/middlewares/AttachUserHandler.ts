@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Response, NextFunction } from 'express';
 import { verifyJwt } from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import StatusCode from '../config/enums/StatusCode';
@@ -6,9 +6,10 @@ import Severity from '../config/enums/Severity';
 import Session from '../config/interfaces/Session';
 import SessionModel from '../models/auth/SessionModel';
 import UserModel from '../models/auth/UserModel';
+import RequestWithUser from '../config/types/RequestWithUser';
 
 export async function verifyTokenAndAttachUser(
-  req: Request,
+  req: RequestWithUser,
   _res: Response,
   next: NextFunction
 ) {
