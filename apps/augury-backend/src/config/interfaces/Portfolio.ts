@@ -1,7 +1,7 @@
-import { Document } from 'mongoose';
 import { PortfolioRisk } from '../enums/PortfolioRisk';
+import Identifiable from './Identifiable';
 
-export default interface Portfolio extends Document {
+export default interface Portfolio extends Identifiable {
   name: string;
   risk: PortfolioRisk;
 }
