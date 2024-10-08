@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import RequestWithUser from '../../config/types/RequestWithUser';
 
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
@@ -7,8 +8,8 @@ import ApiError from '../../errors/ApiError';
 import { assertExists, assertNumber } from '../../config/utils/validation';
 import Severity from '../../config/enums/Severity';
 
-const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user;
+const getUser = async (req: RequestWithUser, res: Response): Promise<void> => {
+  const { id: userId } = req.user;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID Provided');
 
@@ -29,11 +30,10 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const createUser = async (
-  req: Request<unknown, unknown, unknown, Required<User>>,
+  req: Request<unknown, User>,
   res: Response
 ): Promise<void> => {
-  const { email, googleId, firstName, lastName, balance }: Required<User> =
-    req.query;
+  const { email, googleId, firstName, lastName, balance }: User = req.body;
   // Assert the request format was valid
   assertExists(email, 'Invalid Email Provided');
   assertExists(googleId, 'Invalid Google ID Provided');
@@ -66,11 +66,10 @@ const createUser = async (
 };
 
 const updateUser = async (
-  req: Request<unknown, unknown, unknown, Partial<User>>,
+  req: RequestWithUser,
   res: Response
 ): Promise<void> => {
-  const { _id: userId } = req.user;
-  const { email, googleId, firstName, lastName }: Partial<User> = req.query;
+  const { id: userId, email, googleId, firstName, lastName } = req.user;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
 
@@ -97,11 +96,11 @@ const updateUser = async (
 };
 
 const updateUserBalance = async (
-  req: Request<unknown, unknown, unknown, Partial<User>>,
+  req: RequestWithUser<unknown, User>,
   res: Response
 ): Promise<void> => {
-  const { _id: userId } = req.user;
-  const { balance }: Partial<User> = req.query;
+  const { id: userId } = req.user;
+  const { balance } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
   assertNumber(balance, 'Invalid Balance Provided');
@@ -125,8 +124,11 @@ const updateUserBalance = async (
   }
 };
 
-const deleteUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user;
+const deleteUser = async (
+  req: RequestWithUser,
+  res: Response
+): Promise<void> => {
+  const { id: userId } = req.user;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Delete the User from the DB
