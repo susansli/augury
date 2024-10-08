@@ -1,12 +1,13 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 import User from '../../config/interfaces/User';
 import UserSchema from '../../config/schemas/User';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 
-const getUser = async (id: mongoose.Types.ObjectId) => {
-  const user = await UserSchema.findById(id);
+const getUser = async (id: string | mongoose.Types.ObjectId) => {
+  const userId = new mongoose.Types.ObjectId(id);
+  const user = await UserSchema.findById(userId);
 
   if (!user) {
     throw new ApiError(
@@ -47,8 +48,12 @@ const createUser = async (data: User) => {
   return user;
 };
 
-const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
-  const user = await UserSchema.findById(id);
+const updateUser = async (
+  id: string | mongoose.Types.ObjectId,
+  data: Partial<User>
+) => {
+  const userId = new mongoose.Types.ObjectId(id);
+  const user = await UserSchema.findById(userId);
 
   if (!user) {
     throw new ApiError(
@@ -79,8 +84,9 @@ const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
   return updatedUser;
 };
 
-const deleteUser = async (id: mongoose.Types.ObjectId) => {
-  const user = await UserSchema.findByIdAndDelete(id);
+const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
+  const userId = new mongoose.Types.ObjectId(id);
+  const user = await UserSchema.findByIdAndDelete(userId);
 
   if (!user) {
     throw new ApiError(
