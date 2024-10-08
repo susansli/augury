@@ -1,7 +1,6 @@
 import { CookieOptions, Request, Response } from 'express';
 import axios, { AxiosError } from 'axios';
 import qs from 'querystring';
-import { HydratedDocument } from 'mongoose';
 import { signJwt } from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import User from '../config/interfaces/User';
@@ -140,12 +139,10 @@ async function getGoogleUser(
   }
 }
 
-async function getUserByGoogleId(
-  googleUser: GoogleUserResult
-): Promise<HydratedDocument<User>> {
-  let response;
+async function getUserByGoogleId(googleUser: GoogleUserResult) {
   try {
-    response = await UserModel.getUserByGoogleId(googleUser.id);
+    const response = await UserModel.getUserByGoogleId(googleUser.id);
+    return response;
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       // Create the user on our end.
@@ -156,13 +153,12 @@ async function getUserByGoogleId(
         lastName: googleUser.family_name,
         balance: 0,
       };
-      response = await UserModel.createUser(user);
+      const response = await UserModel.createUser(user);
+      return response;
     } else if (error instanceof AxiosError) {
       throw new Error(error.message);
     } else {
       throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
     }
   }
-
-  return response;
 }

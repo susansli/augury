@@ -1,4 +1,4 @@
-import { Types, HydratedDocument } from 'mongoose';
+import { Types } from 'mongoose';
 import { AxiosError } from 'axios';
 import Session from '../../config/interfaces/Session';
 import ApiError from '../../errors/ApiError';
@@ -7,7 +7,7 @@ import SessionModel from '../../models/auth/SessionModel';
 export async function getSession(
   id: Types.ObjectId,
   token: string
-): Promise<HydratedDocument<Session>> {
+): Promise<Session> {
   let response;
   const session: Session = {
     userId: id,
