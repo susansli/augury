@@ -1,16 +1,17 @@
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 import { AxiosError } from 'axios';
 import Session from '../../config/interfaces/Session';
 import ApiError from '../../errors/ApiError';
 import SessionModel from '../../models/auth/SessionModel';
 
 export async function getSession(
-  id: Types.ObjectId,
+  id: Types.ObjectId | string,
   token: string
 ): Promise<Session> {
+  const _id = new mongoose.Types.ObjectId(id);
   let response;
   const session: Session = {
-    userId: id,
+    userId: _id,
     token: token,
   };
   try {
