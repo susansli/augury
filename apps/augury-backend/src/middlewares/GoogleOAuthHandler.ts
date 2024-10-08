@@ -73,7 +73,10 @@ export async function googleOauthHandler(req: Request, res: Response) {
 
   //redirect back to client
   const clientPort = process.env.CLIENT_PORT || 4200;
-  const url = `${process.env.FRONTEND_URL || 'http://localhost'}:${clientPort}`;
+
+  //TODO: write logic - if the user exists, this URL should be '/', if this user is new the URL should be '/onboarding'
+
+  const url = `${process.env.FRONTEND_URL || 'http://localhost'}:${clientPort}/onboarding`;
   // const url = `${
   //   process.env.FRONTEND_URL || 'http://localhost'
   // }:${clientPort}/Test.html`;

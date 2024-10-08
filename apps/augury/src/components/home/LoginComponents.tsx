@@ -1,6 +1,8 @@
 import { Button, Flex, Text } from '@chakra-ui/react';
 import GoogleIcon from '../../assets/icons/GoogleIcon';
 import { useNavigate } from 'react-router-dom';
+import Authentication from '../../api/user/Authentication';
+import toast from 'react-hot-toast';
 
 export default function LoginComponents(): JSX.Element {
   const navigate = useNavigate();
@@ -17,7 +19,14 @@ export default function LoginComponents(): JSX.Element {
         bgColor="background.surface0"
         marginTop="5"
         leftIcon={<GoogleIcon />}
-        onClick={() => navigate('/onboarding')}
+        onClick={() => {
+          const googleUrl = Authentication.getGoogleAuthUrl();
+          if (googleUrl) {
+            window.location.href = googleUrl;
+          } else {
+            toast.error("There was an error generating the correct Google URL!");
+          }
+        }}
       >
         <Flex>
           <Text>Continue With Google</Text>
