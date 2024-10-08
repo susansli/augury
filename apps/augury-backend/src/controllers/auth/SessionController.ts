@@ -4,10 +4,7 @@ import Session from '../../config/interfaces/Session';
 import ApiError from '../../errors/ApiError';
 import SessionModel from '../../models/auth/SessionModel';
 
-export async function getSession(
-  id: Types.ObjectId | string,
-  token: string
-): Promise<Session> {
+export async function getSession(id: Types.ObjectId | string, token: string) {
   const _id = new mongoose.Types.ObjectId(id);
   let response;
   const session: Session = {
@@ -27,4 +24,9 @@ export async function getSession(
   }
 
   return response;
+}
+
+export async function getSessionByToken(token: string) {
+  const session = await SessionModel.getSessionByToken(token);
+  return session;
 }
