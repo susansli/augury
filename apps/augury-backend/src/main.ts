@@ -39,7 +39,7 @@ app.use(cookieParser());
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
-app.use('/User', userRouter);
+app.use('/', userRouter);
 
 // API Routes
 app.get('/api', (req, res) => {
