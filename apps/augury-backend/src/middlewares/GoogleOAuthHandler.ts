@@ -43,6 +43,12 @@ const refreshCookieOptions: CookieOptions = {
   maxAge: 3.154e10, // 1 year
 };
 
+/**
+ * Request handler that is called once Google OAuth login flow has completed and
+ * been redirected to the backend.
+ * @param req Request with query string code
+ * @param res Response is redirected back to front-end landing
+ */
 async function googleOauthHandler(req: Request, res: Response) {
   if (typeof req?.query?.code !== 'string') {
     throw new ClientError(
@@ -50,20 +56,21 @@ async function googleOauthHandler(req: Request, res: Response) {
       StatusCode.BAD_REQUEST
     );
   }
-  //get code from query string
   const code = req.query.code;
   const { id_token, access_token } = await getGoogleOAuthTokens(code);
   // console.log({ id_token, access_token });
-  //get the id and access token
 
-  //get user with tokens
+  // Get Google & user data from tokens
   const googleUser = await getGoogleUser(id_token, access_token);
   // console.log(googleUser);
   const user = await getUserByGoogleId(googleUser);
   // console.log(user);
 
-  //create a session
-  const session = await SessionController.getSession(user.id, user.googleId);
+  // Get/Create a session
+  const session = await SessionController.getCurrentSession(
+    user.id,
+    user.googleId
+  );
 
   //create access & refressh token
   const accessToken = jwt.signJwt(
@@ -90,6 +97,13 @@ async function googleOauthHandler(req: Request, res: Response) {
   res.redirect(url);
 }
 
+/**
+ * Retrieves the two Google OAuth tokens from the OAuth service based on the code
+ * from the login flow.
+ * @param code from OAuth login flow
+ * @returns OAuth token information
+ * @throws ApiError if there was an Axios or unknown error.
+ */
 async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
   const url = 'https://oauth2.googleapis.com/token';
 
@@ -117,6 +131,12 @@ async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
   }
 }
 
+/**
+ * Retrieves a Google User based on the provided tokens.
+ * @param googleUser Data from Google OAuth response
+ * @returns Minimalistic data about the Google Account (e.g. firstname, email)
+ * @throws ApiError if there was an Axios or unknown error.
+ */
 async function getGoogleUser(
   id_token: string,
   access_token: string
@@ -136,6 +156,13 @@ async function getGoogleUser(
   }
 }
 
+/**
+ * Retrieves a `User` entry for a provided Google User. If it is a new Google
+ * User, the account will be automatically created.
+ * @param googleUser Data from Google OAuth response
+ * @returns `User` document
+ * @throws ApiError if there was an Axios or unknown error.
+ */
 async function getUserByGoogleId(googleUser: GoogleUserResult) {
   try {
     const response = await UserModel.getUserByGoogleId(googleUser.id);
