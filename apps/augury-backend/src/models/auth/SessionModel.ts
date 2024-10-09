@@ -5,6 +5,12 @@ import Session from '../../config/interfaces/Session';
 import SessionSchema from '../../config/schemas/SessionSchema';
 import ApiError from '../../errors/ApiError';
 
+/**
+ * Retrieves a `Session` based on the passed `userId`
+ * @param userId Mongoose document id
+ * @returns `Session` document
+ * @throws ApiError if the session does not exist
+ */
 const getSessionByUserId = async (userId: mongoose.Types.ObjectId | string) => {
   const id = new mongoose.Types.ObjectId(userId);
   const session = await SessionSchema.findOne({ userId: id });
@@ -20,6 +26,12 @@ const getSessionByUserId = async (userId: mongoose.Types.ObjectId | string) => {
   return session;
 };
 
+/**
+ * Retrieves a `Session` based on the passed decrypted `token`
+ * @param token Decrypted JWT token string
+ * @returns `Session` document
+ * @throws ApiError if the session does not exist
+ */
 const getSessionByToken = async (token: string) => {
   const session = await SessionSchema.findOne({ token: token });
 
@@ -34,6 +46,12 @@ const getSessionByToken = async (token: string) => {
   return session;
 };
 
+/**
+ * Creates a new `Session` based on the passed data
+ * @param data `Session` object
+ * @returns new `Session` document
+ * @throws ApiError if session could not be created
+ */
 const createSession = async (data: Session) => {
   const session = await SessionSchema.create(data);
 
@@ -48,6 +66,12 @@ const createSession = async (data: Session) => {
   return session;
 };
 
+/**
+ * Updates a `Session` based on the passed `Session` data
+ * @param data Updated `Session` object with `UserId`
+ * @returns new `Session` document
+ * @throws ApiError if session does not exist or could not be updated
+ */
 const updateSession = async (data: Session) => {
   const { userId, token }: Session = data;
   const session = await SessionSchema.findOne({ userId: userId });
