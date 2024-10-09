@@ -7,7 +7,6 @@ const userRouter: Router = express.Router();
 const baseURL = '/user';
 
 // Uncomment if we want to verify the client's auth token for all routes
-// Don't forget to remove redundant calls from routes below as well.
 // userRouter.use(asyncErrorHandler(verifyAccessToken));
 
 userRouter
