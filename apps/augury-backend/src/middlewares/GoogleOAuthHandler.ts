@@ -161,6 +161,7 @@ async function getUserByGoogleId(googleUser: GoogleUserResult) {
 /**
  * A simple function to throw a more detailed error message based on it's response.
  * @param error Error that was orginally thrown
+ * @throws ApiError
  */
 function throwDetailedAxiosError(error: unknown) {
   if (error instanceof AxiosError) {

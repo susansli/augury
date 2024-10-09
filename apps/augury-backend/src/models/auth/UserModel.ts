@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import User from '../../config/interfaces/User';
-import UserSchema from '../../config/schemas/User';
+import UserSchema from '../../config/schemas/UserSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';

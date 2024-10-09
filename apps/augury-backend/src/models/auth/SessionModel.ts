@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 import Severity from '../../config/enums/Severity';
 import StatusCode from '../../config/enums/StatusCode';
 import Session from '../../config/interfaces/Session';
-import SessionSchema from '../../config/schemas/Session';
+import SessionSchema from '../../config/schemas/SessionSchema';
 import ApiError from '../../errors/ApiError';
 
 const getSessionByUserId = async (userId: mongoose.Types.ObjectId | string) => {
