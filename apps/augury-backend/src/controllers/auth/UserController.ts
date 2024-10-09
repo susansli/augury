@@ -35,6 +35,29 @@ const getUser = async (
   }
 };
 
+const getLoggedInUserData = async (
+  req: Request,
+  res: Response<UserReponse>
+): Promise<void> => {
+  const accessToken = req.cookies?.accessToken;
+  // Assert the request format was valid
+  assertExists(accessToken, 'Invalid session token provided!');
+  // Retrieve data from the DB using request parameters/data
+  const response = await UserModel.getUserBySessionToken(accessToken);
+
+  if (response) {
+    // send the user back after model runs logic
+    res.status(StatusCode.OK).send({ user: response });
+  } else {
+    // we throw an API error since this means something errored out with our server end
+    throw new ApiError(
+      'Unable to retrieve records for the logged in user!',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+};
+
 const createUser = async (
   req: Request<unknown, unknown, User>,
   res: Response<UserReponse>
@@ -154,6 +177,7 @@ const deleteUser = async (
 
 export default module.exports = {
   getUser,
+  getLoggedInUserData,
   createUser,
   updateUser,
   updateUserBalance,

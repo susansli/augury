@@ -20,3 +20,7 @@ userRouter
 userRouter
   .route(`${baseURL}/balance`)
   .put(asyncErrorHandler(UserController.updateUserBalance));
+
+userRouter
+  .route(`${baseURL}/current`)
+  .get(asyncErrorHandler(UserController.getLoggedInUserData));

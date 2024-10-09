@@ -4,6 +4,7 @@ import UserSchema from '../../config/schemas/User';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
+import { getSessionByToken } from '../../controllers/auth/SessionController';
 
 const getUser = async (id: string | mongoose.Types.ObjectId) => {
   const userId = new mongoose.Types.ObjectId(id);
@@ -99,9 +100,16 @@ const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
   return user;
 };
 
+const getUserBySessionToken = async (sessionToken: string) => {
+  const session = await getSessionByToken(sessionToken);
+  const user = await getUser(session.userId);
+  return user;
+};
+
 export default module.exports = {
   getUser,
   getUserByGoogleId,
+  getUserBySessionToken,
   createUser,
   updateUser,
   deleteUser,
