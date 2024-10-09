@@ -13,6 +13,13 @@ type UserReponse = {
   user: User;
 };
 
+/**
+ * Retrieves a User from the database based on their ID
+ * @param req Request with body containing a string `id` field
+ * @param res Response with user data
+ * @throws ClientError if request is invalid
+ * @throws ApiError if unable to retrieve user
+ */
 const getUser = async (
   req: Request<unknown, unknown, User>,
   res: Response<UserReponse>
@@ -37,6 +44,13 @@ const getUser = async (
   }
 };
 
+/**
+ * Retrieves the currently logged in User from the database based on their session's `accessToken`
+ * @param req Request with `accessToken` cookie
+ * @param res Response with user data
+ * @throws ClientError if request is invalid
+ * @throws ApiError if unable to retrieve user
+ */
 const getLoggedInUserData = async (
   req: Request,
   res: Response<UserReponse>
@@ -60,6 +74,13 @@ const getLoggedInUserData = async (
   }
 };
 
+/**
+ * Creates a new user in the datbase based on the passed request body data
+ * @param req Request with body containing a `User`'s fields
+ * @param res Response with new user data
+ * @throws ClientError if request is invalid
+ * @throws ApiError if unable to create user
+ */
 const createUser = async (
   req: Request<unknown, unknown, User>,
   res: Response<UserReponse>
@@ -96,6 +117,13 @@ const createUser = async (
   }
 };
 
+/**
+ * Updates a user entry in the datbase based on the passed request body data and id
+ * @param req Request with body containing an `id` and the `User`'s fields to update
+ * @param res Response with updated user data
+ * @throws ClientError if request is invalid
+ * @throws ApiError if unable to update user
+ */
 const updateUser = async (
   req: Request<unknown, unknown, User>,
   res: Response<UserReponse>
@@ -126,6 +154,13 @@ const updateUser = async (
   }
 };
 
+/**
+ * Updates a user's balance in the datbase based on the passed balance and id
+ * @param req Request with body containing an `id` and the new `balance`
+ * @param res Response with updated user data
+ * @throws ClientError if request is invalid
+ * @throws ApiError if unable to update user
+ */
 const updateUserBalance = async (
   req: Request<unknown, unknown, User>,
   res: Response<UserReponse>
@@ -154,6 +189,12 @@ const updateUserBalance = async (
   }
 };
 
+/**
+ * Deletes a user from the database.
+ * ! NOTE: This function should be used sparingly and needs impl to handle additional logic if used _at all_!
+ * @param req Request with an `id` field
+ * @param res Deleted user's information
+ */
 const deleteUser = async (
   req: Request<unknown, unknown, User>,
   res: Response<UserReponse>
@@ -178,7 +219,7 @@ const deleteUser = async (
 };
 
 /**
- * Simple onboarding route handler that utilizes
+ * Simple onboarding route handler that handles creating Portfolio Defaults and updating the user's account balance.
  * @param req Request object
  * @param res Response object
  */
