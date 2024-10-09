@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import PortfolioDefault from '../interfaces/PortfolioDefault';
-import { PortfolioRisk } from '../enums/PortfolioRisk';
+import PortfolioRisk from '../enums/PortfolioRisk';
 import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<PortfolioDefault>({

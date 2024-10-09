@@ -1,13 +1,13 @@
 import mongoose, { Types } from 'mongoose';
 import { AxiosError } from 'axios';
-import { verifyJwt } from '../../config/utils/jwt';
+import jwt from '../../config/utils/jwt';
 import SessionModel from '../../models/auth/SessionModel';
 import Session from '../../config/interfaces/Session';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import ApiError from '../../errors/ApiError';
 
-export async function getSession(id: Types.ObjectId | string, token: string) {
+async function getSession(id: Types.ObjectId | string, token: string) {
   const _id = new mongoose.Types.ObjectId(id);
   const session: Session = {
     userId: _id,
@@ -28,10 +28,10 @@ export async function getSession(id: Types.ObjectId | string, token: string) {
   }
 }
 
-export async function getSessionByToken(accessToken: string) {
+async function getSessionByToken(accessToken: string) {
   try {
     // Verify and decode the JWT
-    const verificationResult = verifyJwt(accessToken);
+    const verificationResult = jwt.verifyJwt(accessToken);
     if (
       typeof verificationResult.decoded === 'string' ||
       !verificationResult?.decoded?.session
@@ -52,3 +52,8 @@ export async function getSessionByToken(accessToken: string) {
     );
   }
 }
+
+export default module.exports = {
+  getSession,
+  getSessionByToken,
+};

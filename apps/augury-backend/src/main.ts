@@ -9,12 +9,12 @@ import cookieParser from 'cookie-parser';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import { errorHandler } from './middlewares/CustomErrorHandler';
-import { googleOauthHandler } from './middlewares/GoogleOAuthHandler';
+import customErrorHandler from './middlewares/CustomErrorHandler';
+import googleOauthHandler from './middlewares/GoogleOAuthHandler';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
-import { userRouter } from './routes/UserRoutes';
+import userRouter from './routes/UserRoutes';
 import asyncErrorHandler from './middlewares/AsyncErrorHandler';
 
 const app = express();
@@ -69,4 +69,4 @@ const server = app.listen(serverPort, () => {
 });
 server.on('error', console.error);
 
-app.use(errorHandler);
+app.use(customErrorHandler);

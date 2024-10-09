@@ -4,11 +4,10 @@ import UserSchema from '../../config/schemas/UserSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
-import { getSessionByToken } from '../../controllers/auth/SessionController';
+import SessionController from '../../controllers/auth/SessionController';
 
 const getUser = async (id: string | mongoose.Types.ObjectId) => {
-  const userId = new mongoose.Types.ObjectId(id);
-  const user = await UserSchema.findById(userId);
+  const user = await UserSchema.findById(id);
 
   if (!user) {
     throw new ApiError(
@@ -53,8 +52,7 @@ const updateUser = async (
   id: string | mongoose.Types.ObjectId,
   data: Partial<User>
 ) => {
-  const userId = new mongoose.Types.ObjectId(id);
-  const user = await UserSchema.findById(userId);
+  const user = await UserSchema.findById(id);
 
   if (!user) {
     throw new ApiError(
@@ -86,8 +84,7 @@ const updateUser = async (
 };
 
 const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
-  const userId = new mongoose.Types.ObjectId(id);
-  const user = await UserSchema.findByIdAndDelete(userId);
+  const user = await UserSchema.findByIdAndDelete(id);
 
   if (!user) {
     throw new ApiError(
@@ -101,7 +98,7 @@ const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
 };
 
 const getUserBySessionToken = async (sessionToken: string) => {
-  const session = await getSessionByToken(sessionToken);
+  const session = await SessionController.getSessionByToken(sessionToken);
   const user = await getUser(session.userId);
   return user;
 };

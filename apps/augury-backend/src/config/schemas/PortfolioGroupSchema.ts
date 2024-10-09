@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import PortfolioGroup from '../interfaces/PortfolioGroup';
-import { PortfolioColor } from '../enums/PortfolioColor';
+import PortfolioColor from '../enums/PortfolioColor';
 import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<PortfolioGroup>({

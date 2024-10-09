@@ -1,11 +1,11 @@
 import { CookieOptions, Request, Response } from 'express';
 import axios, { AxiosError } from 'axios';
 import qs from 'querystring';
-import { signJwt } from '../config/utils/jwt';
+import jwt from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import User from '../config/interfaces/User';
 import UserModel from '../models/auth/UserModel';
-import { getSession } from '../controllers/auth/SessionController';
+import SessionController from '../controllers/auth/SessionController';
 import ClientError from '../errors/ClientError';
 import StatusCode from '../config/enums/StatusCode';
 import Severity from '../config/enums/Severity';
@@ -42,7 +42,7 @@ const refreshCookieOptions: CookieOptions = {
   maxAge: 3.154e10, // 1 year
 };
 
-export async function googleOauthHandler(req: Request, res: Response) {
+async function googleOauthHandler(req: Request, res: Response) {
   if (typeof req?.query?.code !== 'string') {
     throw new ClientError(
       'Invalid code provided with OAuth query!',
@@ -62,14 +62,14 @@ export async function googleOauthHandler(req: Request, res: Response) {
   // console.log(user);
 
   //create a session
-  const session = await getSession(user._id, user.googleId);
+  const session = await SessionController.getSession(user._id, user.googleId);
 
   //create access & refressh token
-  const accessToken = signJwt(
+  const accessToken = jwt.signJwt(
     { ...user._id, session: session.token },
     { expiresIn: '15m' } // 15 minutes
   );
-  const refreshToken = signJwt(
+  const refreshToken = jwt.signJwt(
     { ...user._id, session: session.token },
     { expiresIn: '1y' } // 1 year
   );
@@ -174,3 +174,5 @@ function throwDetailedAxiosError(error: unknown) {
     );
   }
 }
+
+export default googleOauthHandler;

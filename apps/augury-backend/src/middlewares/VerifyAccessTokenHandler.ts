@@ -3,7 +3,7 @@ import ApiError from '../errors/ApiError';
 import ClientError from '../errors/ClientError';
 import StatusCode from '../config/enums/StatusCode';
 import Severity from '../config/enums/Severity';
-import { getSessionByToken } from '../controllers/auth/SessionController';
+import SessionController from '../controllers/auth/SessionController';
 
 export async function verifyAccessToken(
   req: Request,
@@ -16,7 +16,7 @@ export async function verifyAccessToken(
   }
 
   try {
-    getSessionByToken(accessToken);
+    SessionController.getSessionByToken(accessToken);
     next();
   } catch (error) {
     throw new ApiError(
