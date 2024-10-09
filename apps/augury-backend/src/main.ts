@@ -11,13 +11,9 @@ import helmet from 'helmet';
 import cors from 'cors';
 import userRouter from './routes/UserRoutes';
 import asyncErrorHandler from './middlewares/AsyncErrorHandler';
+import { CLIENT_URL, SERVER_PORT } from './config/constants';
 
 const app = express();
-
-const clientPort = process.env.CLIENT_PORT || 4200;
-const clientURL = `${
-  process.env.FRONTEND_URL || 'http://localhost'
-}:${clientPort}`;
 
 // Using Express built-in middleware to parse JSON body and URL encoded parameters available since 4.16
 // https://expressjs.com/en/guide/using-middleware.html#middleware.built-in
@@ -25,7 +21,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: clientURL, // Frontend URL
+    origin: CLIENT_URL, // Frontend URL
     credentials: true, // Allows cookies to be sent with the requests
   })
 );
@@ -44,8 +40,7 @@ app.get('/ping', (req, res) => {
   res.send({ message: '[augury-backend] Pong!' });
 });
 
-const serverPort = process.env.SERVER_PORT || 3333;
-const server = app.listen(serverPort, () => {
+const server = app.listen(SERVER_PORT, () => {
   mongoose.set('strictQuery', false);
   mongoose.connect(`${process.env.MONGO_URL}`).catch(() => {
     console.error(
@@ -61,7 +56,7 @@ const server = app.listen(serverPort, () => {
     console.log('Connected to MongoDB');
   });
 
-  console.log(`Listening at http://localhost:${serverPort}/api`);
+  console.log(`Listening at http://localhost:${SERVER_PORT}/api`);
 });
 server.on('error', console.error);
 

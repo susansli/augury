@@ -9,6 +9,7 @@ import SessionController from '../controllers/auth/SessionController';
 import ClientError from '../errors/ClientError';
 import StatusCode from '../config/enums/StatusCode';
 import Severity from '../config/enums/Severity';
+import { CLIENT_URL, SERVER_URL } from '../config/constants';
 
 interface GoogleTokensResult {
   access_token: string;
@@ -62,15 +63,15 @@ async function googleOauthHandler(req: Request, res: Response) {
   // console.log(user);
 
   //create a session
-  const session = await SessionController.getSession(user._id, user.googleId);
+  const session = await SessionController.getSession(user.id, user.googleId);
 
   //create access & refressh token
   const accessToken = jwt.signJwt(
-    { ...user._id, session: session.token },
+    { ...user.id, session: session.token },
     { expiresIn: '15m' } // 15 minutes
   );
   const refreshToken = jwt.signJwt(
-    { ...user._id, session: session.token },
+    { ...user.id, session: session.token },
     { expiresIn: '1y' } // 1 year
   );
   //set cookie
@@ -78,8 +79,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   //redirect back to client
-  const clientPort = process.env.CLIENT_PORT || 4200;
-  const url = `${process.env.FRONTEND_URL || 'http://localhost'}:${clientPort}`;
+  const url = CLIENT_URL;
   // const url = `${
   //   process.env.FRONTEND_URL || 'http://localhost'
   // }:${clientPort}/Test.html`;
@@ -97,7 +97,7 @@ async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
     code,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    redirect_uri: 'http://localhost:3333/google/callback',
+    redirect_uri: `${SERVER_URL}}/google/callback`,
     grant_type: 'authorization_code',
   };
 
