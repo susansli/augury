@@ -4,14 +4,16 @@ import cookieParser from 'cookie-parser';
 import * as path from 'path';
 import mongoose from 'mongoose';
 import compression from 'compression';
-import customErrorHandler from './middlewares/CustomErrorHandler';
-import googleOauthHandler from './middlewares/GoogleOAuthHandler';
+import { CLIENT_URL, SERVER_PORT } from './config/constants';
 // Security middleware
 import helmet from 'helmet';
 import cors from 'cors';
-import userRouter from './routes/UserRoutes';
+// Custom middleware
 import asyncErrorHandler from './middlewares/AsyncErrorHandler';
-import { CLIENT_URL, SERVER_PORT } from './config/constants';
+import customErrorHandler from './middlewares/CustomErrorHandler';
+import googleOauthHandler from './middlewares/GoogleOAuthHandler';
+// Routers
+import userRouter from './routes/UserRoutes';
 
 const app = express();
 
