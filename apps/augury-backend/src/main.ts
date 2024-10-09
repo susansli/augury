@@ -1,8 +1,3 @@
-/**
- * This is not a production server yet!
- * This is only a minimal backend to get started.
- */
-
 import 'dotenv/config';
 import express from 'express';
 import cookieParser from 'cookie-parser';
@@ -40,13 +35,14 @@ app.use(cookieParser());
 // Bind assets folder to static path under "example.com/assets"
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
+// Application routers that register handlers
 app.use('/', userRouter);
 
 // API Routes
-app.get('/api', (req, res) => {
-  res.send({ message: 'Welcome to augury-backend!' });
+app.get('/google/callback', asyncErrorHandler(googleOauthHandler)); // Google Callback route that is used after OAuth redirect
+app.get('/ping', (req, res) => {
+  res.send({ message: '[augury-backend] Pong!' });
 });
-app.get('/google/callback', asyncErrorHandler(googleOauthHandler));
 
 const serverPort = process.env.SERVER_PORT || 3333;
 const server = app.listen(serverPort, () => {
