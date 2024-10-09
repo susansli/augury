@@ -15,6 +15,7 @@ import { googleOauthHandler } from './middlewares/GoogleOAuthHandler';
 import helmet from 'helmet';
 import cors from 'cors';
 import { userRouter } from './routes/UserRoutes';
+import asyncErrorHandler from './middlewares/AsyncErrorHandler';
 
 const app = express();
 
@@ -45,7 +46,7 @@ app.use('/', userRouter);
 app.get('/api', (req, res) => {
   res.send({ message: 'Welcome to augury-backend!' });
 });
-app.get('/google/callback', googleOauthHandler);
+app.get('/google/callback', asyncErrorHandler(googleOauthHandler));
 
 const serverPort = process.env.SERVER_PORT || 3333;
 const server = app.listen(serverPort, () => {
