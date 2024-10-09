@@ -4,23 +4,18 @@ import PortfolioRisk from '../enums/PortfolioRisk';
 import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<PortfolioDefault>({
-  userId: {
-    type: mongoose.Schema.ObjectId,
-    required: true,
-    ref: 'User',
-  },
-
-  name: {
-    type: String,
-    required: true,
-  },
-
+  userId: { type: mongoose.Schema.Types.ObjectId }, // Reference to the user these defaults are for
+  name: { type: String, required: true }, // Portfolio name
   risk: {
+    // Optional risk level
     type: String,
     enum: Object.values(PortfolioRisk), // Enum definition
     default: PortfolioRisk.CONSERVATIVE, // Default value for status
-    required: true,
   },
+  useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
+  customRiskPercentage1: { type: Number },
+  customRiskPercentage2: { type: Number },
+  sectorTags: { type: [String] },
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
 

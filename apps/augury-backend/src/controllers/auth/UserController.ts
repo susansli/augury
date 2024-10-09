@@ -1,11 +1,13 @@
 import { Request, Response } from 'express';
 
+import { assertExists, assertNumber } from '../../config/utils/validation';
+import PortfolioDefaultsController from './PortfolioDefaultsController';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
 import ApiError from '../../errors/ApiError';
-import { assertExists, assertNumber } from '../../config/utils/validation';
 import Severity from '../../config/enums/Severity';
+import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 
 type UserReponse = {
   user: User;
@@ -175,6 +177,19 @@ const deleteUser = async (
   }
 };
 
+/**
+ * Simple onboarding route handler that utilizes
+ * @param req Request object
+ * @param res Response object
+ */
+const onboardNewUser = async (
+  req: Request<unknown, unknown, User & PortfolioDefault>,
+  res: Response
+): Promise<void> => {
+  await PortfolioDefaultsController.createPortfolioDefaults(req, res);
+  await updateUserBalance(req, res);
+};
+
 export default module.exports = {
   getUser,
   getLoggedInUserData,
@@ -182,4 +197,5 @@ export default module.exports = {
   updateUser,
   updateUserBalance,
   deleteUser,
+  onboardNewUser,
 };

@@ -25,4 +25,8 @@ userRouter
   .route(`${baseURL}/current`)
   .get(asyncErrorHandler(UserController.getLoggedInUserData));
 
+userRouter
+  .route(`${baseURL}/onboard`)
+  .post(asyncErrorHandler(UserController.onboardNewUser));
+
 export default userRouter;
