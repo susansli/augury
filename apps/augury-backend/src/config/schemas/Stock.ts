@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Stock from '../interfaces/Stock';
+import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<Stock>({
   portfolioId: {
@@ -13,6 +14,7 @@ const schema = new mongoose.Schema<Stock>({
     required: true,
   },
 });
+schema.plugin(stripAndFormatIds); // toJSON middleware
 
 const StockSchema = mongoose.model<Stock>('Stock', schema);
 
