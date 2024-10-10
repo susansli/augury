@@ -30,3 +30,17 @@ export function assertNumber<T>(param: T, errorMsg: string) {
     throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
   }
 }
+
+/**
+ *
+ * @param enumObj Enumerator
+ * @param value to check
+ * @param errorMsg Message thrown when not valid enum
+ */
+export function assertEnum<T, G>(enumObj: T, value: G, errorMsg: string) {
+  // Check if enum contains correct value
+  const isValid = Object.values(enumObj).includes(value);
+  if (!isValid) {
+    throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
+  }
+}
