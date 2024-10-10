@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 
 import { assertExists, assertNumber } from '../../config/utils/validation';
-import PortfolioDefaultsController from './PortfolioDefaultsController';
+import PortfolioDefaultController from './PortfolioDefaultController';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
@@ -227,7 +227,7 @@ const onboardNewUser = async (
   req: Request<unknown, unknown, User & PortfolioDefault>,
   res: Response
 ): Promise<void> => {
-  await PortfolioDefaultsController.createPortfolioDefaults(req, res);
+  await PortfolioDefaultController.createPortfolioDefaults(req, res);
   await updateUserBalance(req, res);
 };
 

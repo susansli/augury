@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { assertExists } from '../../config/utils/validation';
-import PortfolioDefaultsModel from '../../models/auth/PortfolioDefaultsModel';
+import PortfolioDefaultsModel from '../../models/auth/PortfolioDefaultModel';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import User from '../../config/interfaces/User';
@@ -16,7 +16,7 @@ const getPortfolioDefaults = async (
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID Provided');
   // Retrieve data from the DB using request parameters/data
-  const response = await PortfolioDefaultsModel.getDefaults(userId);
+  const response = await PortfolioDefaultsModel.getPortfolioDefaults(userId);
 
   if (response) {
     // send the user back after model runs logic
@@ -52,7 +52,7 @@ const createPortfolioDefaults = async (
   //     StatusCode.INTERNAL_ERROR,
   //     Severity.MED
   //   );
-  }
+  // }
 };
 
 const updatePortfolioDefaults = async (
