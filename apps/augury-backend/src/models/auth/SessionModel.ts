@@ -67,9 +67,9 @@ const createSession = async (data: Session) => {
 };
 
 /**
- * Updates a `Session` based on the passed `Session` data
+ * Updates a `Session` based on the passed data
  * @param data Updated `Session` object with `UserId`
- * @returns new `Session` document
+ * @returns updated `Session` document
  * @throws ApiError if session does not exist or could not be updated
  */
 const updateSession = async (data: Session) => {
