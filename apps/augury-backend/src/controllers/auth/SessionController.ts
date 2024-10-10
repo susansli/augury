@@ -40,9 +40,9 @@ async function getCurrentSession(
 }
 
 /**
- *
- * @param accessToken
- * @returns
+ * Retrieves a `Session` by the provided access token
+ * @param accessToken encoded JWT token
+ * @returns `Session` document
  */
 async function getSessionByToken(accessToken: string) {
   try {
