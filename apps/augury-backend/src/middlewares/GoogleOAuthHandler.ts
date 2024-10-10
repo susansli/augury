@@ -68,17 +68,17 @@ async function googleOauthHandler(req: Request, res: Response) {
 
   // Get/Create a session
   const session = await SessionController.getCurrentSession(
-    user.id,
+    user._id,
     user.googleId
   );
 
   //create access & refressh token
   const accessToken = jwt.signJwt(
-    { ...user.id, session: session.token },
+    { ...user._id, session: session.token },
     { expiresIn: '15m' } // 15 minutes
   );
   const refreshToken = jwt.signJwt(
-    { ...user.id, session: session.token },
+    { ...user._id, session: session.token },
     { expiresIn: '1y' } // 1 year
   );
   //set cookie
@@ -111,7 +111,7 @@ async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
     code,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    redirect_uri: `${SERVER_URL}}/google/callback`,
+    redirect_uri: `${SERVER_URL}/google/callback`,
     grant_type: 'authorization_code',
   };
 
