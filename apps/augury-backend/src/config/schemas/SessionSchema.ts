@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Session from '../interfaces/Session';
+import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<Session>({
   userId: {
@@ -14,6 +15,7 @@ const schema = new mongoose.Schema<Session>({
     unique: true,
   },
 });
+schema.plugin(stripAndFormatIds); // toJSON middleware
 
 const SessionSchema = mongoose.model<Session>('Session', schema);
 

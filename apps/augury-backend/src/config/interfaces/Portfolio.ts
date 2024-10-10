@@ -1,4 +1,4 @@
-import { PortfolioRisk } from '../enums/PortfolioRisk';
+import PortfolioRisk from '../enums/PortfolioRisk';
 import Identifiable from './Identifiable';
 
 export default interface Portfolio extends Identifiable {

@@ -3,7 +3,7 @@ import UserController from '../controllers/auth/UserController';
 // import { verifyAccessToken } from '../middlewares/AttachUserHandler';
 import asyncErrorHandler from '../middlewares/AsyncErrorHandler';
 
-export const userRouter: Router = express.Router();
+const userRouter: Router = express.Router();
 const baseURL = '/user';
 
 // Uncomment if we want to verify the client's auth token for all routes
@@ -20,3 +20,9 @@ userRouter
 userRouter
   .route(`${baseURL}/balance`)
   .put(asyncErrorHandler(UserController.updateUserBalance));
+
+userRouter
+  .route(`${baseURL}/current`)
+  .get(asyncErrorHandler(UserController.getLoggedInUserData));
+
+export default userRouter;

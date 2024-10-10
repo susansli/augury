@@ -2,13 +2,12 @@ import mongoose from 'mongoose';
 import Severity from '../../config/enums/Severity';
 import StatusCode from '../../config/enums/StatusCode';
 import Session from '../../config/interfaces/Session';
-import SessionSchema from '../../config/schemas/Session';
+import SessionSchema from '../../config/schemas/SessionSchema';
 import ApiError from '../../errors/ApiError';
 
-const getSessionByUserId = async (
-  userId: mongoose.Types.ObjectId
-): Promise<Session> => {
-  const session = await SessionSchema.findOne({ userId: userId });
+const getSessionByUserId = async (userId: mongoose.Types.ObjectId | string) => {
+  const id = new mongoose.Types.ObjectId(userId);
+  const session = await SessionSchema.findOne({ userId: id });
 
   if (!session) {
     throw new ApiError(
@@ -21,7 +20,7 @@ const getSessionByUserId = async (
   return session;
 };
 
-const getSessionByToken = async (token: string): Promise<Session> => {
+const getSessionByToken = async (token: string) => {
   const session = await SessionSchema.findOne({ token: token });
 
   if (!session) {
@@ -35,7 +34,7 @@ const getSessionByToken = async (token: string): Promise<Session> => {
   return session;
 };
 
-const createSession = async (data: Session): Promise<Session> => {
+const createSession = async (data: Session) => {
   const session = await SessionSchema.create(data);
 
   if (!session) {
@@ -49,7 +48,7 @@ const createSession = async (data: Session): Promise<Session> => {
   return session;
 };
 
-const updateSession = async (data: Session): Promise<Session> => {
+const updateSession = async (data: Session) => {
   const { userId, token }: Session = data;
   const session = await SessionSchema.findOne({ userId: userId });
 

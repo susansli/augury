@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import PortfolioGroupRelation from '../interfaces/PortfolioGroupRelation';
+import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<PortfolioGroupRelation>({
   portfolioId: {
@@ -14,6 +15,7 @@ const schema = new mongoose.Schema<PortfolioGroupRelation>({
     ref: 'PortfolioGroup',
   },
 });
+schema.plugin(stripAndFormatIds); // toJSON middleware
 
 const PortfolioGroupRelationSchema = mongoose.model<PortfolioGroupRelation>(
   'PortfolioGroupRelation',

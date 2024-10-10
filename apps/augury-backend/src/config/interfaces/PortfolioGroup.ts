@@ -1,5 +1,5 @@
 import { Types } from 'mongoose';
-import { PortfolioColor } from '../enums/PortfolioColor';
+import PortfolioColor from '../enums/PortfolioColor';
 import Identifiable from './Identifiable';
 
 export default interface PortfolioGroup extends Identifiable {
