@@ -172,7 +172,7 @@ const updateUserBalance = async (
 
   // Update the User in the DB using request parameters/data
   const user: Partial<User> = {
-    balance: balance ? Number(balance) : undefined,
+    balance,
   };
   const response = await UserModel.updateUser(userId, user);
 

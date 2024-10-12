@@ -93,7 +93,9 @@ const updateUser = async (
   user.googleId = googleId || user.googleId;
   user.firstName = firstName || user.firstName;
   user.lastName = lastName || user.lastName;
-  user.balance = balance || user.balance;
+  if (typeof balance === 'number' && !isNaN(balance)) {
+    user.balance = balance;
+  }
 
   const updatedUser = await user.save();
 
