@@ -1,9 +1,9 @@
 import { Request, Response } from 'express';
 
 import {
-  assertEnum,
   assertExists,
   assertNumber,
+  assertPortfolioDefaultsFormat,
 } from '../../config/utils/validation';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
@@ -11,8 +11,6 @@ import StatusCode from '../../config/enums/StatusCode';
 import ApiError from '../../errors/ApiError';
 import Severity from '../../config/enums/Severity';
 import Portfolio from '../../config/interfaces/Portfolio';
-import PortfolioRisk from '../../config/enums/PortfolioRisk';
-import Sectors from '../../config/enums/Sectors';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import PortfolioDefaultModel from '../../models/auth/PortfolioDefaultModel';
 
@@ -247,7 +245,11 @@ const onboardNewUser = async (
   res: Response<OnboardingResponse>
 ): Promise<void> => {
   const { id: userId, balance, defaults } = req.body;
-  assertExists(defaults, 'Invalid defaults provided');
+  // Assert the request format was valid starting with user ID and new balance
+  assertExists(userId, 'Invalid ID provided');
+  assertNumber(balance, 'Invalid balance provided');
+  // Assert the defaults formatting was valid
+  assertPortfolioDefaultsFormat(defaults);
   const {
     name,
     risk,
@@ -256,29 +258,7 @@ const onboardNewUser = async (
     customRiskPercentage2,
     sectorTags,
   }: Portfolio = defaults;
-  // Assert the request format was valid starting with user ID and new balance
-  assertExists(userId, 'Invalid ID provided');
-  assertNumber(balance, 'Invalid balance provided');
-  // Assert the defaults formatting was valid
-  assertExists(name, 'Invalid portfolio name provided');
-  if (useCustomRisk) {
-    assertExists(
-      customRiskPercentage1,
-      'Invalid customRiskPercentage1 provided'
-    );
-    assertExists(
-      customRiskPercentage2,
-      'Invalid customRiskPercentage2 provided'
-    );
-  } else {
-    assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
-  }
-  if (Array.isArray(sectorTags)) {
-    for (const tag of sectorTags) {
-      assertEnum(Sectors, tag, 'Invalid sector tag provided');
-    }
-  }
-  // Create new defaults
+
   const newDefaults: PortfolioDefault = {
     userId,
     name,
@@ -288,25 +268,19 @@ const onboardNewUser = async (
     customRiskPercentage2,
     sectorTags,
   };
-  const defaultsResponse = await PortfolioDefaultModel.createPortfolioDefaults(
-    newDefaults
-  );
+  const [defaultsResponse, updateUserResponse] = await Promise.all([
+    PortfolioDefaultModel.handlePortfolioDefaults(newDefaults),
+    UserModel.updateUser(userId, { balance }),
+  ]);
+
   if (!defaultsResponse) {
-    // we throw an API error since this means something errored out with our server end
     throw new ApiError(
-      'Unable to create defaults for this user',
+      'Unable to save defaults for this user',
       StatusCode.INTERNAL_ERROR,
       Severity.MED
     );
   }
-  // Finally update balance.
-  const updatedUserFields: Partial<User> = {
-    balance,
-  };
-  const updateUserResponse = await UserModel.updateUser(
-    userId,
-    updatedUserFields
-  );
+
   if (!updateUserResponse) {
     throw new ApiError(
       'Unable to update user balance',

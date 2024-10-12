@@ -12,7 +12,9 @@ portfolioRouter
   .route('/defaults')
   .get(asyncErrorHandler(PortfolioDefaultController.getPortfolioDefaults))
   .put(asyncErrorHandler(PortfolioDefaultController.updatePortfolioDefaults))
-  .post(asyncErrorHandler(PortfolioDefaultController.createPortfolioDefaults));
-// .delete(asyncErrorHandler(PortfolioDefaultController.deletePortfolioDefaults));
+  .post(asyncErrorHandler(PortfolioDefaultController.createPortfolioDefaults))
+  .delete(
+    asyncErrorHandler(PortfolioDefaultController.deletePortfolioDefaults)
+  );
 
 export default portfolioRouter;

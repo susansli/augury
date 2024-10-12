@@ -1,5 +1,8 @@
 import ClientError from '../../errors/ClientError';
+import PortfolioRisk from '../enums/PortfolioRisk';
+import Sectors from '../enums/Sectors';
 import StatusCode from '../enums/StatusCode';
+import Portfolio from '../interfaces/Portfolio';
 
 /**
  * Throws an error if the passed parameter from a client request doesn't exist
@@ -43,5 +46,32 @@ export function assertEnum<T, G>(enumObj: T, value: G, errorMsg: string) {
   const isValid = Object.values(enumObj).includes(value);
   if (!isValid) {
     throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
+  }
+}
+
+/**
+ * Validates and asserts that the passed defaults object is in the correct form
+ * @param defaults object
+ * @throws `ClientError` with message if invalid format
+ */
+export function assertPortfolioDefaultsFormat(defaults: Portfolio) {
+  assertExists(defaults, 'Invalid defaults provided');
+  assertExists(defaults.name, 'Invalid portfolio name provided');
+  if (defaults.useCustomRisk) {
+    assertExists(
+      defaults.customRiskPercentage1,
+      'Invalid customRiskPercentage1 provided'
+    );
+    assertExists(
+      defaults.customRiskPercentage2,
+      'Invalid customRiskPercentage2 provided'
+    );
+  } else {
+    assertEnum(PortfolioRisk, defaults.risk, 'Invalid risk provided');
+  }
+  if (Array.isArray(defaults.sectorTags)) {
+    for (const tag of defaults.sectorTags) {
+      assertEnum(Sectors, tag, 'Invalid sector tag provided');
+    }
   }
 }
