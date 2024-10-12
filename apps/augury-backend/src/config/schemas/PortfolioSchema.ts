@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Portfolio from '../interfaces/Portfolio';
 import PortfolioRisk from '../enums/PortfolioRisk';
 import stripAndFormatIds from '../utils/stripAndFormatIds';
+import Sectors from '../enums/Sectors';
 
 const schema = new mongoose.Schema<Portfolio>({
   name: { type: String, required: true }, // Portfolio name
@@ -14,7 +15,10 @@ const schema = new mongoose.Schema<Portfolio>({
   useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
   customRiskPercentage1: { type: Number },
   customRiskPercentage2: { type: Number },
-  sectorTags: { type: [String] },
+  sectorTags: {
+    type: [Sectors],
+    enum: Object.values(Sectors),
+  },
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
 
