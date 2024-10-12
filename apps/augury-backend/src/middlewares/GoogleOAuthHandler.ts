@@ -63,7 +63,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   // Get Google & user data from tokens
   const googleUser = await getGoogleUser(id_token, access_token);
   // console.log(googleUser);
-  const user = await getOrCreateUserByGoogleId(googleUser);
+  const { newUser, data: user } = await getOrCreateUserByGoogleId(googleUser);
   // console.log(user);
 
   // Get/Create a session
@@ -86,7 +86,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   //redirect back to client
-  const url = CLIENT_URL;
+  const url = CLIENT_URL + (newUser ? '/onboarding' : '');
   // const url = `${
   //   process.env.FRONTEND_URL || 'http://localhost'
   // }:${clientPort}/Test.html`;
@@ -166,7 +166,10 @@ async function getGoogleUser(
 async function getOrCreateUserByGoogleId(googleUser: GoogleUserResult) {
   try {
     const response = await UserModel.getUserByGoogleId(googleUser.id);
-    return response;
+    return {
+      newUser: false,
+      data: response,
+    };
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       // Create the user on our end.
@@ -178,7 +181,10 @@ async function getOrCreateUserByGoogleId(googleUser: GoogleUserResult) {
         balance: 0,
       };
       const response = await UserModel.createUser(user);
-      return response;
+      return {
+        newUser: true,
+        data: response,
+      };
     } else {
       throwDetailedAxiosError(error);
     }
