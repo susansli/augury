@@ -161,8 +161,37 @@ const updatePortfolioDefaults = async (
   }
 };
 
+/**
+ * Deletes portfolio defaults from the database.
+ * @param req Request with an `id` field
+ * @param res Deleted user's information
+ */
+const deletePortfolioDefaults = async (
+  req: Request<unknown, unknown, User>,
+  res: Response
+): Promise<void> => {
+  const { id: userId } = req.body;
+  // Assert the request format was valid
+  assertExists(userId, 'Invalid ID provided');
+  // Delete the User from the DB
+  const response = await PortfolioDefaultsModel.deletePortfolioDefaults(userId);
+
+  if (response) {
+    // send the user back after model runs logic
+    res.status(StatusCode.OK).send({ user: response });
+  } else {
+    // we throw an API error since this means something errored out with our server end
+    throw new ApiError(
+      'Unable to delete portfolio defaults for this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
+  }
+};
+
 export default module.exports = {
   getPortfolioDefaults,
   createPortfolioDefaults,
   updatePortfolioDefaults,
+  deletePortfolioDefaults,
 };

@@ -33,7 +33,7 @@ const getPortfolioDefaults = async (userId: string | Types.ObjectId) => {
  */
 const createPortfolioDefaults = async (data: PortfolioDefault) => {
   const defaults = await PortfolioDefaultSchema.create(data);
-
+  // TODO: Potentially validate create data further
   if (!defaults) {
     throw new ApiError(
       'Portfolio defaults could not be created.',
@@ -53,20 +53,11 @@ const createPortfolioDefaults = async (data: PortfolioDefault) => {
  */
 const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
   const { userId, ...updateData }: Partial<PortfolioDefault> = data;
-  const defaults = await PortfolioDefaultSchema.findOne({ userId });
-
-  if (!defaults) {
-    throw new ApiError(
-      'Defaults do not exist for this user.',
-      StatusCode.INTERNAL_ERROR,
-      Severity.MED
-    );
-  }
-
-  // Spread/overwrite the default data with the updated data
-  Object.assign(defaults, updateData);
-
-  const updatedDefaults = await defaults.save();
+  // TODO: Potentially validate update data further
+  const updatedDefaults = await PortfolioDefaultSchema.findOneAndUpdate(
+    { userId },
+    updateData
+  );
 
   if (!updatedDefaults) {
     throw new ApiError(
@@ -79,8 +70,58 @@ const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
   return updatedDefaults;
 };
 
+/**
+ * Deletes portfolio defaults from the database
+ * @param userId Mongoose document id of the user
+ * @returns Removed user defaults data
+ * @throws `ApiError` if defaults could not be deleted
+ */
+const deletePortfolioDefaults = async (userId: string | Types.ObjectId) => {
+  const defaults = await PortfolioDefaultSchema.findOneAndDelete({
+    userId,
+  });
+
+  if (!defaults) {
+    throw new ApiError(
+      'Unable to delete defaults for user.',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+
+  return defaults;
+};
+
+/**
+ * Returns if a user has portfolio defaults in the database
+ * @param userId Mongoose document id of the user
+ * @returns True if defaults exist, false otherwise.
+ */
+const userHasDefaults = async (userId: string | Types.ObjectId) => {
+  const defaults = await PortfolioDefaultSchema.findOne({ userId });
+  return defaults != null;
+};
+
+/**
+ * Simple helper function to create or update if a user does not already have
+ * portfolio defaults set.
+ * @param userId Mongoose document id of the user
+ * @param defaults New defaults to set
+ * @returns
+ */
+const handlePortfolioDefaults = async (defaults: PortfolioDefault) => {
+  if (await userHasDefaults(defaults?.userId)) {
+    return updatePortfolioDefaults(defaults);
+  } else {
+    return createPortfolioDefaults(defaults);
+  }
+};
+
 export default module.exports = {
   getPortfolioDefaults,
   createPortfolioDefaults,
   updatePortfolioDefaults,
+  deletePortfolioDefaults,
+  handlePortfolioDefaults,
+  userHasDefaults,
 };
