@@ -16,7 +16,7 @@ const schema = new mongoose.Schema<Portfolio>({
   customRiskPercentage1: { type: Number },
   customRiskPercentage2: { type: Number },
   sectorTags: {
-    type: [Sectors],
+    type: [String],
     enum: Object.values(Sectors),
   },
 });
