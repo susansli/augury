@@ -5,10 +5,10 @@ import StatusCode from '../enums/StatusCode';
  * Throws an error if the passed parameter from a client request doesn't exist
  * @param param from client request (typically a string)
  * @param errorMsg message to throw as a `ClientError`
- * @throws `ClientError` if parameter is "falsy"
+ * @throws `ClientError` if parameter is `null` or `undefined`
  */
 export function assertExists<T>(param: T, errorMsg: string) {
-  if (!param) {
+  if (!(param != null)) {
     throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
   }
 }
@@ -32,10 +32,11 @@ export function assertNumber<T>(param: T, errorMsg: string) {
 }
 
 /**
- *
+ * Throws an error if the passed value exists within the source enumerator
  * @param enumObj Enumerator
  * @param value to check
  * @param errorMsg Message thrown when not valid enum
+ * @throws `ClientError` if value doesn't exist within the enum
  */
 export function assertEnum<T, G>(enumObj: T, value: G, errorMsg: string) {
   // Check if enum contains correct value
