@@ -227,6 +227,7 @@ const onboardNewUser = async (
   req: Request<unknown, unknown, User & PortfolioDefault>,
   res: Response
 ): Promise<void> => {
+  // Potentially weird (controller -> controller call), may remove later :)
   await PortfolioDefaultController.createPortfolioDefaults(req, res);
   await updateUserBalance(req, res);
 };
