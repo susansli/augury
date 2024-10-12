@@ -10,7 +10,7 @@ const schema = new mongoose.Schema<PortfolioDefault>({
     // Optional risk level
     type: String,
     enum: Object.values(PortfolioRisk), // Enum definition
-    default: PortfolioRisk.CONSERVATIVE, // Default value for status
+    // default: PortfolioRisk.CONSERVATIVE, // Default value for status
   },
   useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
   customRiskPercentage1: { type: Number },
