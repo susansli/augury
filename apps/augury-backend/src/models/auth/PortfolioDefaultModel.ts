@@ -33,7 +33,6 @@ const getPortfolioDefaults = async (userId: string | Types.ObjectId) => {
  */
 const createPortfolioDefaults = async (data: PortfolioDefault) => {
   const defaults = await PortfolioDefaultSchema.create(data);
-  // TODO: Potentially validate create data further
   if (!defaults) {
     throw new ApiError(
       'Portfolio defaults could not be created.',
@@ -53,7 +52,6 @@ const createPortfolioDefaults = async (data: PortfolioDefault) => {
  */
 const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
   const { userId, ...updateData }: Partial<PortfolioDefault> = data;
-  // TODO: Potentially validate update data further
   const updatedDefaults = await PortfolioDefaultSchema.findOneAndUpdate(
     { userId },
     updateData

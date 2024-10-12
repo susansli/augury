@@ -2,7 +2,6 @@ import mongoose from 'mongoose';
 import Portfolio from '../interfaces/Portfolio';
 import PortfolioRisk from '../enums/PortfolioRisk';
 import stripAndFormatIds from '../utils/stripAndFormatIds';
-import Sectors from '../enums/Sectors';
 
 const schema = new mongoose.Schema<Portfolio>({
   name: { type: String, required: true }, // Portfolio name
@@ -15,10 +14,7 @@ const schema = new mongoose.Schema<Portfolio>({
   useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
   customRiskPercentage1: { type: Number },
   customRiskPercentage2: { type: Number },
-  sectorTags: {
-    type: [String],
-    enum: Object.values(Sectors),
-  },
+  sectorTags: [String], // Would use custom validation but it's weird to enforce. Will validate through business logic
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
 
