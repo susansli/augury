@@ -1,13 +1,20 @@
 import { Request, Response } from 'express';
 
-import { assertExists, assertNumber } from '../../config/utils/validation';
-import PortfolioDefaultController from './PortfolioDefaultController';
+import {
+  assertEnum,
+  assertExists,
+  assertNumber,
+} from '../../config/utils/validation';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
 import ApiError from '../../errors/ApiError';
 import Severity from '../../config/enums/Severity';
+import Portfolio from '../../config/interfaces/Portfolio';
+import PortfolioRisk from '../../config/enums/PortfolioRisk';
+import Sectors from '../../config/enums/Sectors';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
+import PortfolioDefaultModel from '../../models/auth/PortfolioDefaultModel';
 
 type UserReponse = {
   user: User;
@@ -26,7 +33,7 @@ const getUser = async (
 ): Promise<void> => {
   const { id: userId } = req.body;
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID Provided');
+  assertExists(userId, 'Invalid ID provided');
 
   // Retrieve data from the DB using request parameters/data
   const response = await UserModel.getUser(userId);
@@ -57,7 +64,7 @@ const getLoggedInUserData = async (
 ): Promise<void> => {
   const accessToken = req.cookies?.accessToken;
   // Assert the request format was valid
-  assertExists(accessToken, 'Invalid session token provided!');
+  assertExists(accessToken, 'Invalid session token provided');
   // Retrieve data from the DB using request parameters/data
   const response = await UserModel.getUserBySessionToken(accessToken);
 
@@ -87,11 +94,11 @@ const createUser = async (
 ): Promise<void> => {
   const { email, googleId, firstName, lastName, balance }: User = req.body;
   // Assert the request format was valid
-  assertExists(email, 'Invalid Email Provided');
-  assertExists(googleId, 'Invalid Google ID Provided');
-  assertExists(firstName, 'Invalid First Name Provided');
-  assertExists(lastName, 'Invalid Last Name Provided');
-  assertNumber(balance, 'Invalid Balance Provided');
+  assertExists(email, 'Invalid email provided');
+  assertExists(googleId, 'Invalid Google ID provided');
+  assertExists(firstName, 'Invalid first name provided');
+  assertExists(lastName, 'Invalid last name provided');
+  assertNumber(balance, 'Invalid balance provided');
 
   // Create a User in the DB using request parameters/data
   const user: User = {
@@ -168,13 +175,13 @@ const updateUserBalance = async (
   const { id: userId, balance } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
-  assertNumber(balance, 'Invalid Balance Provided');
+  assertNumber(balance, 'Invalid balance provided');
 
   // Update the User in the DB using request parameters/data
-  const user: Partial<User> = {
+  const updatedUserFields: Partial<User> = {
     balance,
   };
-  const response = await UserModel.updateUser(userId, user);
+  const response = await UserModel.updateUser(userId, updatedUserFields);
 
   if (response) {
     // send the user back after model runs logic
@@ -218,18 +225,99 @@ const deleteUser = async (
   }
 };
 
+// Interfaces for client onboarding request & response
+interface OnboardingRequestBody {
+  id: string;
+  balance: number;
+  defaults: Portfolio;
+}
+
+interface OnboardingResponse {
+  user: User;
+  defaults: PortfolioDefault;
+}
+
 /**
- * Simple onboarding route handler that handles creating Portfolio Defaults and updating the user's account balance.
+ * Onboarding route handler that handles creating Portfolio Defaults and updating the user's account balance.
  * @param req Request object
  * @param res Response object
  */
 const onboardNewUser = async (
-  req: Request<unknown, unknown, User & PortfolioDefault>,
-  res: Response
+  req: Request<unknown, unknown, OnboardingRequestBody>,
+  res: Response<OnboardingResponse>
 ): Promise<void> => {
-  // Potentially weird (controller -> controller call), may remove later :)
-  await PortfolioDefaultController.createPortfolioDefaults(req, res);
-  await updateUserBalance(req, res);
+  const { id: userId, balance, defaults } = req.body;
+  assertExists(defaults, 'Invalid defaults provided');
+  const {
+    name,
+    risk,
+    useCustomRisk,
+    customRiskPercentage1,
+    customRiskPercentage2,
+    sectorTags,
+  }: Portfolio = defaults;
+  // Assert the request format was valid starting with user ID and new balance
+  assertExists(userId, 'Invalid ID provided');
+  assertNumber(balance, 'Invalid balance provided');
+  // Assert the defaults formatting was valid
+  assertExists(name, 'Invalid portfolio name provided');
+  if (useCustomRisk) {
+    assertExists(
+      customRiskPercentage1,
+      'Invalid customRiskPercentage1 provided'
+    );
+    assertExists(
+      customRiskPercentage2,
+      'Invalid customRiskPercentage2 provided'
+    );
+  } else {
+    assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
+  }
+  if (Array.isArray(sectorTags)) {
+    for (const tag of sectorTags) {
+      assertEnum(Sectors, tag, 'Invalid sector tag provided');
+    }
+  }
+  // Create new defaults
+  const newDefaults: PortfolioDefault = {
+    userId,
+    name,
+    risk: useCustomRisk ? undefined : risk,
+    useCustomRisk,
+    customRiskPercentage1,
+    customRiskPercentage2,
+    sectorTags,
+  };
+  const defaultsResponse = await PortfolioDefaultModel.createPortfolioDefaults(
+    newDefaults
+  );
+  if (!defaultsResponse) {
+    // we throw an API error since this means something errored out with our server end
+    throw new ApiError(
+      'Unable to create defaults for this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+  // Finally update balance.
+  const updatedUserFields: Partial<User> = {
+    balance,
+  };
+  const updateUserResponse = await UserModel.updateUser(
+    userId,
+    updatedUserFields
+  );
+  if (!updateUserResponse) {
+    throw new ApiError(
+      'Unable to update user balance',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
+  }
+
+  res
+    .status(StatusCode.OK)
+    .send({ user: updateUserResponse, defaults: defaultsResponse });
 };
 
 export default module.exports = {

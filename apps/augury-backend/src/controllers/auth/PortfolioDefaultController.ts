@@ -7,6 +7,7 @@ import User from '../../config/interfaces/User';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import ApiError from '../../errors/ApiError';
 import PortfolioRisk from '../../config/enums/PortfolioRisk';
+import Sectors from '../../config/enums/Sectors';
 
 /**
  * Retrieves a User's portfolio defaults from the database by user ID
@@ -21,7 +22,7 @@ const getPortfolioDefaults = async (
 ) => {
   const { id: userId } = req.body;
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID Provided');
+  assertExists(userId, 'Invalid ID provided');
   // Retrieve data from the DB using request parameters/data
   const response = await PortfolioDefaultsModel.getPortfolioDefaults(userId);
 
@@ -60,8 +61,8 @@ const createPortfolioDefaults = async (
   }: PortfolioDefault = req.body;
 
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID Provided');
-  assertExists(name, 'Invalid name Provided');
+  assertExists(userId, 'Invalid ID provided');
+  assertExists(name, 'Invalid portfolio name provided');
   if (useCustomRisk) {
     assertExists(
       customRiskPercentage1,
@@ -74,13 +75,17 @@ const createPortfolioDefaults = async (
   } else {
     assertEnum(PortfolioRisk, risk, 'Invalid risk Provided');
   }
-  assertExists(sectorTags, 'Invalid sectorTags Provided');
+  if (Array.isArray(sectorTags)) {
+    for (const tag of sectorTags) {
+      assertEnum(Sectors, tag, 'Invalid sector tag provided');
+    }
+  }
 
   // Create a user in the DB using the request parameters/data
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk,
+    risk: useCustomRisk ? undefined : risk,
     useCustomRisk,
     customRiskPercentage1,
     customRiskPercentage2,
@@ -126,7 +131,7 @@ const updatePortfolioDefaults = async (
   }: PortfolioDefault = req.body;
 
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID Provided');
+  assertExists(userId, 'Invalid ID provided');
 
   // Create a user in the DB using the request parameters/data
   const newDefaults: PortfolioDefault = {
