@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import BuyRecord from '../interfaces/BuyRecord';
+import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<BuyRecord>({
   stockId: {
@@ -18,6 +19,7 @@ const schema = new mongoose.Schema<BuyRecord>({
     required: true,
   },
 });
+schema.plugin(stripAndFormatIds); // toJSON middleware
 
 const BuyRecordSchema = mongoose.model<BuyRecord>('BuyRecord', schema);
 

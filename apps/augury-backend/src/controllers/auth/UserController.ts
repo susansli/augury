@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 
-import { HydratedDocument } from 'mongoose';
 import UserModel from '../../models/auth/UserModel';
 import User from '../../config/interfaces/User';
 import StatusCode from '../../config/enums/StatusCode';
@@ -8,8 +7,15 @@ import ApiError from '../../errors/ApiError';
 import { assertExists, assertNumber } from '../../config/utils/validation';
 import Severity from '../../config/enums/Severity';
 
-const getUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
+type UserReponse = {
+  user: User;
+};
+
+const getUser = async (
+  req: Request<unknown, unknown, User>,
+  res: Response<UserReponse>
+): Promise<void> => {
+  const { id: userId } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID Provided');
 
@@ -29,9 +35,34 @@ const getUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const createUser = async (req: Request, res: Response): Promise<void> => {
-  const { email, googleId, firstName, lastName, balance }: Required<User> =
-    req.query;
+const getLoggedInUserData = async (
+  req: Request,
+  res: Response<UserReponse>
+): Promise<void> => {
+  const accessToken = req.cookies?.accessToken;
+  // Assert the request format was valid
+  assertExists(accessToken, 'Invalid session token provided!');
+  // Retrieve data from the DB using request parameters/data
+  const response = await UserModel.getUserBySessionToken(accessToken);
+
+  if (response) {
+    // send the user back after model runs logic
+    res.status(StatusCode.OK).send({ user: response });
+  } else {
+    // we throw an API error since this means something errored out with our server end
+    throw new ApiError(
+      'Unable to retrieve records for the logged in user!',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+};
+
+const createUser = async (
+  req: Request<unknown, unknown, User>,
+  res: Response<UserReponse>
+): Promise<void> => {
+  const { email, googleId, firstName, lastName, balance }: User = req.body;
   // Assert the request format was valid
   assertExists(email, 'Invalid Email Provided');
   assertExists(googleId, 'Invalid Google ID Provided');
@@ -63,9 +94,11 @@ const createUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-const updateUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
-  const { email, googleId, firstName, lastName }: Partial<User> = req.query;
+const updateUser = async (
+  req: Request<unknown, unknown, User>,
+  res: Response<UserReponse>
+): Promise<void> => {
+  const { id: userId, email, googleId, firstName, lastName } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
 
@@ -92,11 +125,10 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 const updateUserBalance = async (
-  req: Request,
-  res: Response
+  req: Request<unknown, unknown, User>,
+  res: Response<UserReponse>
 ): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
-  const { balance }: Partial<User> = req.query;
+  const { id: userId, balance } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided!');
   assertNumber(balance, 'Invalid Balance Provided');
@@ -120,8 +152,11 @@ const updateUserBalance = async (
   }
 };
 
-const deleteUser = async (req: Request, res: Response): Promise<void> => {
-  const { _id: userId } = req.user as HydratedDocument<User>;
+const deleteUser = async (
+  req: Request<unknown, unknown, User>,
+  res: Response<UserReponse>
+): Promise<void> => {
+  const { id: userId } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Delete the User from the DB
@@ -142,6 +177,7 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
 
 export default module.exports = {
   getUser,
+  getLoggedInUserData,
   createUser,
   updateUser,
   updateUserBalance,

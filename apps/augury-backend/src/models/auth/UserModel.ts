@@ -1,11 +1,12 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 import User from '../../config/interfaces/User';
-import UserSchema from '../../config/schemas/User';
+import UserSchema from '../../config/schemas/UserSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
+import SessionController from '../../controllers/auth/SessionController';
 
-const getUser = async (id: mongoose.Types.ObjectId) => {
+const getUser = async (id: string | mongoose.Types.ObjectId) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -47,7 +48,10 @@ const createUser = async (data: User) => {
   return user;
 };
 
-const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
+const updateUser = async (
+  id: string | mongoose.Types.ObjectId,
+  data: Partial<User>
+) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -79,7 +83,7 @@ const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
   return updatedUser;
 };
 
-const deleteUser = async (id: mongoose.Types.ObjectId) => {
+const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
   const user = await UserSchema.findByIdAndDelete(id);
 
   if (!user) {
@@ -93,9 +97,16 @@ const deleteUser = async (id: mongoose.Types.ObjectId) => {
   return user;
 };
 
+const getUserBySessionToken = async (sessionToken: string) => {
+  const session = await SessionController.getSessionByToken(sessionToken);
+  const user = await getUser(session.userId);
+  return user;
+};
+
 export default module.exports = {
   getUser,
   getUserByGoogleId,
+  getUserBySessionToken,
   createUser,
   updateUser,
   deleteUser,

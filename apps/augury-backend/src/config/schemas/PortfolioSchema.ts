@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import Portfolio from '../interfaces/Portfolio';
-import { PortfolioRisk } from '../enums/PortfolioRisk';
+import PortfolioRisk from '../enums/PortfolioRisk';
+import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<Portfolio>({
   name: {
@@ -15,6 +16,7 @@ const schema = new mongoose.Schema<Portfolio>({
     required: true,
   },
 });
+schema.plugin(stripAndFormatIds); // toJSON middleware
 
 const PortfolioSchema = mongoose.model<Portfolio>('Portfolio', schema);
 
