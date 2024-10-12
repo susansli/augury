@@ -1,13 +1,17 @@
 import { Request, Response } from 'express';
-import { assertEnum, assertExists } from '../../config/utils/validation';
+import {
+  assertEnum,
+  assertExists,
+  assertPortfolioDefaultsFormat,
+} from '../../config/utils/validation';
 import PortfolioDefaultsModel from '../../models/auth/PortfolioDefaultModel';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import User from '../../config/interfaces/User';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import ApiError from '../../errors/ApiError';
-import PortfolioRisk from '../../config/enums/PortfolioRisk';
 import Sectors from '../../config/enums/Sectors';
+import PortfolioRisk from '../../config/enums/PortfolioRisk';
 
 /**
  * Retrieves a User's portfolio defaults from the database by user ID
@@ -50,6 +54,9 @@ const createPortfolioDefaults = async (
   req: Request<unknown, unknown, PortfolioDefault>,
   res: Response
 ) => {
+  // Assert the request format was valid
+  assertPortfolioDefaultsFormat(req.body);
+  // Create a user in the DB using the request parameters/data
   const {
     userId,
     name,
@@ -60,28 +67,6 @@ const createPortfolioDefaults = async (
     sectorTags,
   }: PortfolioDefault = req.body;
 
-  // Assert the request format was valid
-  assertExists(userId, 'Invalid ID provided');
-  assertExists(name, 'Invalid portfolio name provided');
-  if (useCustomRisk) {
-    assertExists(
-      customRiskPercentage1,
-      'Invalid customRiskPercentage1 Provided'
-    );
-    assertExists(
-      customRiskPercentage2,
-      'Invalid customRiskPercentage2 Provided'
-    );
-  } else {
-    assertEnum(PortfolioRisk, risk, 'Invalid risk Provided');
-  }
-  if (Array.isArray(sectorTags)) {
-    for (const tag of sectorTags) {
-      assertEnum(Sectors, tag, 'Invalid sector tag provided');
-    }
-  }
-
-  // Create a user in the DB using the request parameters/data
   const newDefaults: PortfolioDefault = {
     userId,
     name,
@@ -129,10 +114,16 @@ const updatePortfolioDefaults = async (
     customRiskPercentage2,
     sectorTags,
   }: PortfolioDefault = req.body;
-
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
-
+  if (risk != null) {
+    assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
+  }
+  if (Array.isArray(sectorTags)) {
+    for (const tag of sectorTags) {
+      assertEnum(Sectors, tag, 'Invalid sector tag provided');
+    }
+  }
   // Create a user in the DB using the request parameters/data
   const newDefaults: PortfolioDefault = {
     userId,
