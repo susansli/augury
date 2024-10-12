@@ -63,7 +63,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   // Get Google & user data from tokens
   const googleUser = await getGoogleUser(id_token, access_token);
   // console.log(googleUser);
-  const user = await getUserByGoogleId(googleUser);
+  const user = await getOrCreateUserByGoogleId(googleUser);
   // console.log(user);
 
   // Get/Create a session
@@ -157,13 +157,13 @@ async function getGoogleUser(
 }
 
 /**
- * Retrieves a `User` entry for a provided Google User. If it is a new Google
- * User, the account will be automatically created.
+ * Retrieves a `User` doc for a Google User. If it is a new User, the account
+ * will be automatically created in the database.
  * @param googleUser Data from Google OAuth response
  * @returns `User` document
  * @throws ApiError if there was an Axios or unknown error.
  */
-async function getUserByGoogleId(googleUser: GoogleUserResult) {
+async function getOrCreateUserByGoogleId(googleUser: GoogleUserResult) {
   try {
     const response = await UserModel.getUserByGoogleId(googleUser.id);
     return response;
