@@ -14,6 +14,7 @@ import customErrorHandler from './middlewares/CustomErrorHandler';
 import googleOauthHandler from './middlewares/GoogleOAuthHandler';
 // Routers
 import userRouter from './routes/UserRoutes';
+import portfolioRouter from './routes/PortfolioRoutes';
 
 const app = express();
 
@@ -34,7 +35,8 @@ app.use(cookieParser());
 app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Application routers that register handlers
-app.use('/', userRouter);
+app.use('/user', userRouter);
+app.use('/user/portfolio', portfolioRouter);
 
 // API Routes
 app.get('/google/callback', asyncErrorHandler(googleOauthHandler)); // Google Callback route that is used after OAuth redirect
