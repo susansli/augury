@@ -1,6 +1,14 @@
-//TODO more sectors/fix this
 enum Sectors {
-  TECHNOLOGY = 'technology',
+  ENERGY = 'energy',
+  MATERIALS = 'materials',
+  INDUSTRIALS = 'industrials',
+  UTILITIES = 'utilities',
+  HEALTH_CARE = 'health care',
+  FINANCIALS = 'financials',
+  CONSUMER_DISCRETIONARY = 'consumer discretionary',
+  CONSUMER_STAPLES = 'consumer staples',
+  INFORMATION_TECHNOLOGY = 'information technology',
+  COMMUNICATION_SERVICES = 'communication services',
   REAL_ESTATE = 'real estate',
 }
 
