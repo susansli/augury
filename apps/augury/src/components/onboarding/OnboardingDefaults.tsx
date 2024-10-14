@@ -19,9 +19,14 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { OnboardingStages } from './Onboarding';
+import { useRecoilState } from 'recoil';
+import {
+  onboardingCompAtom,
+  onboardingRiskAtom,
+} from './atoms/onboardingAtoms';
 
 // These represent % equities for the portfolio composition
-enum CompositionValues {
+export enum CompositionValues {
   AGGRESIVE = 90,
   BALANCED = 80,
   CONSERVATIVE = 60,
@@ -32,11 +37,9 @@ interface PageProps {
 }
 
 export default function OnboardingDefaults(props: PageProps): JSX.Element {
-  const [customCompEnabled, setCustomCompEnabled] = useState<boolean>(false);
-  const [compValue, setCompValue] = useState<CompositionValues | number>(
-    CompositionValues.BALANCED
-  );
-
+  const [customCompEnabled, setCustomCompEnabled] =
+    useRecoilState(onboardingRiskAtom);
+  const [compValue, setCompValue] = useRecoilState(onboardingCompAtom);
   const navigate = useNavigate();
 
   function ChangeCustomCompEnabled(enabled: boolean) {

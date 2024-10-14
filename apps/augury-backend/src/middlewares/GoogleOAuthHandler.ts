@@ -64,7 +64,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   const googleUser = await getGoogleUser(id_token, access_token);
   // console.log(googleUser);
   const { newUser, data: user } = await getOrCreateUserByGoogleId(googleUser);
-  // console.log(user);
+  console.log(user);
 
   // Get/Create a session
   const session = await SessionController.getCurrentSession(
