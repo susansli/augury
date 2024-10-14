@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export async function sendToOnboarding(atomValue: any) {
+export async function sendToOnboarding(atomValue: JSON) {
   const response = await axios.post(
     'http://localhost:3333/user/onboard',
     atomValue,

@@ -29,6 +29,11 @@ export default function OnboardingUI(): JSX.Element {
 
   const setNavbarVisible = useSetRecoilState(navbarShowAtom);
 
+  useEffect(() => {
+    setNavbarVisible(false);
+    return () => setNavbarVisible(true);
+  }, []);
+
   function renderCustomTabs(): JSX.Element[] {
     return tabTitles.map((title) => {
       return (
