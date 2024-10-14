@@ -14,14 +14,10 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
 import { formatValues, parseValues } from '../../helpers/format';
 import { OnboardingStages } from './Onboarding';
-import { useRecoilState, useSetRecoilState } from 'recoil';
-import {
-  onboardingBalanceAtom,
-  onboardingAtomSelector,
-} from './atoms/onboardingAtoms';
+import { useRecoilState } from 'recoil';
+import { onboardingBalanceAtom } from './atoms/onboardingAtoms';
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
 }
