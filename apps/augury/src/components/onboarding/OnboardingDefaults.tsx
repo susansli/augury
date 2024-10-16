@@ -1,7 +1,7 @@
 import {
   FormControl,
   FormLabel,
-  Select,
+  Select as ChakraSelect,
   Checkbox,
   NumberInput,
   NumberInputField,
@@ -12,6 +12,8 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import Select, { StylesConfig } from 'react-select';
+import makeAnimated from 'react-select/animated';
 import {
   faChevronLeft,
   faChevronRight,
@@ -19,6 +21,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { OnboardingStages } from './Onboarding';
+import { sectorOptions } from './onboardingData';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { onboardingSectorAtom } from './onboardingAtoms';
 
 // These represent % equities for the portfolio composition
 enum CompositionValues {
@@ -26,16 +31,27 @@ enum CompositionValues {
   BALANCED = 80,
   CONSERVATIVE = 60,
 }
-
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
 }
+
+const animatedComponents = makeAnimated();
+
+const colourStyles: StylesConfig = {
+  control: (styles) => ({ ...styles, backgroundColor: 'color.black' }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: 'color.black',
+  }),
+};
 
 export default function OnboardingDefaults(props: PageProps): JSX.Element {
   const [customCompEnabled, setCustomCompEnabled] = useState<boolean>(false);
   const [compValue, setCompValue] = useState<CompositionValues | number>(
     CompositionValues.BALANCED
   );
+  const [selectedSectors, setSelectedSectors] =
+    useRecoilState(onboardingSectorAtom);
 
   const navigate = useNavigate();
 
@@ -60,7 +76,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
         </FormLabel>
 
         <FormLabel>Risk Level</FormLabel>
-        <Select
+        <ChakraSelect
           defaultValue={CompositionValues.BALANCED}
           isDisabled={customCompEnabled}
           onChange={(e) => {
@@ -70,7 +86,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
           <option value={CompositionValues.AGGRESIVE}>Aggressive</option>
           <option value={CompositionValues.BALANCED}>Balanced</option>
           <option value={CompositionValues.CONSERVATIVE}>Conservative</option>
-        </Select>
+        </ChakraSelect>
         <Checkbox
           isChecked={customCompEnabled}
           onChange={(e) => ChangeCustomCompEnabled(e.target.checked)}
@@ -115,14 +131,16 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
         </Flex>
         {/* //TODO: Replace with multiselect */}
         <FormLabel>Prefered Sectors</FormLabel>
-        <Select>
-          <option>Technology</option>
-          <option>Real Estate</option>
-          <option>Financial Institutions</option>
-          <option>Security</option>
-          <option>Natural Resources</option>
-        </Select>
-
+        <Select
+          components={animatedComponents}
+          options={sectorOptions}
+          styles={colourStyles}
+          value={selectedSectors}
+          onChange={(selectedSectors) => {
+            setSelectedSectors(selectedSectors);
+          }}
+          isMulti
+        />
         <Flex width="100%" gap={2}>
           <Button
             flex={1}
