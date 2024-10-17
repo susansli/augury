@@ -79,9 +79,7 @@ export default function OnboardingUI(): JSX.Element {
           }}
           variant="unstyled"
         >
-          <TabList gap="5">
-            {renderCustomTabs()}
-          </TabList>
+          <TabList gap="5">{renderCustomTabs()}</TabList>
 
           <TabPanels>
             <TabPanel p="0" mt="5">

@@ -7,11 +7,22 @@ import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import ApiError from '../../errors/ApiError';
 
-async function getSession(id: Types.ObjectId | string, token: string) {
-  const _id = new mongoose.Types.ObjectId(id);
+/**
+ * Creates or updates the User's current session based on the passed `userId`
+ * and Google auth token.
+ * @param userId Mongoose document id
+ * @param googleToken Google session authentication token
+ * @returns `Session` document
+ * @throws `Error` if Axios request fails or an unknown error occurs
+ */
+async function getCurrentSession(
+  userId: Types.ObjectId | string,
+  googleToken: string
+) {
+  const id = new mongoose.Types.ObjectId(userId);
   const session: Session = {
-    userId: _id,
-    token: token,
+    userId: id,
+    token: googleToken,
   };
   try {
     const response = await SessionModel.updateSession(session);
@@ -28,6 +39,11 @@ async function getSession(id: Types.ObjectId | string, token: string) {
   }
 }
 
+/**
+ * Retrieves a `Session` by the provided access token
+ * @param accessToken encoded JWT token
+ * @returns `Session` document
+ */
 async function getSessionByToken(accessToken: string) {
   try {
     // Verify and decode the JWT
@@ -54,6 +70,6 @@ async function getSessionByToken(accessToken: string) {
 }
 
 export default module.exports = {
-  getSession,
+  getCurrentSession,
   getSessionByToken,
 };

@@ -4,17 +4,17 @@ import PortfolioRisk from '../enums/PortfolioRisk';
 import stripAndFormatIds from '../utils/stripAndFormatIds';
 
 const schema = new mongoose.Schema<Portfolio>({
-  name: {
-    type: String,
-    required: true,
-  },
-
+  name: { type: String, required: true }, // Portfolio name
   risk: {
+    // Optional risk level
     type: String,
     enum: Object.values(PortfolioRisk), // Enum definition
-    default: PortfolioRisk.CONSERVATIVE, // Default value for status
-    required: true,
+    // default: PortfolioRisk.CONSERVATIVE, // Default value for status
   },
+  useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
+  customRiskPercentage1: { type: Number },
+  customRiskPercentage2: { type: Number },
+  sectorTags: [String], // Would use custom validation but it's weird to enforce. Will validate through business logic
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
 
