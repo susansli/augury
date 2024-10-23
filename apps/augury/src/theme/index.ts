@@ -1,4 +1,5 @@
 import { extendTheme } from '@chakra-ui/react';
+import { MultiSelectTheme } from 'chakra-multiselect';
 
 // Foundation styling
 import borders from './foundations/borders';
@@ -22,7 +23,10 @@ const theme = extendTheme({
   typography,
   zIndices,
   styles,
-  config
+  config,
+  components: {
+    MultiSelect: MultiSelectTheme,
+  },
 });
 
 export default theme;
