@@ -1,6 +1,10 @@
 import { Schema } from 'mongoose';
 
-export default function (schema: Schema) {
+/**
+ * Includes `.id` field in `.toJSON()` calls whilst hiding the `._id` field.
+ * @param schema to apply transformation to
+ */
+export default function stripAndFormatIds(schema: Schema) {
   schema.set('toJSON', {
     virtuals: true,
     transform: function (doc, ret) {
