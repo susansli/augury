@@ -10,7 +10,7 @@ export async function sendToOnboarding(atomValue: string) {
       },
     }
   );
-  console.log('Response from backend:', response.data);
+  //console.log('Response from backend:', response.data);
 }
 /*export async function sendToBackend(atomValue: any) {
   console.log(atomValue);

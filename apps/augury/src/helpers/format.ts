@@ -7,16 +7,17 @@ export function parseValues(val: string): string {
   return val.replace(/^\$/, '');
 }
 
-export async function jsonifyOnboarding(array: any) {
+export async function jsonifyOnboarding(onboardingData: any) {
   const id = await getUserId();
   return JSON.stringify({
     id: id,
-    balance: array[0],
+    balance: onboardingData.balance,
     defaults: {
-      useCustomRisk: array[1],
+      useCustomRisk: onboardingData.risk || 'false',
       name: 'default',
-      customRiskPercentage1: array[2],
-      customRiskPercentage2: 100 - array[2],
+      customRiskPercentage1: onboardingData.composition,
+      customRiskPercentage2: 100 - onboardingData.composition,
+      sectorTags: onboardingData.sectors,
     },
   });
 }

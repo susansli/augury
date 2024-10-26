@@ -24,15 +24,15 @@ export interface OptionType {
 }
 
 export const sectorOptions: any = [
-  { value: Sectors.ENERGY, label: 'Energy' },
-  { value: Sectors.MATERIALS, label: 'Materials' },
-  { value: Sectors.INDUSTRIALS, label: 'Industrials' },
-  { value: Sectors.UTILITIES, label: 'Utilities' },
-  { value: Sectors.HEALTHCARE, label: 'Health Care' },
-  { value: Sectors.FINANCIALS, label: 'Financials' },
-  { value: Sectors.DISCRETIONARY, label: 'Consumer Discretionary' },
-  { value: Sectors.STAPLES, label: 'Consumer Staples' },
-  { value: Sectors.IT, label: 'Information Technology' },
-  { value: Sectors.COMMUNICATION, label: 'Communication Services' },
-  { value: Sectors.REALESTATE, label: 'Real Estate' },
+  { value: Sectors.ENERGY, label: 'energy' },
+  { value: Sectors.MATERIALS, label: 'materials' },
+  { value: Sectors.INDUSTRIALS, label: 'industrials' },
+  { value: Sectors.UTILITIES, label: 'utilities' },
+  { value: Sectors.HEALTHCARE, label: 'health care' },
+  { value: Sectors.FINANCIALS, label: 'financials' },
+  { value: Sectors.DISCRETIONARY, label: 'consumer discretionary' },
+  { value: Sectors.STAPLES, label: 'consumer staples' },
+  { value: Sectors.IT, label: 'information technology' },
+  { value: Sectors.COMMUNICATION, label: 'communication services' },
+  { value: Sectors.REALESTATE, label: 'real estate' },
 ];
