@@ -23,4 +23,4 @@ RUN npx nx build augury
 EXPOSE 4200
 
 # Start the application
-CMD ["npx", "nx", "serve", "augury"]
+CMD ["npx", "nx", "serve", "augury", "--host", "0.0.0.0"]
