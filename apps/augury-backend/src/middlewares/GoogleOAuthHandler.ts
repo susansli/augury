@@ -1,11 +1,15 @@
 import { CookieOptions, Request, Response } from 'express';
 import axios, { AxiosError } from 'axios';
 import qs from 'querystring';
-import { signJwt } from '../config/utils/jwt';
+import jwt from '../config/utils/jwt';
 import ApiError from '../errors/ApiError';
 import User from '../config/interfaces/User';
 import UserModel from '../models/auth/UserModel';
-import { getSession } from '../controllers/auth/SessionController';
+import SessionController from '../controllers/auth/SessionController';
+import ClientError from '../errors/ClientError';
+import StatusCode from '../config/enums/StatusCode';
+import Severity from '../config/enums/Severity';
+import { CLIENT_URL, SERVER_URL } from '../config/constants';
 
 interface GoogleTokensResult {
   access_token: string;
@@ -39,31 +43,41 @@ const refreshCookieOptions: CookieOptions = {
   maxAge: 3.154e10, // 1 year
 };
 
-export async function googleOauthHandler(req: Request, res: Response) {
+/**
+ * Request handler that is called once Google OAuth login flow has completed and
+ * been redirected to the backend.
+ * @param req Request with query string code
+ * @param res Response is redirected back to front-end landing
+ */
+async function googleOauthHandler(req: Request, res: Response) {
   if (typeof req?.query?.code !== 'string') {
-    throw new Error('Invalid code provided with OAuth query!');
+    throw new ClientError(
+      'Invalid code provided with OAuth query!',
+      StatusCode.BAD_REQUEST
+    );
   }
-  //get code from query string
   const code = req.query.code;
   const { id_token, access_token } = await getGoogleOAuthTokens(code);
   // console.log({ id_token, access_token });
-  //get the id and access token
 
-  //get user with tokens
+  // Get Google & user data from tokens
   const googleUser = await getGoogleUser(id_token, access_token);
   // console.log(googleUser);
-  const user = await getUserByGoogleId(googleUser);
+  const { newUser, data: user } = await getOrCreateUserByGoogleId(googleUser);
   // console.log(user);
 
-  //create a session
-  const session = await getSession(user._id, user.googleId);
+  // Get/Create a session
+  const session = await SessionController.getCurrentSession(
+    user._id,
+    user.googleId
+  );
 
   //create access & refressh token
-  const accessToken = signJwt(
+  const accessToken = jwt.signJwt(
     { ...user._id, session: session.token },
     { expiresIn: '15m' } // 15 minutes
   );
-  const refreshToken = signJwt(
+  const refreshToken = jwt.signJwt(
     { ...user._id, session: session.token },
     { expiresIn: '1y' } // 1 year
   );
@@ -72,11 +86,7 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   //redirect back to client
-  const clientPort = process.env.CLIENT_PORT || 4200;
-
-  //TODO: write logic - if the user exists, this URL should be '/', if this user is new the URL should be '/onboarding'
-
-  const url = `${process.env.FRONTEND_URL || 'http://localhost'}:${clientPort}/onboarding`;
+  const url = CLIENT_URL + (newUser ? '/onboarding' : '');
   // const url = `${
   //   process.env.FRONTEND_URL || 'http://localhost'
   // }:${clientPort}/Test.html`;
@@ -87,6 +97,13 @@ export async function googleOauthHandler(req: Request, res: Response) {
   res.redirect(url);
 }
 
+/**
+ * Retrieves the two Google OAuth tokens from the OAuth service based on the code
+ * from the login flow.
+ * @param code from OAuth login flow
+ * @returns OAuth token information
+ * @throws ApiError if there was an Axios or unknown error.
+ */
 async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
   const url = 'https://oauth2.googleapis.com/token';
 
@@ -94,7 +111,7 @@ async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
     code,
     client_id: process.env.CLIENT_ID,
     client_secret: process.env.CLIENT_SECRET,
-    redirect_uri: 'http://localhost:3333/google/callback',
+    redirect_uri: `${SERVER_URL}/google/callback`,
     grant_type: 'authorization_code',
   };
 
@@ -110,15 +127,16 @@ async function getGoogleOAuthTokens(code: string): Promise<GoogleTokensResult> {
     );
     return res.data;
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      console.error(error.response?.data?.error);
-      throw new Error(error.message);
-    } else {
-      throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
-    }
+    throwDetailedAxiosError(error);
   }
 }
 
+/**
+ * Retrieves a Google User based on the provided tokens.
+ * @param googleUser Data from Google OAuth response
+ * @returns Minimalistic data about the Google Account (e.g. firstname, email)
+ * @throws ApiError if there was an Axios or unknown error.
+ */
 async function getGoogleUser(
   id_token: string,
   access_token: string
@@ -134,18 +152,24 @@ async function getGoogleUser(
     );
     return res.data;
   } catch (error: unknown) {
-    if (error instanceof AxiosError) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
-    }
+    throwDetailedAxiosError(error);
   }
 }
 
-async function getUserByGoogleId(googleUser: GoogleUserResult) {
+/**
+ * Retrieves a `User` doc for a Google User. If it is a new User, the account
+ * will be automatically created in the database.
+ * @param googleUser Data from Google OAuth response
+ * @returns `User` document
+ * @throws ApiError if there was an Axios or unknown error.
+ */
+async function getOrCreateUserByGoogleId(googleUser: GoogleUserResult) {
   try {
     const response = await UserModel.getUserByGoogleId(googleUser.id);
-    return response;
+    return {
+      newUser: false,
+      data: response,
+    };
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       // Create the user on our end.
@@ -157,11 +181,31 @@ async function getUserByGoogleId(googleUser: GoogleUserResult) {
         balance: 0,
       };
       const response = await UserModel.createUser(user);
-      return response;
-    } else if (error instanceof AxiosError) {
-      throw new Error(error.message);
+      return {
+        newUser: true,
+        data: response,
+      };
     } else {
-      throw new Error(`Unknown error occurred! ${JSON.stringify(error)}`);
+      throwDetailedAxiosError(error);
     }
   }
 }
+
+/**
+ * A simple function to throw a more detailed error message based on it's response.
+ * @param error Error that was orginally thrown
+ * @throws ApiError
+ */
+function throwDetailedAxiosError(error: unknown) {
+  if (error instanceof AxiosError) {
+    throw new ApiError(error.message, StatusCode.INTERNAL_ERROR, Severity.LOW);
+  } else {
+    throw new ApiError(
+      `Unknown error occurred! ${JSON.stringify(error)}`,
+      StatusCode.INTERNAL_ERROR,
+      Severity.HIGH
+    );
+  }
+}
+
+export default googleOauthHandler;

@@ -3,20 +3,28 @@ import UserController from '../controllers/auth/UserController';
 // import { verifyAccessToken } from '../middlewares/AttachUserHandler';
 import asyncErrorHandler from '../middlewares/AsyncErrorHandler';
 
-export const userRouter: Router = express.Router();
-const baseURL = '/user';
+const userRouter: Router = express.Router();
 
 // Uncomment if we want to verify the client's auth token for all routes
-// Don't forget to remove redundant calls from routes below as well.
 // userRouter.use(asyncErrorHandler(verifyAccessToken));
 
 userRouter
-  .route(baseURL)
+  .route('/')
   .get(asyncErrorHandler(UserController.getUser))
   .post(asyncErrorHandler(UserController.createUser))
   .put(asyncErrorHandler(UserController.updateUser));
 // .delete(asyncErrorHandler(UserController.deleteUser));
 
 userRouter
-  .route(`${baseURL}/balance`)
+  .route('/balance')
   .put(asyncErrorHandler(UserController.updateUserBalance));
+
+userRouter
+  .route('/current')
+  .get(asyncErrorHandler(UserController.getLoggedInUserData));
+
+userRouter
+  .route('/onboard')
+  .post(asyncErrorHandler(UserController.onboardNewUser));
+
+export default userRouter;
