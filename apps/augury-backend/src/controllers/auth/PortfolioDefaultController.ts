@@ -12,19 +12,20 @@ import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import ApiError from '../../errors/ApiError';
 import Sectors from '../../config/enums/Sectors';
 import PortfolioRisk from '../../config/enums/PortfolioRisk';
+import Identifiable from '../../config/interfaces/Identifiable';
 
 /**
  * Retrieves a User's portfolio defaults from the database by user ID
- * @param req Request with body containing a string `id` field
+ * @param req Request with URL parameter containing an `id`
  * @param res Response with portfolio defaults
  * @throws `ClientError` if request is invalid
  * @throws `ApiError` if unable to retrieve defaults
  */
 const getPortfolioDefaults = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable>,
   res: Response
 ) => {
-  const { id: userId } = req.body;
+  const { id: userId } = req.params;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Retrieve data from the DB using request parameters/data

@@ -13,6 +13,7 @@ import Severity from '../../config/enums/Severity';
 import Portfolio from '../../config/interfaces/Portfolio';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import PortfolioDefaultModel from '../../models/auth/PortfolioDefaultModel';
+import Identifiable from '../../config/interfaces/Identifiable';
 
 type UserReponse = {
   user: User;
@@ -20,16 +21,16 @@ type UserReponse = {
 
 /**
  * Retrieves a User from the database based on their ID
- * @param req Request with body containing a string `id` field
+ * @param req Request with URL parameter containing an `id`
  * @param res Response with user data
  * @throws ClientError if request is invalid
  * @throws ApiError if unable to retrieve user
  */
 const getUser = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable>,
   res: Response<UserReponse>
 ): Promise<void> => {
-  const { id: userId } = req.body;
+  const { id: userId } = req.params;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
 
