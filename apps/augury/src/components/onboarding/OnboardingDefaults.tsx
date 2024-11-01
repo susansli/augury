@@ -11,7 +11,6 @@ import {
   Button,
   Flex,
 } from '@chakra-ui/react';
-import { useState } from 'react';
 import Select, { StylesConfig } from 'react-select';
 import makeAnimated from 'react-select/animated';
 import {
@@ -26,7 +25,7 @@ import {
   onboardingRiskAtom,
 } from './atoms/onboardingAtoms';
 import { sectorOptions } from './onboardingData';
-import { useRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { onboardingSectorAtom } from '../onboarding/atoms/onboardingAtoms';
 
 // These represent % equities for the portfolio composition
@@ -37,6 +36,11 @@ export enum CompositionValues {
 }
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
+}
+
+interface Option {
+  label: string;
+  value: string;
 }
 
 const animatedComponents = makeAnimated();
@@ -53,8 +57,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
   const [customCompEnabled, setCustomCompEnabled] =
     useRecoilState(onboardingRiskAtom);
   const [compValue, setCompValue] = useRecoilState(onboardingCompAtom);
-  const [selectedSectors, setSelectedSectors] =
-    useRecoilState(onboardingSectorAtom);
+  const setSelectedSectors = useSetRecoilState(onboardingSectorAtom);
   const navigate = useNavigate();
 
   function ChangeCustomCompEnabled(enabled: boolean) {
@@ -131,18 +134,16 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
             </NumberInput>
           </Flex>
         </Flex>
-        {/* //TODO: Replace with multiselect */}
         <FormLabel>Prefered Sectors</FormLabel>
         <Select
           components={animatedComponents}
           options={sectorOptions}
           styles={colourStyles}
           onChange={(selectedOptions) => {
-            // Check if selectedOptions is an array and then map to get labels
             const labels = selectedOptions
-              ? selectedOptions.map((option) => option.label)
+              ? // @ts-ignore
+                selectedOptions.map((option: Option) => option.label)
               : [];
-            //console.log(labels); // Logs the array of labels
             setSelectedSectors(labels);
           }}
           isMulti

@@ -18,12 +18,17 @@ import { formatValues, parseValues } from '../../helpers/format';
 import { OnboardingStages } from './Onboarding';
 import { useRecoilState } from 'recoil';
 import { onboardingBalanceAtom } from './atoms/onboardingAtoms';
+import { useEffect } from 'react';
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
 }
 export default function OnboardingBalance(props: PageProps): JSX.Element {
+
   const [value, setValue] = useRecoilState(onboardingBalanceAtom);
-  setValue(value);
+  
+  useEffect(() => {
+    setValue(value);
+  }, []);
 
   return (
     <FormControl color="text.body">

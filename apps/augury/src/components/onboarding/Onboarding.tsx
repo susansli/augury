@@ -15,8 +15,6 @@ import { useState, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { navbarShowAtom } from '../navigation/atoms/navigationAtoms';
 import { tabTitles } from './onboardingData';
-import toast from 'react-hot-toast';
-import AuthStoreManager from '../../helpers/AuthStoreManager';
 
 export enum OnboardingStages {
   DEFAULTS,
@@ -37,7 +35,7 @@ export default function OnboardingUI(): JSX.Element {
   }, []);
 
   function renderCustomTabs(): JSX.Element[] {
-    return tabTitles.map((title) => {
+    return tabTitles.map((title, index) => {
       return (
         <Tab
           w="20"
@@ -46,6 +44,7 @@ export default function OnboardingUI(): JSX.Element {
           bg="background.overlay0"
           borderRadius="10"
           _selected={{ bg: 'color.lavender' }}
+          key={index}
         >
           <VisuallyHidden>{title}</VisuallyHidden>
         </Tab>

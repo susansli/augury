@@ -1,7 +1,6 @@
 import { atom, selector } from 'recoil';
 import { CompositionValues } from '../OnboardingDefaults';
-import { jsonifyOnboarding } from '../../../helpers/format';
-import { OptionType, Sectors } from '../onboardingData';
+import { OptionType } from '../onboardingData';
 import { SingleValue } from 'react-select';
 
 export const onboardingBalanceAtom = atom<string>({
