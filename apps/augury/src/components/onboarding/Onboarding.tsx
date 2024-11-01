@@ -15,6 +15,8 @@ import { useState, useEffect } from 'react';
 import { useSetRecoilState } from 'recoil';
 import { navbarShowAtom } from '../navigation/atoms/navigationAtoms';
 import { tabTitles } from './onboardingData';
+import toast from 'react-hot-toast';
+import AuthStoreManager from '../../helpers/AuthStoreManager';
 
 export enum OnboardingStages {
   DEFAULTS,
