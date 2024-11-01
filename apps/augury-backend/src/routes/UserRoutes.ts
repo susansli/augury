@@ -8,16 +8,16 @@ const userRouter: Router = express.Router();
 // Uncomment if we want to verify the client's auth token for all routes
 // userRouter.use(asyncErrorHandler(verifyAccessToken));
 
-userRouter.route('/:id').get(asyncErrorHandler(UserController.getUser));
+userRouter.route('/').post(asyncErrorHandler(UserController.createUser));
 
 userRouter
-  .route('/')
-  .post(asyncErrorHandler(UserController.createUser))
+  .route('/:id')
+  .get(asyncErrorHandler(UserController.getUser))
   .put(asyncErrorHandler(UserController.updateUser));
 // .delete(asyncErrorHandler(UserController.deleteUser));
 
 userRouter
-  .route('/balance')
+  .route('/:id/balance')
   .put(asyncErrorHandler(UserController.updateUserBalance));
 
 userRouter
