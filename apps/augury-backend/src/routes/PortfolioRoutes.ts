@@ -9,15 +9,14 @@ const portfolioRouter: Router = express.Router();
 // userRouter.use(asyncErrorHandler(verifyAccessToken));
 
 portfolioRouter
-  .route('/defaults/:id')
-  .get(asyncErrorHandler(PortfolioDefaultController.getPortfolioDefaults));
+  .route('/defaults')
+  .post(asyncErrorHandler(PortfolioDefaultController.createPortfolioDefaults));
 
 portfolioRouter
-  .route('/defaults')
+  .route('/defaults/:id')
+  .get(asyncErrorHandler(PortfolioDefaultController.getPortfolioDefaults))
   .put(asyncErrorHandler(PortfolioDefaultController.updatePortfolioDefaults))
-  .post(asyncErrorHandler(PortfolioDefaultController.createPortfolioDefaults))
   .delete(
     asyncErrorHandler(PortfolioDefaultController.deletePortfolioDefaults)
   );
-
 export default portfolioRouter;

@@ -7,7 +7,7 @@ import {
 import PortfolioDefaultsModel from '../../models/auth/PortfolioDefaultModel';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
-import User from '../../config/interfaces/User';
+// import User from '../../config/interfaces/User';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import ApiError from '../../errors/ApiError';
 import Sectors from '../../config/enums/Sectors';
@@ -101,17 +101,17 @@ const createPortfolioDefaults = async (
 
 /**
  * Updates portfolio defaults for a user based on the passed request body
- * @param req Request with `PortfolioDefault` options (e.g. userId, risk)
+ * @param req Request with URL parameter for ID and a `PortfolioDefault` body (e.g. name, sectors)
  * @param res Response with updated portfolio defaults
- * @throws `ClientError` if request is invalid (missing `userId`)
+ * @throws `ClientError` if request is invalid (e.g. a bad sector tag)
  * @throws `ApiError` if unable to create defaults
  */
 const updatePortfolioDefaults = async (
-  req: Request<unknown, unknown, PortfolioDefault>,
+  req: Request<Identifiable, unknown, PortfolioDefault>,
   res: Response<PortfolioDefaultResponse>
 ) => {
+  const { id: userId } = req.params;
   const {
-    userId,
     name,
     // risk,
     // useCustomRisk,
@@ -163,10 +163,10 @@ const updatePortfolioDefaults = async (
  * @param res Deleted user's information
  */
 const deletePortfolioDefaults = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable>,
   res: Response<PortfolioDefaultResponse>
 ): Promise<void> => {
-  const { id: userId } = req.body;
+  const { id: userId } = req.params;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Delete the User from the DB
