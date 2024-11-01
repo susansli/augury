@@ -51,6 +51,15 @@ const colourStyles: StylesConfig = {
     ...provided,
     backgroundColor: 'color.black',
   }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? 'gray' : 'black', 
+    color: 'white',
+    ':hover': {
+      backgroundColor: 'gray',
+      color: 'white', 
+    },
+  }),
 };
 
 export default function OnboardingDefaults(props: PageProps): JSX.Element {
