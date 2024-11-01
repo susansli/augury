@@ -253,20 +253,20 @@ const onboardNewUser = async (
   assertPortfolioDefaultsFormat(defaults);
   const {
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   }: Portfolio = defaults;
 
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk: useCustomRisk ? undefined : risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk: useCustomRisk ? undefined : risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   };
   const [defaultsResponse, updateUserResponse] = await Promise.all([

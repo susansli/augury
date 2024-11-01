@@ -11,8 +11,12 @@ import User from '../../config/interfaces/User';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import ApiError from '../../errors/ApiError';
 import Sectors from '../../config/enums/Sectors';
-import PortfolioRisk from '../../config/enums/PortfolioRisk';
+// import PortfolioRisk from '../../config/enums/PortfolioRisk';
 import Identifiable from '../../config/interfaces/Identifiable';
+
+type PortfolioDefaultResponse = {
+  defaults: PortfolioDefault;
+};
 
 /**
  * Retrieves a User's portfolio defaults from the database by user ID
@@ -23,7 +27,7 @@ import Identifiable from '../../config/interfaces/Identifiable';
  */
 const getPortfolioDefaults = async (
   req: Request<Identifiable>,
-  res: Response
+  res: Response<PortfolioDefaultResponse>
 ) => {
   const { id: userId } = req.params;
   // Assert the request format was valid
@@ -53,7 +57,7 @@ const getPortfolioDefaults = async (
  */
 const createPortfolioDefaults = async (
   req: Request<unknown, unknown, PortfolioDefault>,
-  res: Response
+  res: Response<PortfolioDefaultResponse>
 ) => {
   // Assert the request format was valid
   assertPortfolioDefaultsFormat(req.body);
@@ -61,20 +65,20 @@ const createPortfolioDefaults = async (
   const {
     userId,
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   }: PortfolioDefault = req.body;
 
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk: useCustomRisk ? undefined : risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk: useCustomRisk ? undefined : risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   };
 
@@ -104,22 +108,22 @@ const createPortfolioDefaults = async (
  */
 const updatePortfolioDefaults = async (
   req: Request<unknown, unknown, PortfolioDefault>,
-  res: Response
+  res: Response<PortfolioDefaultResponse>
 ) => {
   const {
     userId,
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   }: PortfolioDefault = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
-  if (risk != null) {
-    assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
-  }
+  // if (risk != null) {
+  //   assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
+  // }
   if (Array.isArray(sectorTags)) {
     for (const tag of sectorTags) {
       assertEnum(Sectors, tag, 'Invalid sector tag provided');
@@ -129,10 +133,10 @@ const updatePortfolioDefaults = async (
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   };
 
@@ -160,7 +164,7 @@ const updatePortfolioDefaults = async (
  */
 const deletePortfolioDefaults = async (
   req: Request<unknown, unknown, User>,
-  res: Response
+  res: Response<PortfolioDefaultResponse>
 ): Promise<void> => {
   const { id: userId } = req.body;
   // Assert the request format was valid
@@ -170,7 +174,7 @@ const deletePortfolioDefaults = async (
 
   if (response) {
     // send the user back after model runs logic
-    res.status(StatusCode.OK).send({ user: response });
+    res.status(StatusCode.OK).send({ defaults: response });
   } else {
     // we throw an API error since this means something errored out with our server end
     throw new ApiError(
