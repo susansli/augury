@@ -1,14 +1,13 @@
 import { atom, selector } from 'recoil';
 import { CompositionValues } from '../OnboardingDefaults';
-import { OptionType } from '../onboardingData';
-import { SingleValue } from 'react-select';
+import { PortfolioDefaultBody } from 'apps/augury/src/api/portfolio/Portfolio';
 
 export const onboardingBalanceAtom = atom<string>({
   key: 'onboardingBalanceAtom',
   default: '1000.00',
 });
 
-export const onboardingCompAtom = atom({
+export const onboardingCompAtom = atom<CompositionValues>({
   key: 'onboardingCompAtom',
   default: CompositionValues.BALANCED,
 });
@@ -18,9 +17,9 @@ export const onboardingRiskAtom = atom<boolean>({
   default: false,
 });
 
-export const onboardingSectorAtom = atom<SingleValue<OptionType>>({
+export const onboardingSectorAtom = atom<string[]>({
   key: 'onboardingSectorAtom',
-  default: null,
+  default: [],
 });
 
 export const onboardingAtomSelector = selector({
@@ -30,6 +29,13 @@ export const onboardingAtomSelector = selector({
     const composition = get(onboardingCompAtom);
     const risk = get(onboardingRiskAtom);
     const sectors = get(onboardingSectorAtom);
-    return { balance, composition, risk, sectors };
+    
+    const onboardingBody: PortfolioDefaultBody = {
+      balance: balance, 
+      composition: composition, 
+      risk: risk, 
+      sectors: sectors 
+    }
+    return onboardingBody;
   },
 });

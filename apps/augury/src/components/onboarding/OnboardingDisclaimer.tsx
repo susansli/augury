@@ -8,8 +8,9 @@ import { OnboardingStages } from './Onboarding';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { onboardingAtomSelector } from './atoms/onboardingAtoms';
-import { sendToOnboarding } from '../../utils/SendToOnboarding';
-import { jsonifyOnboarding } from '../../helpers/format';
+import Portfolio from '../../api/portfolio/Portfolio';
+import toast from 'react-hot-toast';
+import { useState } from 'react';
 
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
@@ -17,10 +18,20 @@ interface PageProps {
 
 export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
   const navigate = useNavigate();
+
   const onboardingDefaults = useRecoilValue(onboardingAtomSelector);
+  const [isButtonLoading, setIsButtonLoading] = useState<boolean>(false);
+
   async function finishOnboard() {
-    sendToOnboarding(await jsonifyOnboarding(onboardingDefaults));
-    navigate('/portfolio');
+    setIsButtonLoading(true);
+    const response = await Portfolio.updatePortfolioDefaults(onboardingDefaults);
+    if (!response) {
+      toast.error('There was a problem setting your user defaults, please try again.');
+      setIsButtonLoading(false);
+    } else {
+      setIsButtonLoading(false);
+      navigate('/portfolio');
+    }
   }
 
   return (
@@ -48,7 +59,8 @@ export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
             flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
-            onClick={finishOnboard}
+            onClick={async () => await finishOnboard()}
+            isLoading={isButtonLoading}
           >
             I understand
           </Button>

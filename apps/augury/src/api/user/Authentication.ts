@@ -1,6 +1,3 @@
-import axios from "axios";
-import { SERVER_URL } from "../Environments";
-
 function getGoogleAuthUrl(): string | null {
   try {
     const rootUrl = 'https://accounts.google.com/o/oauth2/v2/auth';
