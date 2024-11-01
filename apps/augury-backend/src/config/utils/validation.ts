@@ -11,7 +11,7 @@ import Portfolio from '../interfaces/Portfolio';
  * @throws `ClientError` if parameter is `null` or `undefined`
  */
 export function assertExists<T>(param: T, errorMsg: string) {
-  if (!(param != null)) {
+  if (!(param != null) || (typeof param === 'string' && !param)) {
     throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
   }
 }
