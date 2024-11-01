@@ -6,6 +6,10 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { OnboardingStages } from './Onboarding';
 import { useNavigate } from 'react-router-dom';
+import { useRecoilValue } from 'recoil';
+import { onboardingAtomSelector } from './atoms/onboardingAtoms';
+import { sendToOnboarding } from '../../utils/SendToOnboarding';
+import { jsonifyOnboarding } from '../../helpers/format';
 
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
@@ -13,6 +17,11 @@ interface PageProps {
 
 export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
   const navigate = useNavigate();
+  const onboardingDefaults = useRecoilValue(onboardingAtomSelector);
+  async function finishOnboard() {
+    sendToOnboarding(await jsonifyOnboarding(onboardingDefaults));
+    navigate('/portfolio');
+  }
 
   return (
     <FormControl color="text.body">
@@ -21,7 +30,9 @@ export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
           Augury is not financial advice
         </FormLabel>
         <FormLabel>
-          Augury is powered by AI, which is prone to making mistakes. Please consult a financial advisor before using Augury's suggestions when it comes to your own portfolio!
+          Augury is powered by AI, which is prone to making mistakes. Please
+          consult a financial advisor before using Augury's suggestions when it
+          comes to your own portfolio!
         </FormLabel>
 
         <Flex width="100%" gap={2}>
@@ -37,9 +48,7 @@ export default function OnboardingDisclaimer(props: PageProps): JSX.Element {
             flex={1}
             rightIcon={<FontAwesomeIcon icon={faChevronRight} />}
             bgColor="background.surface1"
-            onClick={async () => {
-
-            }}
+            onClick={finishOnboard}
           >
             I understand
           </Button>
