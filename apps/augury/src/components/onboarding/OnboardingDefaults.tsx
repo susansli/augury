@@ -1,7 +1,7 @@
 import {
   FormControl,
   FormLabel,
-  Select,
+  Select as ChakraSelect,
   Checkbox,
   NumberInput,
   NumberInputField,
@@ -11,7 +11,8 @@ import {
   Button,
   Flex,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import Select, { StylesConfig } from 'react-select';
+import makeAnimated from 'react-select/animated';
 import {
   faChevronLeft,
   faChevronRight,
@@ -19,24 +20,53 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useNavigate } from 'react-router-dom';
 import { OnboardingStages } from './Onboarding';
+import {
+  onboardingCompAtom,
+  onboardingRiskAtom,
+} from './atoms/onboardingAtoms';
+import { sectorOptions } from './onboardingData';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { onboardingSectorAtom } from '../onboarding/atoms/onboardingAtoms';
 
 // These represent % equities for the portfolio composition
-enum CompositionValues {
+export enum CompositionValues {
   AGGRESIVE = 90,
   BALANCED = 80,
   CONSERVATIVE = 60,
 }
-
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
 }
 
-export default function OnboardingDefaults(props: PageProps): JSX.Element {
-  const [customCompEnabled, setCustomCompEnabled] = useState<boolean>(false);
-  const [compValue, setCompValue] = useState<CompositionValues | number>(
-    CompositionValues.BALANCED
-  );
+interface Option {
+  label: string;
+  value: string;
+}
 
+const animatedComponents = makeAnimated();
+
+const colourStyles: StylesConfig = {
+  control: (styles) => ({ ...styles, backgroundColor: 'color.black' }),
+  menu: (provided) => ({
+    ...provided,
+    backgroundColor: 'color.black',
+  }),
+  option: (provided, state) => ({
+    ...provided,
+    backgroundColor: state.isSelected ? 'gray' : 'black', 
+    color: 'white',
+    ':hover': {
+      backgroundColor: 'gray',
+      color: 'white', 
+    },
+  }),
+};
+
+export default function OnboardingDefaults(props: PageProps): JSX.Element {
+  const [customCompEnabled, setCustomCompEnabled] =
+    useRecoilState(onboardingRiskAtom);
+  const [compValue, setCompValue] = useRecoilState(onboardingCompAtom);
+  const setSelectedSectors = useSetRecoilState(onboardingSectorAtom);
   const navigate = useNavigate();
 
   function ChangeCustomCompEnabled(enabled: boolean) {
@@ -60,7 +90,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
         </FormLabel>
 
         <FormLabel>Risk Level</FormLabel>
-        <Select
+        <ChakraSelect
           defaultValue={CompositionValues.BALANCED}
           isDisabled={customCompEnabled}
           onChange={(e) => {
@@ -70,7 +100,7 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
           <option value={CompositionValues.AGGRESIVE}>Aggressive</option>
           <option value={CompositionValues.BALANCED}>Balanced</option>
           <option value={CompositionValues.CONSERVATIVE}>Conservative</option>
-        </Select>
+        </ChakraSelect>
         <Checkbox
           isChecked={customCompEnabled}
           onChange={(e) => ChangeCustomCompEnabled(e.target.checked)}
@@ -113,16 +143,20 @@ export default function OnboardingDefaults(props: PageProps): JSX.Element {
             </NumberInput>
           </Flex>
         </Flex>
-        {/* //TODO: Replace with multiselect */}
         <FormLabel>Prefered Sectors</FormLabel>
-        <Select>
-          <option>Technology</option>
-          <option>Real Estate</option>
-          <option>Financial Institutions</option>
-          <option>Security</option>
-          <option>Natural Resources</option>
-        </Select>
-
+        <Select
+          components={animatedComponents}
+          options={sectorOptions}
+          styles={colourStyles}
+          onChange={(selectedOptions) => {
+            const labels = selectedOptions
+              ? // @ts-ignore
+                selectedOptions.map((option: Option) => option.label)
+              : [];
+            setSelectedSectors(labels);
+          }}
+          isMulti
+        />
         <Flex width="100%" gap={2}>
           <Button
             flex={1}

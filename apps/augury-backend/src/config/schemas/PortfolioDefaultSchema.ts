@@ -12,10 +12,10 @@ const schema = new mongoose.Schema<PortfolioDefault>({
     enum: Object.values(PortfolioRisk), // Enum definition
     // default: PortfolioRisk.CONSERVATIVE, // Default value for status
   },
-  useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
-  customRiskPercentage1: { type: Number },
-  customRiskPercentage2: { type: Number },
-  sectorTags: [String], // Would use custom validation but it's weird to enforce. Will validate through business logic
+  //useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
+  //customRiskPercentage1: { type: Number },
+  //customRiskPercentage2: { type: Number },
+  //sectorTags: [String], // Would use custom validation but it's weird to enforce. Will validate through business logic
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
 

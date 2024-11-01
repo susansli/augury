@@ -64,7 +64,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   const googleUser = await getGoogleUser(id_token, access_token);
   // console.log(googleUser);
   const { newUser, data: user } = await getOrCreateUserByGoogleId(googleUser);
-  // console.log(user);
+  console.log(user);
 
   // Get/Create a session
   const session = await SessionController.getCurrentSession(
@@ -86,7 +86,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   //redirect back to client
-  const url = CLIENT_URL + (newUser ? '/onboarding' : '');
+  const url = CLIENT_URL + (newUser ? `/onboarding?id=${user._id.toString()}` : `/?id=${user._id.toString()}`);
   // const url = `${
   //   process.env.FRONTEND_URL || 'http://localhost'
   // }:${clientPort}/Test.html`;
