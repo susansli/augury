@@ -1,4 +1,4 @@
-import { ColorMode,  ThemingProps } from '@chakra-ui/system';
+import { ColorMode, ThemingProps } from '@chakra-ui/system';
 import { Breakpoints, Styles } from '@chakra-ui/theme-tools';
 import { Dict } from '@chakra-ui/utils';
 import { StyleObjectOrFn, SystemStyleObject } from '@chakra-ui/styled-system';
@@ -40,11 +40,11 @@ export type ThemeDirection = 'ltr' | 'rtl';
 
 export interface ComponentDefaultProps
   extends Omit<ThemingProps, 'styleConfig'>,
-  Dict { }
+    Dict {}
 
 export interface ThemeComponentProps<Theme extends ChakraTheme = ChakraTheme>
   extends Dict,
-  Omit<ThemingProps, 'styleConfig'> {
+    Omit<ThemingProps, 'styleConfig'> {
   colorMode: ColorMode;
   theme: Theme;
 }

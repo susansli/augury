@@ -1,15 +1,30 @@
 import express, { Router } from 'express';
-export const userRouter: Router = express.Router();
-
 import UserController from '../controllers/auth/UserController';
-import { verifyTokenAndAttachUser } from '../middlewares/SessionController';
+// import { verifyAccessToken } from '../middlewares/AttachUserHandler';
+import asyncErrorHandler from '../middlewares/AsyncErrorHandler';
 
-userRouter.use(verifyTokenAndAttachUser);
+const userRouter: Router = express.Router();
+
+// Uncomment if we want to verify the client's auth token for all routes
+// userRouter.use(asyncErrorHandler(verifyAccessToken));
 
 userRouter
   .route('/')
-  .get(UserController.getUser)
-  .post(UserController.createUser)
-  .put(UserController.updateUser);
-// .delete(UserController.deleteUser);
-userRouter.route('/Balance').put(UserController.updateUserBalance);
+  .get(asyncErrorHandler(UserController.getUser))
+  .post(asyncErrorHandler(UserController.createUser))
+  .put(asyncErrorHandler(UserController.updateUser));
+// .delete(asyncErrorHandler(UserController.deleteUser));
+
+userRouter
+  .route('/balance')
+  .put(asyncErrorHandler(UserController.updateUserBalance));
+
+userRouter
+  .route('/current')
+  .get(asyncErrorHandler(UserController.getLoggedInUserData));
+
+userRouter
+  .route('/onboard')
+  .post(asyncErrorHandler(UserController.onboardNewUser));
+
+export default userRouter;

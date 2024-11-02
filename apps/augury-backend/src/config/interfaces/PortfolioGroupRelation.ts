@@ -1,6 +1,7 @@
 import { Types } from 'mongoose';
+import Identifiable from './Identifiable';
 
-export default interface PortfolioGroupRelation {
-  portfolioId: Types.ObjectId;
-  portfolioGroupId: Types.ObjectId;
+export default interface PortfolioGroupRelation extends Identifiable {
+  portfolioId: Types.ObjectId | string;
+  portfolioGroupId: Types.ObjectId | string;
 }

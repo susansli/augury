@@ -1,11 +1,18 @@
-import mongoose, { Document } from 'mongoose';
+import mongoose from 'mongoose';
 import User from '../../config/interfaces/User';
-import UserSchema from '../../config/schemas/User';
+import UserSchema from '../../config/schemas/UserSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
+import SessionController from '../../controllers/auth/SessionController';
 
-const getUser = async (id: mongoose.Types.ObjectId) => {
+/**
+ * Retrieves a `User` based on passed id
+ * @param id Mongoose document id
+ * @returns `User` document
+ * @throws ApiError if user doesn't exists/invalid ID
+ */
+const getUser = async (id: string | mongoose.Types.ObjectId) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -19,6 +26,12 @@ const getUser = async (id: mongoose.Types.ObjectId) => {
   return user;
 };
 
+/**
+ * Retrieves a `User` based on the passed google id
+ * @param googleId Unique Google account identifier
+ * @returns `User` document
+ * @throws ApiError if user doesn't exists/invalid ID
+ */
 const getUserByGoogleId = async (googleId: string) => {
   const user = await UserSchema.findOne({ googleId: googleId });
 
@@ -33,6 +46,12 @@ const getUserByGoogleId = async (googleId: string) => {
   return user;
 };
 
+/**
+ * Creates a `User` based on passed data
+ * @param data `User` object to create
+ * @returns New `User` document
+ * @throws ApiError if user couldn't be created
+ */
 const createUser = async (data: User) => {
   const user = await UserSchema.create(data);
 
@@ -47,7 +66,17 @@ const createUser = async (data: User) => {
   return user;
 };
 
-const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
+/**
+ * Updates a specific `User`'s data by id.
+ * @param id Mongoose document id
+ * @param data
+ * @returns Updated user data
+ * @throws ApiError if user doesn't exist/invalid id, or user couldn't be updated
+ */
+const updateUser = async (
+  id: string | mongoose.Types.ObjectId,
+  data: Partial<User>
+) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -64,7 +93,9 @@ const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
   user.googleId = googleId || user.googleId;
   user.firstName = firstName || user.firstName;
   user.lastName = lastName || user.lastName;
-  user.balance = balance || user.balance;
+  if (typeof balance === 'number' && !isNaN(balance)) {
+    user.balance = balance;
+  }
 
   const updatedUser = await user.save();
 
@@ -79,7 +110,13 @@ const updateUser = async (id: mongoose.Types.ObjectId, data: Partial<User>) => {
   return updatedUser;
 };
 
-const deleteUser = async (id: mongoose.Types.ObjectId) => {
+/**
+ * Deletes a user from the database
+ * ! Note: This is a dangerous action and should be carefully considered and well-implemented!
+ * @param id Mongoose document id
+ * @returns Removed user data
+ */
+const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
   const user = await UserSchema.findByIdAndDelete(id);
 
   if (!user) {
@@ -93,9 +130,22 @@ const deleteUser = async (id: mongoose.Types.ObjectId) => {
   return user;
 };
 
+/**
+ * Retrieves a `User` from the database based on the provided session/`accessToken`
+ * @param sessionToken Cookie from client `Request`
+ * @returns `User` document
+ * @throws ApiError if session is invalid or coult not retrieve user
+ */
+const getUserBySessionToken = async (sessionToken: string) => {
+  const session = await SessionController.getSessionByToken(sessionToken);
+  const user = await getUser(session.userId);
+  return user;
+};
+
 export default module.exports = {
   getUser,
   getUserByGoogleId,
+  getUserBySessionToken,
   createUser,
   updateUser,
   deleteUser,

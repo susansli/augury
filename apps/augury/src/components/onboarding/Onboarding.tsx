@@ -35,7 +35,7 @@ export default function OnboardingUI(): JSX.Element {
   }, []);
 
   function renderCustomTabs(): JSX.Element[] {
-    return tabTitles.map((title) => {
+    return tabTitles.map((title, index) => {
       return (
         <Tab
           w="20"
@@ -44,6 +44,7 @@ export default function OnboardingUI(): JSX.Element {
           bg="background.overlay0"
           borderRadius="10"
           _selected={{ bg: 'color.lavender' }}
+          key={index}
         >
           <VisuallyHidden>{title}</VisuallyHidden>
         </Tab>
@@ -79,9 +80,7 @@ export default function OnboardingUI(): JSX.Element {
           }}
           variant="unstyled"
         >
-          <TabList gap="5">
-            {renderCustomTabs()}
-          </TabList>
+          <TabList gap="5">{renderCustomTabs()}</TabList>
 
           <TabPanels>
             <TabPanel p="0" mt="5">

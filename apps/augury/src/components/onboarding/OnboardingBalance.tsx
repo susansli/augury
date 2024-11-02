@@ -14,16 +14,21 @@ import {
   faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from 'react';
 import { formatValues, parseValues } from '../../helpers/format';
 import { OnboardingStages } from './Onboarding';
-
+import { useRecoilState } from 'recoil';
+import { onboardingBalanceAtom } from './atoms/onboardingAtoms';
+import { useEffect } from 'react';
 interface PageProps {
   setStage: (currStage: OnboardingStages) => void;
 }
-
 export default function OnboardingBalance(props: PageProps): JSX.Element {
-  const [value, setValue] = useState<string>('1000.00');
+
+  const [value, setValue] = useRecoilState(onboardingBalanceAtom);
+  
+  useEffect(() => {
+    setValue(value);
+  }, []);
 
   return (
     <FormControl color="text.body">
