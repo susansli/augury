@@ -22,7 +22,7 @@ function setNumSpinnerValue(value: string): void {
     <Flex
     direction="column"
     borderRadius="10"
-    padding="3"
+    padding="1rem 1rem 2rem 1rem"
     width="100%"
     backgroundColor={colors.background.selBg}
     marginTop="5"
