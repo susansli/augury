@@ -5,17 +5,28 @@ import {
   IconButton,
   Spacer,
   Tooltip,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
+  Button,
 } from '@chakra-ui/react';
 import colors from '../../theme/foundations/colours';
 import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { onboardingBalanceAtom } from '../onboarding/atoms/onboardingAtoms';
+import { useRecoilState } from 'recoil';
+import { parseValues, formatValues } from '../../helpers/format';
 
 export default function SettingsAccountBalance(): JSX.Element {
+  const [value, setValue] = useRecoilState(onboardingBalanceAtom);
+
   return (
     <Flex
       direction="column"
       borderRadius="10"
-      padding="1rem 1rem 2rem 1rem"
+      padding="1rem 1rem 1.5rem 1rem"
       width="100%"
       backgroundColor={colors.background.selBg}
       marginTop="5"
@@ -46,6 +57,23 @@ export default function SettingsAccountBalance(): JSX.Element {
             }
           />
         </Tooltip>
+      </Flex>
+
+      <NumberInput
+        onChange={(valueString) => setValue(parseValues(valueString))}
+        value={formatValues(value)}
+        step={10}
+      >
+        <NumberInputField />
+        <NumberInputStepper>
+          <NumberIncrementStepper />
+          <NumberDecrementStepper />
+        </NumberInputStepper>
+      </NumberInput>
+
+      <Flex>
+        <Spacer />
+        <Button>Save Changes</Button>
       </Flex>
     </Flex>
   );

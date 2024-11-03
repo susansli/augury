@@ -1,6 +1,6 @@
 import { useRecoilState } from "recoil";
 import { onboardingRiskAtom, onboardingCompAtom } from "../onboarding/atoms/onboardingAtoms";
-import { Text, Flex, Spacer, Tooltip, IconButton, Icon, Select as ChakraSelect, Checkbox, Divider, FormLabel, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper } from "@chakra-ui/react";
+import { Text, Flex, Spacer, Tooltip, IconButton, Icon, Select as ChakraSelect, Checkbox, Divider, FormLabel, NumberInput, NumberInputField, NumberInputStepper, NumberIncrementStepper, NumberDecrementStepper, Button } from "@chakra-ui/react";
 import { faQuestionCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { CompositionValues } from "../onboarding/OnboardingDefaults";
@@ -22,7 +22,7 @@ function setNumSpinnerValue(value: string): void {
     <Flex
     direction="column"
     borderRadius="10"
-    padding="1rem 1rem 2rem 1rem"
+    padding="1rem 1rem 1.5rem 1rem"
     width="100%"
     backgroundColor={colors.background.selBg}
     marginTop="5"
@@ -102,6 +102,10 @@ function setNumSpinnerValue(value: string): void {
         </NumberInput>
       </Flex>
     </Flex>
+    <Flex>
+        <Spacer />
+        <Button>Save Changes</Button>
+      </Flex>
   </Flex>
   );
 }
