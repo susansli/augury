@@ -4,6 +4,7 @@ import {
   FormLabel,
 } from '@chakra-ui/react';
 import SettingsPortfolioDefaults from '../components/settings/SettingsPortfolioDefaults';
+import SettingsAccountBalance from '../components/settings/SettingsAccountBalance';
 
 export default function Settings(): JSX.Element {
 
@@ -15,6 +16,7 @@ export default function Settings(): JSX.Element {
         </FormLabel>
         <Divider />
         <SettingsPortfolioDefaults />
+        <SettingsAccountBalance />
       </Flex>
     </>
   );
