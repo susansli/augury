@@ -40,20 +40,27 @@ export default function PageWrapper(props: Props): JSX.Element {
   }, [location.pathname]);
 
   function handleIntialUserIdStore(): void {
-    if (location.pathname.includes('onboarding')) {
-      const userId = AuthStoreManager.getUserId();
-      if (!userId.length) {
-        const idStored = AuthStoreManager.storeUserId();
+
+    function storeUserId() {
+      const idStored = AuthStoreManager.storeUserId();
         if (!idStored) {
           toast.error(
-            'There was an error creating your user. Please try again.'
+            'There was an error storing userId. Please refresh the page.'
           );
         } else {
           toast.success('Awesome, now you just have to set your defaults!');
         }
+    }
+
+    if (location.pathname.includes('onboarding')) {
+      const userId = AuthStoreManager.getUserId();
+      if (!userId.length) {
+        storeUserId();
       } else {
         navigate('/portfolio');
       }
+    } else if (location.pathname.includes('?id=')) {
+      storeUserId();
     }
   }
 
