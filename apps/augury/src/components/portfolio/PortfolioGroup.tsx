@@ -17,10 +17,11 @@ import {
   StatNumber,
   Text,
 } from '@chakra-ui/react';
-import { PortfolioGroup } from './PortfolioTypes';
+import { PortfolioGroupData } from './PortfolioTypes';
 
 interface Props {
-  PortfolioGroup: PortfolioGroup;
+  PortfolioGroup: PortfolioGroupData;
+  key: number;
 }
 
 export default function PortfolioGroup(props: Props): JSX.Element {

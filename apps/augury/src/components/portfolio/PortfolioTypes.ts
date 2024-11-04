@@ -5,7 +5,7 @@ export interface Portfolio {
   prev: number;
 }
 
-export interface PortfolioGroup {
+export interface PortfolioGroupData {
   id: string;
   label: string;
   value: string;
