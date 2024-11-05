@@ -31,6 +31,9 @@ import {
   NumberInputStepper,
   Tooltip,
   Icon,
+  Flex,
+  Spacer,
+  Divider,
 } from '@chakra-ui/react';
 import Select, { StylesConfig } from 'react-select';
 import { useEffect, useState } from 'react';
@@ -42,6 +45,9 @@ import makeAnimated from 'react-select/animated';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
 import colors from '../theme/foundations/colours';
+import SettingsAccountBalance from '../components/settings/SettingsAccountBalance';
+import SettingsLogOut from '../components/settings/SettingsLogOut';
+import SettingsPortfolioDefaults from '../components/settings/SettingsPortfolioDefaults';
 export interface PortfolioDefaultBody {
   balance: string;
   composition: CompositionValues;
@@ -68,11 +74,13 @@ const colourStyles: StylesConfig = {
 function PortfolioModal({ onSave }) {
   const onboardingDefaults = useRecoilValue(onboardingAtomSelector);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  function getDefaultOptions(labels) {
+    sectorOptions.filter((option) => labels.includes(option.label));
+    labels.map((option) => option.label);
+  }
 
   const [name, setName] = useState('');
-  const [useCustomRisk, setUseCustomRisk] = useState(false);
   const [customRiskPercentage1, setCustomRiskPercentage1] = useState();
-  const [customRiskPercentage2, setCustomRiskPercentage2] = useState();
   const [selectedSectors, setSelectedSectors] = useState([]);
   function setNumSpinnerValue(value: string): void {
     const newCustomValue = 100 - parseInt(value);
@@ -84,7 +92,6 @@ function PortfolioModal({ onSave }) {
   const handleSave = () => {
     const portfolioData = {
       name,
-      useCustomRisk,
       customRiskPercentage1: customRiskPercentage1,
       customRiskPercentage2: 100 - customRiskPercentage1,
       sectorTags: selectedSectors,
@@ -95,6 +102,12 @@ function PortfolioModal({ onSave }) {
 
   return (
     <>
+      <Flex direction="column" gap="2" margin="10">
+        <FormLabel color="text.header" fontSize="28" fontWeight="bold">
+          Portfolios
+        </FormLabel>
+        <Divider />
+      </Flex>
       <Box position="fixed" bottom="20" right="4" zIndex="overlay">
         <IconButton
           icon={<Icon as={FontAwesomeIcon} icon={faPlus} color="text.body" />}
@@ -208,7 +221,7 @@ function PortfolioModal({ onSave }) {
                   components={animatedComponents}
                   options={sectorOptions}
                   styles={colourStyles}
-                  defaultValue={onboardingDefaults.sectors}
+                  defaultValue={getDefaultOptions(onboardingDefaults.sectors)}
                   onChange={(selectedOptions) => {
                     const labels = selectedOptions
                       ? // @ts-ignore
@@ -223,7 +236,7 @@ function PortfolioModal({ onSave }) {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
+            <Button mr={3} onClick={handleSave}>
               Save
             </Button>
             <Button variant="ghost" onClick={onClose}>
@@ -240,29 +253,33 @@ function PortfolioCard({ portfolioData }) {
   return (
     <Card
       as="button"
-      borderWidth="1px"
-      borderRadius="lg"
+      w="20rem"
+      h="7rem"
       overflow="hidden"
       shadow="md"
       backgroundColor={colors.background.selBg}
     >
       <CardHeader>
-        <Heading size="md">{portfolioData.name} </Heading>
+        <Text fontWeight="semibold" color="text.body">
+          {portfolioData.name}
+        </Text>
       </CardHeader>
-      <CardBody>
+      <CardBody
+        display="flex"
+        flexDirection="column"
+        alignItems="left"
+        mt="-6" // Negative margin to reduce space above CardBody
+      >
         <>
-          <Text>
-            <strong>Stocks:</strong> {portfolioData.customRiskPercentage1}%
-          </Text>
-          <Text>
+          <Text fontSize="sm" textAlign="left">
+            <strong>Stocks:</strong> {portfolioData.customRiskPercentage1}%{' '}
             <strong>Bonds:</strong> {portfolioData.customRiskPercentage2}%
           </Text>
+          <Text fontSize="sm" textAlign="left">
+            <strong> Sectors:</strong>{' '}
+            {portfolioData.sectorTags?.join(', ') || 'None'}
+          </Text>
         </>
-
-        <Text>
-          <strong>Sectors:</strong>{' '}
-          {portfolioData.sectorTags?.join(', ') || 'None'}
-        </Text>
       </CardBody>
       <CardFooter></CardFooter>
     </Card>
