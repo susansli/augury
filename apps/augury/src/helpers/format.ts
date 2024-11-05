@@ -12,10 +12,10 @@ export function parseValues(val: string): string {
 //     id: id,
 //     balance: onboardingData.balance,
 //     defaults: {
-//       useCustomRisk: onboardingData.risk || 'false',
+// //       useCustomRisk: onboardingData.risk || 'false',
 //       name: 'default',
-//       customRiskPercentage1: onboardingData.composition,
-//       customRiskPercentage2: 100 - onboardingData.composition,
+//       riskPercentage1: onboardingData.composition,
+//       riskPercentage2: 100 - onboardingData.composition,
 //       sectorTags: onboardingData.sectors,
 //     },
 //   });

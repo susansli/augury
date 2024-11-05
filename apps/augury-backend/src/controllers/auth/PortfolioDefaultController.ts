@@ -7,24 +7,29 @@ import {
 import PortfolioDefaultsModel from '../../models/auth/PortfolioDefaultModel';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
-import User from '../../config/interfaces/User';
+// import User from '../../config/interfaces/User';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import ApiError from '../../errors/ApiError';
 import Sectors from '../../config/enums/Sectors';
-import PortfolioRisk from '../../config/enums/PortfolioRisk';
+// import PortfolioRisk from '../../config/enums/PortfolioRisk';
+import Identifiable from '../../config/interfaces/Identifiable';
+
+type PortfolioDefaultResponse = {
+  defaults: PortfolioDefault;
+};
 
 /**
  * Retrieves a User's portfolio defaults from the database by user ID
- * @param req Request with body containing a string `id` field
+ * @param req Request with URL parameter containing an `id`
  * @param res Response with portfolio defaults
  * @throws `ClientError` if request is invalid
  * @throws `ApiError` if unable to retrieve defaults
  */
 const getPortfolioDefaults = async (
-  req: Request<unknown, unknown, User>,
-  res: Response
+  req: Request<Identifiable>,
+  res: Response<PortfolioDefaultResponse>
 ) => {
-  const { id: userId } = req.body;
+  const { id: userId } = req.params;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Retrieve data from the DB using request parameters/data
@@ -52,7 +57,7 @@ const getPortfolioDefaults = async (
  */
 const createPortfolioDefaults = async (
   req: Request<unknown, unknown, PortfolioDefault>,
-  res: Response
+  res: Response<PortfolioDefaultResponse>
 ) => {
   // Assert the request format was valid
   assertPortfolioDefaultsFormat(req.body);
@@ -60,20 +65,20 @@ const createPortfolioDefaults = async (
   const {
     userId,
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   }: PortfolioDefault = req.body;
 
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk: useCustomRisk ? undefined : risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk: useCustomRisk ? undefined : risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   };
 
@@ -96,29 +101,29 @@ const createPortfolioDefaults = async (
 
 /**
  * Updates portfolio defaults for a user based on the passed request body
- * @param req Request with `PortfolioDefault` options (e.g. userId, risk)
+ * @param req Request with URL parameter for ID and a `PortfolioDefault` body (e.g. name, sectors)
  * @param res Response with updated portfolio defaults
- * @throws `ClientError` if request is invalid (missing `userId`)
+ * @throws `ClientError` if request is invalid (e.g. a bad sector tag)
  * @throws `ApiError` if unable to create defaults
  */
 const updatePortfolioDefaults = async (
-  req: Request<unknown, unknown, PortfolioDefault>,
-  res: Response
+  req: Request<Identifiable, unknown, PortfolioDefault>,
+  res: Response<PortfolioDefaultResponse>
 ) => {
+  const { id: userId } = req.params;
   const {
-    userId,
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   }: PortfolioDefault = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
-  if (risk != null) {
-    assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
-  }
+  // if (risk != null) {
+  //   assertEnum(PortfolioRisk, risk, 'Invalid risk provided');
+  // }
   if (Array.isArray(sectorTags)) {
     for (const tag of sectorTags) {
       assertEnum(Sectors, tag, 'Invalid sector tag provided');
@@ -128,10 +133,10 @@ const updatePortfolioDefaults = async (
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   };
 
@@ -158,10 +163,10 @@ const updatePortfolioDefaults = async (
  * @param res Deleted user's information
  */
 const deletePortfolioDefaults = async (
-  req: Request<unknown, unknown, User>,
-  res: Response
+  req: Request<Identifiable>,
+  res: Response<PortfolioDefaultResponse>
 ): Promise<void> => {
-  const { id: userId } = req.body;
+  const { id: userId } = req.params;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Delete the User from the DB
@@ -169,7 +174,7 @@ const deletePortfolioDefaults = async (
 
   if (response) {
     // send the user back after model runs logic
-    res.status(StatusCode.OK).send({ user: response });
+    res.status(StatusCode.OK).send({ defaults: response });
   } else {
     // we throw an API error since this means something errored out with our server end
     throw new ApiError(

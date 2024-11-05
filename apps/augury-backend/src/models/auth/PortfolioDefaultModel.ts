@@ -54,7 +54,8 @@ const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
   const { userId, ...updateData }: Partial<PortfolioDefault> = data;
   const updatedDefaults = await PortfolioDefaultSchema.findOneAndUpdate(
     { userId },
-    updateData
+    updateData,
+    { new: true }
   );
 
   if (!updatedDefaults) {

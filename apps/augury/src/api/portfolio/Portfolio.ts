@@ -1,7 +1,7 @@
-import axios from "axios";
-import { CompositionValues } from "../../components/onboarding/OnboardingDefaults";
-import { SERVER_URL } from "../Environments";
-import AuthStoreManager from "../../helpers/AuthStoreManager";
+import axios from 'axios';
+import { CompositionValues } from '../../components/onboarding/OnboardingDefaults';
+import { SERVER_URL } from '../Environments';
+import AuthStoreManager from '../../helpers/AuthStoreManager';
 
 export interface PortfolioDefaultBody {
   balance: string;
@@ -18,12 +18,12 @@ async function updatePortfolioDefaults(reqBody: PortfolioDefaultBody) {
         id: AuthStoreManager.getUserId(),
         balance: Number(reqBody.balance),
         defaults: {
-          name: "default",
-          useCustomRisk: reqBody.risk,
-          customRiskPercentage1: reqBody.composition,
-          customRiskPercentage2: 100 - reqBody.composition,
-          sectorTags: reqBody.sectors
-        }
+          name: 'default',
+          // useCustomRisk: reqBody.risk,
+          riskPercentage1: reqBody.composition,
+          riskPercentage2: 100 - reqBody.composition,
+          sectorTags: reqBody.sectors,
+        },
       },
       {
         headers: {
@@ -36,7 +36,6 @@ async function updatePortfolioDefaults(reqBody: PortfolioDefaultBody) {
       return false;
     }
     return true;
-
   } catch (err) {
     return false;
   }
