@@ -26,6 +26,7 @@ portfolioRouter
 portfolioRouter
   .route('/group')
   .post(asyncErrorHandler(PortfolioGroupController.createPortfolioGroup))
+  .put(asyncErrorHandler(PortfolioGroupController.updatePortfolioGroup))
   .delete(asyncErrorHandler(PortfolioGroupController.deletePortfolioGroup));
 
 portfolioRouter

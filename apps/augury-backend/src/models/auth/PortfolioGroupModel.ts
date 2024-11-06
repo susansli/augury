@@ -83,11 +83,9 @@ const updatePortfolioGroup = async (
   id: DocumentId,
   data: Partial<PortfolioGroup>
 ) => {
-  const updatedGroup = await PortfolioGroupSchema.findOneAndUpdate(
-    { id },
-    data,
-    { new: true }
-  );
+  const updatedGroup = await PortfolioGroupSchema.findByIdAndUpdate(id, data, {
+    new: true,
+  });
 
   if (!updatedGroup) {
     throw new ApiError(

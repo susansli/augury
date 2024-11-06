@@ -65,6 +65,46 @@ const createPortfolioGroup = async (
 };
 
 /**
+ * Updates a portfolio group's details.
+ * @param req Request with PortfolioGroup fields
+ * @param res Updated portfolio group's information
+ * @throws `ClientError` if request is invalid
+ * @throws `ApiError` if unable to update group
+ */
+const updatePortfolioGroup = async (
+  req: Request<unknown, unknown, PortfolioGroup>,
+  res: Response<PortfolioGroupResponse>
+): Promise<void> => {
+  const { id, ...updatedData } = req.body;
+  if (updatedData.userId) {
+    delete updatedData.userId; // Do NOT update user ID
+  }
+  // Assert the request format was valid
+  assertExists(id, 'Invalid ID provided');
+  if (updatedData.color) {
+    assertEnum(PortfolioColor, updatedData.color, 'Invalid color provided');
+  }
+  if (updatedData.name) {
+    assertExists(updatedData.name, 'Invalid name provided');
+  }
+  // Update the group in the DB
+  const response = await PortfolioGroupModel.updatePortfolioGroup(
+    id,
+    updatedData
+  );
+  // Throw error if somehow we errored on the server-side
+  if (!response) {
+    throw new ApiError(
+      'Unable to update portfolio group',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
+  }
+  // Return response data
+  res.status(StatusCode.OK).send({ group: response });
+};
+
+/**
  * Deletes a portfolio group and it's relations from the database.
  * @param req Request with an `id` field
  * @param res Deleted portfolio group's information
@@ -216,6 +256,7 @@ const getPortfolioGroupsByUserId = async (
 
 export default module.exports = {
   createPortfolioGroup,
+  updatePortfolioGroup,
   deletePortfolioGroup,
   getPortfolioGroup,
   addPortfoliosToGroup,
