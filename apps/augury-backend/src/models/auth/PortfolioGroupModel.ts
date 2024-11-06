@@ -63,7 +63,7 @@ const deletePortfolioGroup = async (id: DocumentId) => {
 
   if (!group) {
     throw new ApiError(
-      'Unable to delete groups for user.',
+      'Unable to delete group.',
       StatusCode.INTERNAL_ERROR,
       Severity.MED
     );
@@ -104,6 +104,7 @@ const updatePortfolioGroup = async (
  * Adds group relations for the provided portfolios
  * @param groupId Portfolio Group ID
  * @param portfolioIds IDs of the portfolios to add to the group
+ * @returns Updated PortfolioGroup
  */
 const addPortfoliosToGroup = async (
   groupId: DocumentId,
@@ -126,13 +127,14 @@ const addPortfoliosToGroup = async (
     );
   }
 
-  return relationDocs;
+  return await getPortfolioGroup(groupId);
 };
 
 /**
  * Removes group relations for the provided portfolios
  * @param groupId Portfolio Group ID
  * @param portfolioIds IDs of the portfolios to remove from the group
+ * @returns Updated PortfolioGroup
  */
 const removePortfoliosFromGroup = async (
   groupId: DocumentId,
@@ -151,7 +153,7 @@ const removePortfoliosFromGroup = async (
     );
   }
 
-  return relationDocs;
+  return await getPortfolioGroup(groupId);
 };
 
 export default module.exports = {
