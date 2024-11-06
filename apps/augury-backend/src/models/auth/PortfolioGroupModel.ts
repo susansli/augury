@@ -1,4 +1,3 @@
-import { Types } from 'mongoose';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
@@ -6,6 +5,7 @@ import PortfolioGroupSchema from '../../config/schemas/PortfolioGroupSchema';
 import PortfolioGroup from '../../config/interfaces/PortfolioGroup';
 import PortfolioGroupRelationSchema from '../../config/schemas/PortfolioGroupRelationSchema';
 import PortfolioGroupRelation from '../../config/interfaces/PortfolioGroupRelation';
+import DocumentId from '../../config/interfaces/DocumentId';
 
 /**
  * Retrieves a portfolio group by id
@@ -13,7 +13,7 @@ import PortfolioGroupRelation from '../../config/interfaces/PortfolioGroupRelati
  * @returns `PorfolioGroup` document
  * @throws `ApiError` if group could not be retrieved
  */
-const getPortfolioGroup = async (id: string | Types.ObjectId) => {
+const getPortfolioGroup = async (id: DocumentId) => {
   const group = await PortfolioGroupSchema.findById(id);
 
   if (!group) {
@@ -53,7 +53,7 @@ const createPortfolioGroup = async (groupData: PortfolioGroup) => {
  * @returns Removed group data
  * @throws `ApiError` if group could not be deleted
  */
-const deletePortfolioGroup = async (id: string | Types.ObjectId) => {
+const deletePortfolioGroup = async (id: DocumentId) => {
   const group = await PortfolioGroupSchema.findByIdAndDelete(id);
 
   // Also remove associated relations
@@ -80,7 +80,7 @@ const deletePortfolioGroup = async (id: string | Types.ObjectId) => {
  * @throws `ApiError` if groups do not exist or could not be updated
  */
 const updatePortfolioGroup = async (
-  id: string | Types.ObjectId,
+  id: DocumentId,
   data: Partial<PortfolioGroup>
 ) => {
   const updatedGroup = await PortfolioGroupSchema.findOneAndUpdate(
@@ -106,11 +106,11 @@ const updatePortfolioGroup = async (
  * @param portfolioIds IDs of the portfolios to add to the group
  */
 const addPortfoliosToGroup = async (
-  groupId: string | Types.ObjectId,
-  portfolioIds: (string | Types.ObjectId)[]
+  groupId: DocumentId,
+  portfolioIds: DocumentId[]
 ) => {
   const portfolioIdToGroupRelation = (
-    id: string | Types.ObjectId
+    id: DocumentId
   ): PortfolioGroupRelation => ({
     portfolioId: id,
     portfolioGroupId: groupId,
@@ -135,8 +135,8 @@ const addPortfoliosToGroup = async (
  * @param portfolioIds IDs of the portfolios to remove from the group
  */
 const removePortfoliosFromGroup = async (
-  groupId: string | Types.ObjectId,
-  portfolioIds: (string | Types.ObjectId)[]
+  groupId: DocumentId,
+  portfolioIds: DocumentId[]
 ) => {
   const relationDocs = await PortfolioGroupRelationSchema.deleteMany({
     portfolioGroupId: groupId,

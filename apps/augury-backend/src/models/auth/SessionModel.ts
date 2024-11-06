@@ -4,6 +4,7 @@ import StatusCode from '../../config/enums/StatusCode';
 import Session from '../../config/interfaces/Session';
 import SessionSchema from '../../config/schemas/SessionSchema';
 import ApiError from '../../errors/ApiError';
+import DocumentId from '../../config/interfaces/DocumentId';
 
 /**
  * Retrieves a `Session` based on the passed `userId`
@@ -11,7 +12,7 @@ import ApiError from '../../errors/ApiError';
  * @returns `Session` document
  * @throws ApiError if the session does not exist
  */
-const getSessionByUserId = async (userId: mongoose.Types.ObjectId | string) => {
+const getSessionByUserId = async (userId: DocumentId) => {
   const id = new mongoose.Types.ObjectId(userId);
   const session = await SessionSchema.findOne({ userId: id });
 

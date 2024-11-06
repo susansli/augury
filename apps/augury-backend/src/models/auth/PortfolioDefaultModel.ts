@@ -1,9 +1,9 @@
-import { Types } from 'mongoose';
 import PortfolioDefaultSchema from '../../config/schemas/PortfolioDefaultSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
+import DocumentId from '../../config/interfaces/DocumentId';
 
 /**
  * Retrieves the portfolio defaults for the provided `userId`
@@ -11,7 +11,7 @@ import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
  * @returns a `PorfolioDefault` document
  * @throws `ApiError` if defaults could not be retrieved
  */
-const getPortfolioDefaults = async (userId: string | Types.ObjectId) => {
+const getPortfolioDefaults = async (userId: DocumentId) => {
   const defaults = await PortfolioDefaultSchema.findOne({ userId });
 
   if (!defaults) {
@@ -75,7 +75,7 @@ const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
  * @returns Removed user defaults data
  * @throws `ApiError` if defaults could not be deleted
  */
-const deletePortfolioDefaults = async (userId: string | Types.ObjectId) => {
+const deletePortfolioDefaults = async (userId: DocumentId) => {
   const defaults = await PortfolioDefaultSchema.findOneAndDelete({
     userId,
   });
@@ -96,7 +96,7 @@ const deletePortfolioDefaults = async (userId: string | Types.ObjectId) => {
  * @param userId Mongoose document id of the user
  * @returns True if defaults exist, false otherwise.
  */
-const userHasDefaults = async (userId: string | Types.ObjectId) => {
+const userHasDefaults = async (userId: DocumentId) => {
   const defaults = await PortfolioDefaultSchema.findOne({ userId });
   return defaults != null;
 };

@@ -1,10 +1,10 @@
-import mongoose from 'mongoose';
 import User from '../../config/interfaces/User';
 import UserSchema from '../../config/schemas/UserSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import SessionController from '../../controllers/auth/SessionController';
+import DocumentId from '../../config/interfaces/DocumentId';
 
 /**
  * Retrieves a `User` based on passed id
@@ -12,7 +12,7 @@ import SessionController from '../../controllers/auth/SessionController';
  * @returns `User` document
  * @throws ApiError if user doesn't exists/invalid ID
  */
-const getUser = async (id: string | mongoose.Types.ObjectId) => {
+const getUser = async (id: DocumentId) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -73,10 +73,7 @@ const createUser = async (data: User) => {
  * @returns Updated user data
  * @throws ApiError if user doesn't exist/invalid id, or user couldn't be updated
  */
-const updateUser = async (
-  id: string | mongoose.Types.ObjectId,
-  data: Partial<User>
-) => {
+const updateUser = async (id: DocumentId, data: Partial<User>) => {
   const user = await UserSchema.findById(id);
 
   if (!user) {
@@ -116,7 +113,7 @@ const updateUser = async (
  * @param id Mongoose document id
  * @returns Removed user data
  */
-const deleteUser = async (id: string | mongoose.Types.ObjectId) => {
+const deleteUser = async (id: DocumentId) => {
   const user = await UserSchema.findByIdAndDelete(id);
 
   if (!user) {
