@@ -36,4 +36,8 @@ portfolioRouter
     asyncErrorHandler(PortfolioGroupController.removePortfoliosFromGroup)
   );
 
+portfolioRouter
+  .route('/group/user/:id')
+  .get(asyncErrorHandler(PortfolioGroupController.getPortfolioGroupsByUserId));
+
 export default portfolioRouter;

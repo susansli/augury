@@ -5,13 +5,12 @@ import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import PortfolioGroupModel from '../../models/auth/PortfolioGroupModel';
 import PortfolioColor from '../../config/enums/PortfolioColor';
-import PortfolioGroup from '../../config/interfaces/PortfolioGroup';
+import PortfolioGroup, {
+  PortfolioGroupRequestBody,
+  PortfolioGroupResponse,
+  PortfolioGroupsResponse,
+} from '../../config/interfaces/PortfolioGroup';
 import Identifiable from '../../config/interfaces/Identifiable';
-import DocumentId from '../../config/interfaces/DocumentId';
-
-type PortfolioGroupRequestBody = PortfolioGroup & {
-  portfolios?: DocumentId[];
-};
 
 /**
  * Creates a new portfolio group based on the passed request body
@@ -22,7 +21,7 @@ type PortfolioGroupRequestBody = PortfolioGroup & {
  */
 const createPortfolioGroup = async (
   req: Request<unknown, unknown, PortfolioGroupRequestBody>,
-  res: Response
+  res: Response<PortfolioGroupResponse>
 ) => {
   const { userId, name, color, portfolios }: PortfolioGroupRequestBody =
     req.body;
@@ -69,10 +68,12 @@ const createPortfolioGroup = async (
  * Deletes a portfolio group and it's relations from the database.
  * @param req Request with an `id` field
  * @param res Deleted portfolio group's information
+ * @throws `ClientError` if request is invalid
+ * @throws `ApiError` if unable to delete group
  */
 const deletePortfolioGroup = async (
   req: Request<unknown, unknown, Identifiable>,
-  res: Response
+  res: Response<PortfolioGroupResponse>
 ): Promise<void> => {
   const { id: userId } = req.body;
   // Assert the request format was valid
@@ -95,11 +96,12 @@ const deletePortfolioGroup = async (
  * Retrieves a Portfolio group by id. Uses URLParams.
  * @param req Request with id URL parameter
  * @param res Response with group data
+ * @throws `ClientError` if request is invalid
  * @throws `ApiError` if unable to retrieve group
  */
 const getPortfolioGroup = async (
   req: Request<Identifiable>,
-  res: Response
+  res: Response<PortfolioGroupResponse>
 ): Promise<void> => {
   const { id } = req.params;
   // Assert the request format was valid
@@ -118,9 +120,16 @@ const getPortfolioGroup = async (
   res.status(StatusCode.OK).send({ group: response });
 };
 
+/**
+ * Adds portfolios (and their relations) to a group
+ * @param req with Portfolio ID's in request body
+ * @param res with Group
+ * @throws `ClientError` if request is invalid
+ * @throws `ApiError` if unable to add to group
+ */
 const addPortfoliosToGroup = async (
   req: Request<Identifiable, unknown, PortfolioGroupRequestBody>,
-  res: Response
+  res: Response<PortfolioGroupResponse>
 ) => {
   const { id } = req.params;
   const { portfolios } = req.body;
@@ -144,9 +153,16 @@ const addPortfoliosToGroup = async (
   res.status(StatusCode.OK).send({ group: response });
 };
 
+/**
+ * Removes portfolios (and their relations) from a group
+ * @param req with Portfolio ID's in request body
+ * @param res with Group
+ * @throws `ClientError` if request is invalid
+ * @throws `ApiError` if unable to remove group
+ */
 const removePortfoliosFromGroup = async (
   req: Request<Identifiable, unknown, PortfolioGroupRequestBody>,
-  res: Response
+  res: Response<PortfolioGroupResponse>
 ) => {
   const { id } = req.params;
   const { portfolios } = req.body;
@@ -167,7 +183,35 @@ const removePortfoliosFromGroup = async (
     );
   }
   // Return response data
-  res.status(StatusCode.OK).send({ removed: response });
+  res.status(StatusCode.OK).send({ group: response });
+};
+
+/**
+ * Retrieves all PortfolioGroups for a specific user.
+ * @param req with User `id` URL Parameter
+ * @param res with `PortfolioGroup` data
+ * @throws `ClientError` if request is invalid
+ * @throws `ApiError` if unable to retrieve group
+ */
+const getPortfolioGroupsByUserId = async (
+  req: Request<Identifiable>,
+  res: Response<PortfolioGroupsResponse>
+) => {
+  const { id: userId } = req.params;
+  // Assert the request format was valid
+  assertExists(userId, 'Invalid Id provided');
+  // Remove portfolios from group
+  const response = await PortfolioGroupModel.getPortfolioGroupsByUserId(userId);
+  // Throw error if somehow we errored on the server-side
+  if (!response) {
+    throw new ApiError(
+      'Unable to remove portfolios from group',
+      StatusCode.INTERNAL_ERROR,
+      Severity.LOW
+    );
+  }
+  // Return response data
+  res.status(StatusCode.OK).send({ groups: response });
 };
 
 export default module.exports = {
@@ -176,4 +220,5 @@ export default module.exports = {
   getPortfolioGroup,
   addPortfoliosToGroup,
   removePortfoliosFromGroup,
+  getPortfolioGroupsByUserId,
 };

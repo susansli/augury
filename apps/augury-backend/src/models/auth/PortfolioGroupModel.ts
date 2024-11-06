@@ -156,6 +156,25 @@ const removePortfoliosFromGroup = async (
   return await getPortfolioGroup(groupId);
 };
 
+/**
+ * Retrieves all `PortfolioGroup`s for a specific user.
+ * @param userId User's document ID
+ * @returns Array of `PortfolioGroup`s
+ */
+const getPortfolioGroupsByUserId = async (userId: DocumentId) => {
+  const groups = await PortfolioGroupSchema.find({ userId });
+
+  if (!groups) {
+    throw new ApiError(
+      'Unable to find Portfolio groups for this user',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+
+  return groups;
+};
+
 export default module.exports = {
   createPortfolioGroup,
   deletePortfolioGroup,
@@ -163,4 +182,5 @@ export default module.exports = {
   getPortfolioGroup,
   addPortfoliosToGroup,
   removePortfoliosFromGroup,
+  getPortfolioGroupsByUserId,
 };
