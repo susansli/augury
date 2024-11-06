@@ -7,3 +7,15 @@ export default interface PortfolioGroup extends Identifiable {
   color: PortfolioColor;
   userId: DocumentId;
 }
+
+export type PortfolioGroupRequestBody = PortfolioGroup & {
+  portfolios?: DocumentId[];
+};
+
+export type PortfolioGroupResponse = {
+  group: PortfolioGroup;
+};
+
+export type PortfolioGroupsResponse = {
+  groups: PortfolioGroup[];
+};
