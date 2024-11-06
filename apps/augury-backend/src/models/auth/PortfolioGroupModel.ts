@@ -48,7 +48,7 @@ const createPortfolioGroup = async (groupData: PortfolioGroup) => {
 };
 
 /**
- * Deletes a portfolio group from the database
+ * Deletes a portfolio group from the database and it's relations
  * @param id Portfolio Group ID
  * @returns Removed group data
  * @throws `ApiError` if group could not be deleted
