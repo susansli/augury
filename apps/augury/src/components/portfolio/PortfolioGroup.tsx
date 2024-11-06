@@ -3,6 +3,8 @@ import {
   Button,
   Flex,
   Heading,
+  Icon,
+  IconButton,
   Popover,
   PopoverArrow,
   PopoverBody,
@@ -20,6 +22,8 @@ import {
 } from '@chakra-ui/react';
 import { Card, CardBody } from '@chakra-ui/react';
 import { PortfolioGroupData } from './PortfolioTypes';
+import { faEllipsisVertical } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 interface Props {
   PortfolioGroup: PortfolioGroupData;
@@ -30,11 +34,11 @@ export default function PortfolioGroup(props: Props): JSX.Element {
   return (
     <Card flex="1">
       <CardBody>
-        <Flex direction={['row']}>
+        <Flex direction='row' gap='1em'>
           <Box flexGrow="1">
             <Stack>
               <Heading fontSize="2xl">{props.PortfolioGroup.label}</Heading>
-              <Text>
+              <Text fontSize="sm">
                 {props.PortfolioGroup.portfolios.length}{' '}
                 {props.PortfolioGroup.portfolios.length === 1
                   ? 'portfolio'
@@ -52,7 +56,7 @@ export default function PortfolioGroup(props: Props): JSX.Element {
                       currency: 'USD',
                     })}
                   </StatNumber>
-                  <StatHelpText>
+                  <StatHelpText verticalAlign="baseline">
                     <StatArrow
                       type={
                         props.PortfolioGroup.percentageChange < 0
@@ -75,8 +79,18 @@ export default function PortfolioGroup(props: Props): JSX.Element {
           </Box>
           {/* TODO replace with real stuff */}
           <Popover>
-            <PopoverTrigger>
-              <Button>⋮</Button>
+            <PopoverTrigger >
+              <IconButton
+                  margin="auto"
+                icon={
+                  <Icon as={FontAwesomeIcon} icon={faEllipsisVertical} color="text.body" />
+                }
+                aria-label="Edit Portfolio Group"
+                colorScheme="gray"
+                borderRadius="10%"
+                size="lg"
+                shadow="lg"
+              />
             </PopoverTrigger>
             <PopoverContent>
               <PopoverArrow />
