@@ -84,9 +84,6 @@ const updatePortfolioGroup = async (
   if (updatedData.color) {
     assertEnum(PortfolioColor, updatedData.color, 'Invalid color provided');
   }
-  if (updatedData.name) {
-    assertExists(updatedData.name, 'Invalid name provided');
-  }
   // Update the group in the DB
   const response = await PortfolioGroupModel.updatePortfolioGroup(
     id,
