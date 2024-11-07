@@ -12,8 +12,8 @@ const schema = new mongoose.Schema<Portfolio>({
   //   // default: PortfolioRisk.CONSERVATIVE, // Default value for status
   // },
   // useCustomRisk: { type: Boolean, required: true }, // If true, custom risk settings are used
-  riskPercentage1: { type: Number },
-  riskPercentage2: { type: Number },
+  riskPercentage1: { type: Number, required: true },
+  riskPercentage2: { type: Number, required: true },
   sectorTags: [String], // Would use custom validation but it's weird to enforce. Will validate through business logic
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
