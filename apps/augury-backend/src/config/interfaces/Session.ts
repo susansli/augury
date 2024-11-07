@@ -1,7 +1,7 @@
-import { Types } from 'mongoose';
 import Identifiable from './Identifiable';
+import DocumentId from './DocumentId';
 
 export default interface Session extends Identifiable {
-  userId: Types.ObjectId | string;
+  userId: DocumentId;
   token: string;
 }

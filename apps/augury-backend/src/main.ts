@@ -36,7 +36,7 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Application routers that register handlers
 app.use('/user', userRouter);
-app.use('/user/portfolio', portfolioRouter);
+app.use('/portfolio', portfolioRouter);
 
 // API Routes
 app.get('/google/callback', asyncErrorHandler(googleOauthHandler)); // Google Callback route that is used after OAuth redirect

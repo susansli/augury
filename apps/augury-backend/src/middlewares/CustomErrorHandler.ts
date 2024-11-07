@@ -9,7 +9,7 @@ export default function customErrorHandler(
   _next: NextFunction
 ) {
   if (err instanceof ApiError) {
-    console.error(err.stack);
+    // console.error(err.stack);
     res.status(err.statusCode).send();
   } else if (err instanceof ClientError) {
     res.status(err.statusCode).send();

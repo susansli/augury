@@ -1,4 +1,4 @@
-import mongoose, { Types } from 'mongoose';
+import mongoose from 'mongoose';
 import { AxiosError } from 'axios';
 import jwt from '../../config/utils/jwt';
 import SessionModel from '../../models/auth/SessionModel';
@@ -6,6 +6,7 @@ import Session from '../../config/interfaces/Session';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import ApiError from '../../errors/ApiError';
+import DocumentId from '../../config/interfaces/DocumentId';
 
 /**
  * Creates or updates the User's current session based on the passed `userId`
@@ -15,10 +16,7 @@ import ApiError from '../../errors/ApiError';
  * @returns `Session` document
  * @throws `Error` if Axios request fails or an unknown error occurs
  */
-async function getCurrentSession(
-  userId: Types.ObjectId | string,
-  googleToken: string
-) {
+async function getCurrentSession(userId: DocumentId, googleToken: string) {
   const id = new mongoose.Types.ObjectId(userId);
   const session: Session = {
     userId: id,

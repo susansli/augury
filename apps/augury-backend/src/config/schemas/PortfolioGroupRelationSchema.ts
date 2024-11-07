@@ -16,6 +16,8 @@ const schema = new mongoose.Schema<PortfolioGroupRelation>({
   },
 });
 schema.plugin(stripAndFormatIds); // toJSON middleware
+// Prevent duplicated relations
+schema.index({ portfolioId: 1, portfolioGroupId: 1 }, { unique: true });
 
 const PortfolioGroupRelationSchema = mongoose.model<PortfolioGroupRelation>(
   'PortfolioGroupRelation',

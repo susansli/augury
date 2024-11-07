@@ -1,8 +1,8 @@
-import { Types } from 'mongoose';
 import Identifiable from './Identifiable';
+import DocumentId from './DocumentId';
 
 export default interface BuyRecord extends Identifiable {
-  stockId: Types.ObjectId | string;
+  stockId: DocumentId;
   shares: number;
   boughtAtPrice: number;
 }
