@@ -69,3 +69,28 @@ export function assertPortfolioDefaultsFormat(defaults: Portfolio) {
     }
   }
 }
+
+/**
+ * Asserts that a passed risk composition is valid and totals to 100%.
+ * @param riskPercentage1 Number
+ * @param riskPercentage2 Number
+ * @throws `ClientError` if risk composition doesn't add to 100.
+ */
+export function assertValidRiskComposition(
+  riskPercentage1?: number,
+  riskPercentage2?: number,
+  required = true
+) {
+  // If required == true, short-circuit and assert both were passed, else see if any was passed.
+  if (required || riskPercentage1 || riskPercentage2) {
+    // Assert that updating one risk percentage should update the other
+    assertNumber(riskPercentage1, 'Invalid risk percentage 1 provided');
+    assertNumber(riskPercentage2, 'Invalid risk percentage 2 provided');
+    if (riskPercentage1 + riskPercentage2 != 100) {
+      throw new ClientError(
+        'Invalid risk composition provided (must add to 100)',
+        StatusCode.BAD_REQUEST
+      );
+    }
+  }
+}
