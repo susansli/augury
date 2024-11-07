@@ -6,6 +6,7 @@ import PortfolioGroup from '../../config/interfaces/PortfolioGroup';
 import PortfolioGroupRelationSchema from '../../config/schemas/PortfolioGroupRelationSchema';
 import PortfolioGroupRelation from '../../config/interfaces/PortfolioGroupRelation';
 import DocumentId from '../../config/interfaces/DocumentId';
+import SchemaErrorHandler from '../../middlewares/SchemaErrorHandler';
 
 /**
  * Retrieves a portfolio group by id
@@ -14,7 +15,7 @@ import DocumentId from '../../config/interfaces/DocumentId';
  * @throws `ApiError` if group could not be retrieved
  */
 const getPortfolioGroup = async (id: DocumentId) => {
-  const group = await PortfolioGroupSchema.findById(id);
+  const group = await SchemaErrorHandler(PortfolioGroupSchema.findById(id));
 
   if (!group) {
     throw new ApiError(
@@ -34,7 +35,9 @@ const getPortfolioGroup = async (id: DocumentId) => {
  * @throws `ApiError` if group could not be created
  */
 const createPortfolioGroup = async (groupData: PortfolioGroup) => {
-  const group = await PortfolioGroupSchema.create(groupData);
+  const group = await SchemaErrorHandler(
+    PortfolioGroupSchema.create(groupData)
+  );
 
   if (!group) {
     throw new ApiError(
@@ -54,12 +57,16 @@ const createPortfolioGroup = async (groupData: PortfolioGroup) => {
  * @throws `ApiError` if group could not be deleted
  */
 const deletePortfolioGroup = async (id: DocumentId) => {
-  const group = await PortfolioGroupSchema.findByIdAndDelete(id);
+  const group = await SchemaErrorHandler(
+    PortfolioGroupSchema.findByIdAndDelete(id)
+  );
 
   // Also remove associated relations
-  await PortfolioGroupRelationSchema.deleteMany({
-    portfolioGroupId: id,
-  });
+  await SchemaErrorHandler(
+    PortfolioGroupRelationSchema.deleteMany({
+      portfolioGroupId: id,
+    })
+  );
 
   if (!group) {
     throw new ApiError(
@@ -83,9 +90,11 @@ const updatePortfolioGroup = async (
   id: DocumentId,
   data: Partial<PortfolioGroup>
 ) => {
-  const updatedGroup = await PortfolioGroupSchema.findByIdAndUpdate(id, data, {
-    new: true,
-  });
+  const updatedGroup = await SchemaErrorHandler(
+    PortfolioGroupSchema.findByIdAndUpdate(id, data, {
+      new: true,
+    })
+  );
 
   if (!updatedGroup) {
     throw new ApiError(
@@ -115,7 +124,9 @@ const addPortfoliosToGroup = async (
     portfolioGroupId: groupId,
   });
   const relations = portfolioIds.map(portfolioIdToGroupRelation);
-  const relationDocs = await PortfolioGroupRelationSchema.create(relations);
+  const relationDocs = await SchemaErrorHandler(
+    PortfolioGroupRelationSchema.create(relations)
+  );
 
   if (!relationDocs) {
     throw new ApiError(
@@ -138,10 +149,12 @@ const removePortfoliosFromGroup = async (
   groupId: DocumentId,
   portfolioIds: DocumentId[]
 ) => {
-  const relationDocs = await PortfolioGroupRelationSchema.deleteMany({
-    portfolioGroupId: groupId,
-    portfolioId: { $in: portfolioIds },
-  });
+  const relationDocs = await SchemaErrorHandler(
+    PortfolioGroupRelationSchema.deleteMany({
+      portfolioGroupId: groupId,
+      portfolioId: { $in: portfolioIds },
+    })
+  );
 
   if (!relationDocs) {
     throw new ApiError(
@@ -160,7 +173,9 @@ const removePortfoliosFromGroup = async (
  * @returns Array of `PortfolioGroup`s
  */
 const getPortfolioGroupsByUserId = async (userId: DocumentId) => {
-  const groups = await PortfolioGroupSchema.find({ userId });
+  const groups = await SchemaErrorHandler(
+    PortfolioGroupSchema.find({ userId })
+  );
 
   if (!groups) {
     throw new ApiError(

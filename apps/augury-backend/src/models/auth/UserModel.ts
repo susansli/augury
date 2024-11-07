@@ -5,6 +5,7 @@ import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import SessionController from '../../controllers/auth/SessionController';
 import DocumentId from '../../config/interfaces/DocumentId';
+import SchemaErrorHandler from '../../middlewares/SchemaErrorHandler';
 
 /**
  * Retrieves a `User` based on passed id
@@ -13,7 +14,7 @@ import DocumentId from '../../config/interfaces/DocumentId';
  * @throws ApiError if user doesn't exists/invalid ID
  */
 const getUser = async (id: DocumentId) => {
-  const user = await UserSchema.findById(id);
+  const user = await SchemaErrorHandler(UserSchema.findById(id));
 
   if (!user) {
     throw new ApiError(
@@ -33,7 +34,9 @@ const getUser = async (id: DocumentId) => {
  * @throws ApiError if user doesn't exists/invalid ID
  */
 const getUserByGoogleId = async (googleId: string) => {
-  const user = await UserSchema.findOne({ googleId: googleId });
+  const user = await SchemaErrorHandler(
+    UserSchema.findOne({ googleId: googleId })
+  );
 
   if (!user) {
     throw new ApiError(
@@ -53,7 +56,7 @@ const getUserByGoogleId = async (googleId: string) => {
  * @throws ApiError if user couldn't be created
  */
 const createUser = async (data: User) => {
-  const user = await UserSchema.create(data);
+  const user = await SchemaErrorHandler(UserSchema.create(data));
 
   if (!user) {
     throw new ApiError(
@@ -74,7 +77,7 @@ const createUser = async (data: User) => {
  * @throws ApiError if user doesn't exist/invalid id, or user couldn't be updated
  */
 const updateUser = async (id: DocumentId, data: Partial<User>) => {
-  const user = await UserSchema.findById(id);
+  const user = await SchemaErrorHandler(UserSchema.findById(id));
 
   if (!user) {
     throw new ApiError(
@@ -114,7 +117,7 @@ const updateUser = async (id: DocumentId, data: Partial<User>) => {
  * @returns Removed user data
  */
 const deleteUser = async (id: DocumentId) => {
-  const user = await UserSchema.findByIdAndDelete(id);
+  const user = await SchemaErrorHandler(UserSchema.findByIdAndDelete(id));
 
   if (!user) {
     throw new ApiError(
