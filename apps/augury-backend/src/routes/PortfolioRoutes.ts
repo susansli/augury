@@ -3,11 +3,23 @@ import express, { Router } from 'express';
 import asyncErrorHandler from '../middlewares/AsyncErrorHandler';
 import PortfolioDefaultController from '../controllers/auth/PortfolioDefaultController';
 import PortfolioGroupController from '../controllers/auth/PortfolioGroupController';
+import PortfolioController from '../controllers/auth/PortfolioController';
 
 const portfolioRouter: Router = express.Router();
 
 // Uncomment if we want to verify the client's auth token for all routes
 // userRouter.use(asyncErrorHandler(verifyAccessToken));
+
+// ================ Portfolio Defaults ================
+portfolioRouter
+  .route('/')
+  .post(asyncErrorHandler(PortfolioController.createPortfolio));
+
+portfolioRouter
+  .route('/:id')
+  .get(asyncErrorHandler(PortfolioController.getPortfolio))
+  .put(asyncErrorHandler(PortfolioController.updatePortfolio))
+  .delete(asyncErrorHandler(PortfolioController.deletePortfolio));
 
 // ================ Portfolio Defaults ================
 portfolioRouter
