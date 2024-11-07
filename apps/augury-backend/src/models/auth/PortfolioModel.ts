@@ -57,7 +57,7 @@ const updatePortfolio = async (data: Partial<Portfolio>) => {
   const { id, ...updateData }: Partial<Portfolio> = data;
 
   const updatedPortfolio = await SchemaErrorHandler(
-    PortfolioSchema.findByIdAndUpdate(id, updateData)
+    PortfolioSchema.findByIdAndUpdate(id, updateData, { new: true })
   );
 
   if (!updatedPortfolio) {
