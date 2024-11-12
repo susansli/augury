@@ -48,17 +48,18 @@ const createPortfolioGroup = async (
   }
   // Create relations for each portfolio
   const groupId = groupResponse.id;
-  const addPortfoliosResponse = await PortfolioGroupModel.addPortfoliosToGroup(
-    groupId,
-    portfolios
-  );
-  // Throw error if somehow we errored on the server-side
-  if (!addPortfoliosResponse) {
-    throw new ApiError(
-      'Unable to add portfolios to group',
-      StatusCode.INTERNAL_ERROR,
-      Severity.MED
-    );
+  if (Array.isArray(portfolios) && portfolios.length > 0) {
+    const addPortfoliosResponse =
+      await PortfolioGroupModel.addPortfoliosToGroup(groupId, portfolios);
+
+    // Throw error if somehow we errored on the server-side
+    if (!addPortfoliosResponse) {
+      throw new ApiError(
+        'Unable to add portfolios to group',
+        StatusCode.INTERNAL_ERROR,
+        Severity.MED
+      );
+    }
   }
   // Return response data
   res.status(StatusCode.OK).send({ group: groupResponse });
