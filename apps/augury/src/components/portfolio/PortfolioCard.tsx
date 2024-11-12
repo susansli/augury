@@ -14,8 +14,8 @@ export interface PortfolioCardProps {
 
 export type PortfolioInterface = {
   name: string;
-  customRiskPercentage1: number;
-  customRiskPercentage2: number;
+  riskPercentage1: number;
+  riskPercentage2: number;
   sectorTags: string[];
 };
 
@@ -35,10 +35,10 @@ function PortfolioCard({ portfolioData }: PortfolioCardProps) {
       <CardBody>
         <>
           <Text>
-            <strong>Stocks:</strong> {portfolioData.customRiskPercentage1}%
+            <strong>Stocks:</strong> {portfolioData.riskPercentage1}%
           </Text>
           <Text>
-            <strong>Bonds:</strong> {portfolioData.customRiskPercentage2}%
+            <strong>Bonds:</strong> {portfolioData.riskPercentage2}%
           </Text>
         </>
 

@@ -21,27 +21,21 @@ import {
   NumberInputStepper,
   Tooltip,
   Icon,
+  useToast,
 } from '@chakra-ui/react';
-import { PortfolioInterface } from './PortfolioCard';
 import Select, { StylesConfig } from 'react-select';
-import { useEffect, useState } from 'react';
-import { useRecoilValue } from 'recoil';
-import { CompositionValues } from '../onboarding/OnboardingDefaults';
+import { useEffect } from 'react';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { onboardingAtomSelector } from '../onboarding/atoms/onboardingAtoms';
 import { sectorOptions } from '../onboarding/onboardingData';
 import makeAnimated from 'react-select/animated';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-export interface PortfolioDefaultBody {
-  balance: string;
-  composition: CompositionValues;
-  risk: boolean;
-  sectors: string[];
-}
+import portfolioAtom from './atoms/portfolioAtoms';
+import axios from 'axios';
+import { SERVER_URL } from '../../api/Environments';
+import AddButton from '../generic/AddButton';
 
-interface PortfolioModalProps {
-  onSave: (portfolioData: PortfolioInterface) => void;
-}
 const animatedComponents = makeAnimated();
 const colourStyles: StylesConfig = {
   control: (styles) => ({ ...styles, backgroundColor: 'color.black' }),
@@ -59,45 +53,70 @@ const colourStyles: StylesConfig = {
     },
   }),
 };
-function PortfolioModal({ onSave }: PortfolioModalProps) {
+
+function PortfolioModal({ onSave }) {
   const onboardingDefaults = useRecoilValue(onboardingAtomSelector);
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
 
-  const [name, setName] = useState('');
-  const [customRiskPercentage1, setCustomRiskPercentage1] = useState<number>(0);
-  const [selectedSectors, setSelectedSectors] = useState([]);
-  function setNumSpinnerValue(value: string): void {
-    const newCustomValue = 100 - parseInt(value);
-    setCustomRiskPercentage1(newCustomValue);
-  }
+  // Use Recoil atom for portfolio data
+  const [portfolioData, setPortfolioData] = useRecoilState(portfolioAtom);
 
   useEffect(() => {
-    setCustomRiskPercentage1(onboardingDefaults.composition);
-  }, []);
-  function handleSave() {
-    const portfolioData = {
-      name,
-      customRiskPercentage1: customRiskPercentage1,
-      customRiskPercentage2: 100 - customRiskPercentage1,
-      sectorTags: selectedSectors,
-    };
-    onSave(portfolioData);
-    onClose();
+    // Initialize risk composition from onboarding defaults
+    setPortfolioData((prev) => ({
+      ...prev,
+      riskPercentage1: onboardingDefaults.composition,
+      riskPercentage2: 100 - onboardingDefaults.composition,
+      sectorTags: onboardingDefaults.sectors,
+    }));
+  }, [onboardingDefaults, setPortfolioData]);
+
+  // Update secondary risk percentage dynamically
+
+  // Save portfolio data and send to parent component
+  async function handleSave() {
+    try {
+      console.log(portfolioData);
+      const response = await axios.post(
+        `${SERVER_URL}/portfolio`,
+        portfolioData
+      ); // Send POST request to /portfolio route
+      // Show success message and log response
+      toast({
+        title: 'Portfolio created.',
+        description: `Portfolio ${response.data.portfolio.name} created successfully.`,
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+
+      console.log(response.data);
+
+      // Clear the form and close modal
+      setPortfolioData({
+        name: '',
+        riskPercentage1: 0,
+        riskPercentage2: 0,
+        sectorTags: [],
+      });
+      onClose();
+    } catch (error) {
+      // Handle errors and show error message
+      toast({
+        title: 'Error creating portfolio.',
+        description: error.response?.data?.message || 'An error occurred.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      console.error(error);
+    }
   }
 
   return (
     <>
-      <Box position="fixed" bottom="20" right="4" zIndex="overlay">
-        <IconButton
-          icon={<Icon as={FontAwesomeIcon} icon={faPlus} color="text.body" />}
-          onClick={onOpen}
-          aria-label="Open Portfolio Modal"
-          colorScheme="gray"
-          borderRadius="full"
-          size="lg"
-          shadow="lg"
-        />
-      </Box>
+      <AddButton onClick={onOpen} aira-label="Open Portfolio Modal" />
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
@@ -109,9 +128,14 @@ function PortfolioModal({ onSave }: PortfolioModalProps) {
               <FormControl isRequired>
                 <FormLabel>Portfolio Name</FormLabel>
                 <Input
-                  placeholder={'Enter portfolio name'}
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Enter portfolio name"
+                  value={portfolioData.name || ''}
+                  onChange={(e) =>
+                    setPortfolioData((prev) => ({
+                      ...prev,
+                      name: e.target.value,
+                    }))
+                  }
                 />
               </FormControl>
 
@@ -119,7 +143,7 @@ function PortfolioModal({ onSave }: PortfolioModalProps) {
                 <FormLabel>
                   Stocks
                   <Tooltip
-                    label="Enter what percentage of your portfolio you would like recomended to be stocks"
+                    label="Enter what percentage of your portfolio you would like recommended to be stocks"
                     placement="bottom-start"
                     fontSize="xs"
                     width="10rem"
@@ -140,13 +164,15 @@ function PortfolioModal({ onSave }: PortfolioModalProps) {
                   </Tooltip>
                 </FormLabel>
                 <NumberInput
-                  max={100}
                   min={0}
-                  defaultValue={onboardingDefaults.composition}
-                  value={customRiskPercentage1}
+                  max={100}
+                  value={portfolioData.riskPercentage1 || 0}
                   step={5}
-                  onChange={(value) =>
-                    setCustomRiskPercentage1(parseInt(value))
+                  onChange={(valueString) =>
+                    setPortfolioData((prev) => ({
+                      ...prev,
+                      riskPercentage1: parseFloat(valueString),
+                    }))
                   }
                 >
                   <NumberInputField />
@@ -155,10 +181,11 @@ function PortfolioModal({ onSave }: PortfolioModalProps) {
                     <NumberDecrementStepper />
                   </NumberInputStepper>
                 </NumberInput>
+
                 <FormLabel>
                   Bonds
                   <Tooltip
-                    label="Enter what percentage of your portfolio you would like recomended to be stocks."
+                    label="Enter what percentage of your portfolio you would like recommended to be bonds."
                     placement="bottom-start"
                     fontSize="xs"
                     width="10rem"
@@ -181,10 +208,14 @@ function PortfolioModal({ onSave }: PortfolioModalProps) {
                 <NumberInput
                   max={100}
                   min={0}
-                  defaultValue={100 - onboardingDefaults.composition}
-                  value={100 - customRiskPercentage1}
+                  value={100 - portfolioData.riskPercentage1}
                   step={5}
-                  onChange={setNumSpinnerValue}
+                  onChange={(valueString) =>
+                    setPortfolioData((prev) => ({
+                      ...prev,
+                      riskPercentage2: parseFloat(valueString),
+                    }))
+                  }
                 >
                   <NumberInputField />
                   <NumberInputStepper>
@@ -203,10 +234,12 @@ function PortfolioModal({ onSave }: PortfolioModalProps) {
                   defaultValue={onboardingDefaults.sectors}
                   onChange={(selectedOptions) => {
                     const labels = selectedOptions
-                      ? // @ts-expect-error expected
-                        selectedOptions.map((option: Option) => option.label)
+                      ? selectedOptions.map((option) => option.label)
                       : [];
-                    setSelectedSectors(labels);
+                    setPortfolioData((prev) => ({
+                      ...prev,
+                      sectorTags: labels, // Update sectorTags here
+                    }));
                   }}
                   isMulti
                 />
