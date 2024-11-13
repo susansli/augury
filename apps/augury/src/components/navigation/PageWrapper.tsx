@@ -21,6 +21,8 @@ export interface NavbarPage {
   baseValue: number;
 }
 
+const navbarHeight = 14;
+
 export default function PageWrapper(props: Props): JSX.Element {
   const isNavShown: boolean = useRecoilValue(navbarShowAtom);
   const activePage: number = useRecoilValue(navbarPageAtom);
@@ -40,16 +42,15 @@ export default function PageWrapper(props: Props): JSX.Element {
   }, [location.pathname]);
 
   function handleIntialUserIdStore(): void {
-
     function storeUserId() {
       const idStored = AuthStoreManager.storeUserId();
-        if (!idStored) {
-          toast.error(
-            'There was an error storing userId. Please refresh the page.'
-          );
-        } else {
-          toast.success('Awesome, now you just have to set your defaults!');
-        }
+      if (!idStored) {
+        toast.error(
+          'There was an error storing userId. Please refresh the page.'
+        );
+      } else {
+        toast.success('Awesome, now you just have to set your defaults!');
+      }
     }
 
     if (location.pathname.includes('onboarding')) {
@@ -83,9 +84,22 @@ export default function PageWrapper(props: Props): JSX.Element {
       <Toaster />
       <Flex width="100vw" height="100vh" flexDirection="column">
         {/* I won't show this until the userID is stored in recoil */}
-        <Box flex="1">{props?.children}</Box>
+        <Box flex="1">
+          {props?.children}
+          {isNavShown && (
+            <Box display="block" height={navbarHeight} width="100%"></Box>
+          )}
+        </Box>
         {isNavShown && (
-          <Flex height={14} roundedTop={10} overflow="hidden">
+          <Flex
+            height={navbarHeight}
+            roundedTop={10}
+            overflow="hidden"
+            position="fixed"
+            bottom={0}
+            left={0}
+            right={0}
+          >
             {renderNavbarIcons()}
           </Flex>
         )}
