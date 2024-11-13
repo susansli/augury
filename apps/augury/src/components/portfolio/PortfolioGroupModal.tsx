@@ -21,11 +21,13 @@ import { SERVER_URL } from '../../api/Environments';
 import { useRecoilState } from 'recoil';
 import { portfolioGroupAtom } from './atoms/portfolioAtoms';
 import { PortfolioColor } from './portfolioData';
+import { PortfolioInterface } from './PortfolioCard';
 export interface PortfolioGroupInterface {
   name: string;
   color: PortfolioColor;
   userId: any;
-  portfolios?: string[];
+  portfolios?: string[] | PortfolioInterface[];
+  portfolioCurrency?: string; // ISO 4217 currency code for flavour
 }
 function PortfolioGroupModal({ onSave }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

@@ -17,6 +17,8 @@ export type PortfolioInterface = {
   riskPercentage1: number;
   riskPercentage2: number;
   sectorTags: string[];
+  value?: number;
+  valuePrev?: number;
 };
 
 function PortfolioCard({ portfolioData }: PortfolioCardProps) {
