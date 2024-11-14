@@ -15,6 +15,7 @@ import googleOauthHandler from './middlewares/GoogleOAuthHandler';
 // Routers
 import userRouter from './routes/UserRoutes';
 import portfolioRouter from './routes/PortfolioRoutes';
+import SessionController from './controllers/auth/SessionController';
 
 const app = express();
 
@@ -43,6 +44,7 @@ app.get('/google/callback', asyncErrorHandler(googleOauthHandler)); // Google Ca
 app.get('/ping', (req, res) => {
   res.send({ message: '[augury-backend] Pong!' });
 });
+app.post('/logout', asyncErrorHandler(SessionController.endSession));
 
 const server = app.listen(SERVER_PORT, () => {
   mongoose.set('strictQuery', false);
