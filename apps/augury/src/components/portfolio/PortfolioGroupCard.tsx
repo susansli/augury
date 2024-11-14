@@ -17,8 +17,12 @@ import { PortfolioInterface } from './PortfolioCard';
 
 interface PortfolioGroupCardProps {
   portfolioGroup: PortfolioGroupInterface;
+  onClick: () => void;
 }
-function PortfolioGroupCard({ portfolioGroup }: PortfolioGroupCardProps) {
+function PortfolioGroupCard({
+  portfolioGroup,
+  onClick,
+}: PortfolioGroupCardProps) {
   let totalValue = 0;
   let totalPrevValue = 0;
   let hasValue = false;
@@ -37,6 +41,7 @@ function PortfolioGroupCard({ portfolioGroup }: PortfolioGroupCardProps) {
 
   return (
     <Card
+      onClick={onClick}
       as="button"
       borderWidth="1px"
       borderRadius="lg"

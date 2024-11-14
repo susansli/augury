@@ -13,6 +13,7 @@ export interface PortfolioCardProps {
 }
 
 export type PortfolioInterface = {
+  id?: string;
   name: string;
   riskPercentage1: number;
   riskPercentage2: number;

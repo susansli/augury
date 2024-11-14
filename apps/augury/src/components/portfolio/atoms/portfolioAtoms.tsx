@@ -1,9 +1,6 @@
 import { atom } from 'recoil';
 import { PortfolioInterface } from '../PortfolioCard';
-import {
-  PortfolioGroup,
-  PortfolioGroupInterface,
-} from '../PortfolioGroupModal';
+import { PortfolioGroupInterface } from '../PortfolioGroupModal';
 import { PortfolioColor } from '../portfolioData';
 const portfolioAtom = atom<PortfolioInterface>({
   key: 'portfolioAtom',

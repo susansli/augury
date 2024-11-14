@@ -1,11 +1,11 @@
-import { Stack, useDisclosure } from '@chakra-ui/react';
+import { Stack } from '@chakra-ui/react';
 import CreateGroupModal from './CreatePortfolioModal';
 import PortfolioCard, { PortfolioInterface } from './PortfolioCard';
 import { useState } from 'react';
-import AddButton from '../generic/AddButton';
+import { useParams } from 'react-router-dom';
 
 export default function IndividualPortfolio(): JSX.Element {
-  const disclosure = useDisclosure();
+  const { groupId } = useParams<{ groupId: string }>();
   const [portfolios, setPortfolios] = useState<PortfolioInterface[]>([]); // State to store portfolios
 
   // Function to add a new portfolio to the portfolios array
@@ -14,7 +14,7 @@ export default function IndividualPortfolio(): JSX.Element {
   };
   return (
     <>
-      <CreateGroupModal onSave={addPortfolio} />
+      <CreateGroupModal groupId={groupId} onSave={addPortfolio} />
       <Stack spacing={4} mt={5}>
         {portfolios.map((portfolio, index) => (
           <PortfolioCard key={index} portfolioData={portfolio} />

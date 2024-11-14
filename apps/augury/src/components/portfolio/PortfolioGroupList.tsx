@@ -1,18 +1,20 @@
 // components/PortfolioGroupList.js
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import PortfolioGroupCard from './PortfolioGroupCard';
 import PortfolioGroupModal from './PortfolioGroupModal';
 import AddButton from '../generic/AddButton';
 import { SERVER_URL } from '../../api/Environments';
+import CreatePortfolioModal from './CreatePortfolioModal';
 
 const PortfolioGroupList = () => {
   const { id: userId } = useParams(); // Assuming `id` is passed as a route parameter
   const [portfolioGroups, setPortfolioGroups] = useState([]); // Initialize as empty array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchPortfolioGroups();
@@ -32,7 +34,9 @@ const PortfolioGroupList = () => {
       setLoading(false);
     }
   };
-
+  const enterPortfolioGroup = (portfolioGroupId: string) => {
+    navigate(`/portfolios/${portfolioGroupId}`);
+  };
   // Handle save callback from modal
   const handleSave = () => {
     fetchPortfolioGroups(); // Refresh the list after creating a new portfolio group
@@ -43,11 +47,15 @@ const PortfolioGroupList = () => {
 
   return (
     <VStack spacing={6} align="stretch">
-      <PortfolioGroupModal onSave={handleSave} />
+      <CreatePortfolioModal onSave={handleSave} />
       <SimpleGrid columns={[1, 2, 3]} spacing={4}>
         {portfolioGroups.length > 0 ? (
           portfolioGroups.map((group) => (
-            <PortfolioGroupCard key={group._id} portfolioGroup={group} />
+            <PortfolioGroupCard
+              key={group._id}
+              portfolioGroup={group}
+              onClick={() => enterPortfolioGroup(group.id)}
+            />
           ))
         ) : (
           <Text>No portfolio groups found for this user.</Text>

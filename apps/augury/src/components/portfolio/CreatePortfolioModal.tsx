@@ -1,6 +1,5 @@
 import {
   Button,
-  IconButton,
   Modal,
   ModalOverlay,
   ModalContent,
@@ -15,27 +14,30 @@ import {
   NumberInputField,
   VStack,
   useDisclosure,
-  Box,
+  useToast,
+  Tabs,
+  TabList,
+  TabPanels,
+  Tab,
+  TabPanel,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInputStepper,
-  Tooltip,
-  Icon,
-  useToast,
+  Box,
 } from '@chakra-ui/react';
 import Select, { StylesConfig } from 'react-select';
-import { useEffect } from 'react';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { onboardingAtomSelector } from '../onboarding/atoms/onboardingAtoms';
-import { sectorOptions } from '../onboarding/onboardingData';
-import makeAnimated from 'react-select/animated';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faPlus, faQuestionCircle } from '@fortawesome/free-solid-svg-icons';
-import portfolioAtom from './atoms/portfolioAtoms';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { SERVER_URL } from '../../api/Environments';
 import AddButton from '../generic/AddButton';
-
+import fetchAllPortfoliosForUser from './utils/GetAllPortfolios';
+import { PortfolioInterface } from './PortfolioCard';
+import makeAnimated from 'react-select/animated';
+import { sectorOptions } from '../onboarding/onboardingData';
+interface CreatePortfolioModalProps {
+  groupId?: string;
+  onSave: (portfolio: PortfolioInterface) => void; // onSave should accept a PortfolioInterface
+}
 const animatedComponents = makeAnimated();
 const colourStyles: StylesConfig = {
   control: (styles) => ({ ...styles, backgroundColor: 'color.black' }),
@@ -53,56 +55,72 @@ const colourStyles: StylesConfig = {
     },
   }),
 };
-
-function PortfolioModal({ onSave }) {
-  const onboardingDefaults = useRecoilValue(onboardingAtomSelector);
+function PortfolioModal({ groupId, onSave }: CreatePortfolioModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
-  // Use Recoil atom for portfolio data
-  const [portfolioData, setPortfolioData] = useRecoilState(portfolioAtom);
+  // States for creating a new portfolio
+  const [portfolioData, setPortfolioData] = useState({
+    name: '',
+    riskPercentage1: 0,
+    riskPercentage2: 100,
+    sectorTags: [],
+  });
 
-  useEffect(() => {
-    // Initialize risk composition from onboarding defaults
-    setPortfolioData((prev) => ({
-      ...prev,
-      riskPercentage1: onboardingDefaults.composition,
-      riskPercentage2: 100 - onboardingDefaults.composition,
-      sectorTags: onboardingDefaults.sectors,
-    }));
-  }, [onboardingDefaults, setPortfolioData]);
+  // States for "Add Existing Portfolio to Group" tab
+  const [existingPortfolios, setExistingPortfolios] = useState<
+    PortfolioInterface[]
+  >([]);
+  const [selectedPortfolioIds, setSelectedPortfolioIds] = useState<string>('');
 
-  // Update secondary risk percentage dynamically
+  /*useEffect(() => {
+    // Fetch all portfolios for this user
+    async function loadPortfolios() {
+      try {
+        const portfolios = await fetchAllPortfoliosForUser(userId);
+        setExistingPortfolios(portfolios);
+      } catch (error) {
+        console.error('Error fetching portfolios:', error);
+      }
+    }
+    loadPortfolios();
+  }, [userId]);*/
 
-  // Save portfolio data and send to parent component
-  async function handleSave() {
+  // Function to handle portfolio creation
+  async function handleCreatePortfolio() {
     try {
-      console.log(portfolioData);
-      const response = await axios.post(
+      const createResponse = await axios.post(
         `${SERVER_URL}/portfolio`,
         portfolioData
-      ); // Send POST request to /portfolio route
-      // Show success message and log response
+      );
+      const newPortfolio = createResponse.data.portfolio;
+      console.log('Create response:', createResponse.data);
+      if (!newPortfolio || !newPortfolio.id) {
+        throw new Error('Portfolio creation failed: missing portfolio ID.');
+      }
+      console.log(groupId);
+      if (groupId) {
+        await axios.put(`${SERVER_URL}/portfolio/group/${groupId}`, {
+          portfolios: [newPortfolio.id],
+        });
+      }
+
       toast({
         title: 'Portfolio created.',
-        description: `Portfolio ${response.data.portfolio.name} created successfully.`,
+        description: `Portfolio ${createResponse.data.portfolio.name} created successfully.`,
         status: 'success',
         duration: 5000,
         isClosable: true,
       });
-
-      console.log(response.data);
-
-      // Clear the form and close modal
       setPortfolioData({
         name: '',
         riskPercentage1: 0,
-        riskPercentage2: 0,
+        riskPercentage2: 100,
         sectorTags: [],
       });
       onClose();
-    } catch (error) {
-      // Handle errors and show error message
+      onSave(newPortfolio);
+    } catch (error: any) {
       toast({
         title: 'Error creating portfolio.',
         description: error.response?.data?.message || 'An error occurred.',
@@ -114,142 +132,160 @@ function PortfolioModal({ onSave }) {
     }
   }
 
+  // Function to handle adding selected portfolios to a group
+  /*async function handleAddToGroup() {
+    try {
+      await axios.put(`${SERVER_URL}/portfolio/group/${userId}`, {
+        portfolios: selectedPortfolioIds,
+      });
+      toast({
+        title: 'Portfolios added to group.',
+        description: 'Selected portfolios have been added to the group.',
+        status: 'success',
+        duration: 5000,
+        isClosable: true,
+      });
+      onClose();
+    } catch (error: any) {
+      toast({
+        title: 'Error adding portfolios to group.',
+        description: error.response?.data?.message || 'An error occurred.',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+      });
+      console.error(error);
+    }
+  }*/
+
   return (
     <>
-      <AddButton onClick={onOpen} aira-label="Open Portfolio Modal" />
+      <AddButton
+        onClick={onOpen}
+        aria-label="Open Portfolio Modal"
+        aira-label={''}
+      />
 
       <Modal isOpen={isOpen} onClose={onClose} size="lg">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Create Portfolio</ModalHeader>
+          <ModalHeader>Portfolio Management</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
-            <VStack spacing={4} align="stretch">
-              <FormControl isRequired>
-                <FormLabel>Portfolio Name</FormLabel>
-                <Input
-                  placeholder="Enter portfolio name"
-                  value={portfolioData.name || ''}
-                  onChange={(e) =>
-                    setPortfolioData((prev) => ({
-                      ...prev,
-                      name: e.target.value,
-                    }))
-                  }
-                />
-              </FormControl>
+            <Tabs variant="enclosed" colorScheme="blue">
+              <TabList>
+                <Tab>Create Portfolio</Tab>
+                <Tab>Add Existing Portfolio to Group</Tab>
+              </TabList>
 
-              <FormControl>
-                <FormLabel>
-                  Stocks
-                  <Tooltip
-                    label="Enter what percentage of your portfolio you would like recommended to be stocks"
-                    placement="bottom-start"
-                    fontSize="xs"
-                    width="10rem"
-                  >
-                    <IconButton
-                      aria-label="more-info"
-                      background="none"
-                      padding="0"
-                      _focus={{ background: 'none' }}
-                      icon={
-                        <Icon
-                          as={FontAwesomeIcon}
-                          icon={faQuestionCircle}
-                          color="text.body"
-                        />
-                      }
-                    />
-                  </Tooltip>
-                </FormLabel>
-                <NumberInput
-                  min={0}
-                  max={100}
-                  value={portfolioData.riskPercentage1 || 0}
-                  step={5}
-                  onChange={(valueString) =>
-                    setPortfolioData((prev) => ({
-                      ...prev,
-                      riskPercentage1: parseFloat(valueString),
-                    }))
-                  }
-                >
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
+              <TabPanels>
+                {/* Create Portfolio Tab */}
+                <TabPanel>
+                  <VStack spacing={4} align="stretch">
+                    <FormControl isRequired>
+                      <FormLabel>Portfolio Name</FormLabel>
+                      <Input
+                        placeholder="Enter portfolio name"
+                        value={portfolioData.name || ''}
+                        onChange={(e) =>
+                          setPortfolioData((prev) => ({
+                            ...prev,
+                            name: e.target.value,
+                          }))
+                        }
+                      />
+                    </FormControl>
 
-                <FormLabel>
-                  Bonds
-                  <Tooltip
-                    label="Enter what percentage of your portfolio you would like recommended to be bonds."
-                    placement="bottom-start"
-                    fontSize="xs"
-                    width="10rem"
-                  >
-                    <IconButton
-                      aria-label="more-info"
-                      background="none"
-                      padding="0"
-                      _focus={{ background: 'none' }}
-                      icon={
-                        <Icon
-                          as={FontAwesomeIcon}
-                          icon={faQuestionCircle}
-                          color="text.body"
-                        />
-                      }
-                    />
-                  </Tooltip>
-                </FormLabel>
-                <NumberInput
-                  max={100}
-                  min={0}
-                  value={100 - portfolioData.riskPercentage1}
-                  step={5}
-                  onChange={(valueString) =>
-                    setPortfolioData((prev) => ({
-                      ...prev,
-                      riskPercentage2: parseFloat(valueString),
-                    }))
-                  }
-                >
-                  <NumberInputField />
-                  <NumberInputStepper>
-                    <NumberIncrementStepper />
-                    <NumberDecrementStepper />
-                  </NumberInputStepper>
-                </NumberInput>
-              </FormControl>
+                    <FormControl>
+                      <FormLabel>Stocks</FormLabel>
+                      <NumberInput
+                        min={0}
+                        max={100}
+                        value={portfolioData.riskPercentage1 || 0}
+                        step={5}
+                        onChange={(valueString) =>
+                          setPortfolioData((prev) => ({
+                            ...prev,
+                            riskPercentage1: parseFloat(valueString),
+                            riskPercentage2: 100 - parseFloat(valueString),
+                          }))
+                        }
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
 
-              <FormControl>
-                <FormLabel>Sector Tags</FormLabel>
-                <Select
-                  components={animatedComponents}
-                  options={sectorOptions}
-                  styles={colourStyles}
-                  defaultValue={onboardingDefaults.sectors}
-                  onChange={(selectedOptions) => {
-                    const labels = selectedOptions
-                      ? selectedOptions.map((option) => option.label)
-                      : [];
-                    setPortfolioData((prev) => ({
-                      ...prev,
-                      sectorTags: labels, // Update sectorTags here
-                    }));
-                  }}
-                  isMulti
-                />
-              </FormControl>
-            </VStack>
+                      <FormLabel>Bonds</FormLabel>
+                      <NumberInput
+                        max={100}
+                        min={0}
+                        value={portfolioData.riskPercentage2 || 0}
+                        step={5}
+                        isReadOnly
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+                    </FormControl>
+                    <FormControl>
+                      <FormLabel>Sector Tags</FormLabel>
+                      <Select
+                        components={animatedComponents}
+                        options={sectorOptions}
+                        styles={colourStyles}
+                        onChange={(selectedOptions) => {
+                          const labels = selectedOptions
+                            ? // @ts-expect-error map does exist
+                              selectedOptions.map((option) => option.label)
+                            : [];
+                          setPortfolioData((prev) => ({
+                            ...prev,
+                            sectorTags: labels,
+                          }));
+                        }}
+                        isMulti
+                      />
+                    </FormControl>
+                  </VStack>
+                </TabPanel>
+
+                {/* Add Existing Portfolio to Group Tab */}
+                <TabPanel>
+                  <VStack spacing={4} align="stretch">
+                    <FormControl isRequired>
+                      <FormLabel>Select Portfolios to Add</FormLabel>
+                      <Select
+                        isMulti
+                        placeholder="Select portfolios"
+                        options={existingPortfolios.map((portfolio) => ({
+                          value: portfolio.id,
+                          label: portfolio.name,
+                        }))}
+                        onChange={(selectedOptions) =>
+                          setSelectedPortfolioIds(
+                            //@ts-expect-error map is really  weird with ts
+                            selectedOptions.map((option) => option.value)
+                          )
+                        }
+                      />
+                    </FormControl>
+                  </VStack>
+                </TabPanel>
+              </TabPanels>
+            </Tabs>
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={handleSave}>
-              Save
+            <Button colorScheme="blue" mr={3} onClick={handleCreatePortfolio}>
+              {selectedPortfolioIds.length > 0
+                ? 'Add to Group'
+                : 'Create Portfolio'}
             </Button>
             <Button variant="ghost" onClick={onClose}>
               Cancel

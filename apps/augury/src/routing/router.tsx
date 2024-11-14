@@ -6,6 +6,7 @@ import Onboarding from '../pages/Onboarding';
 import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
 import PageWrapper from '../components/navigation/PageWrapper';
+import Portfolios from '../pages/Portfolios';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,14 @@ const router = createBrowserRouter([
     element: (
       <PageWrapper>
         <Portfolio />
+      </PageWrapper>
+    ),
+  },
+  {
+    path: '/portfolios/:groupId?',
+    element: (
+      <PageWrapper>
+        <Portfolios />
       </PageWrapper>
     ),
   },
