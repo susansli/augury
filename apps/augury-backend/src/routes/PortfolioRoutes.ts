@@ -12,17 +12,6 @@ const portfolioRouter: Router = express.Router();
 
 // ================ Portfolio Defaults ================
 portfolioRouter
-  .route('/')
-  .post(asyncErrorHandler(PortfolioController.createPortfolio));
-
-portfolioRouter
-  .route('/:id')
-  .get(asyncErrorHandler(PortfolioController.getPortfolio))
-  .put(asyncErrorHandler(PortfolioController.updatePortfolio))
-  .delete(asyncErrorHandler(PortfolioController.deletePortfolio));
-
-// ================ Portfolio Defaults ================
-portfolioRouter
   .route('/defaults')
   .post(asyncErrorHandler(PortfolioDefaultController.createPortfolioDefaults));
 
@@ -52,5 +41,16 @@ portfolioRouter
 portfolioRouter
   .route('/group/user/:id')
   .get(asyncErrorHandler(PortfolioGroupController.getPortfolioGroupsByUserId));
+
+// ================ Individual Portfolios ================
+portfolioRouter
+  .route('/')
+  .post(asyncErrorHandler(PortfolioController.createPortfolio));
+
+portfolioRouter
+  .route('/:id')
+  .get(asyncErrorHandler(PortfolioController.getPortfolio))
+  .put(asyncErrorHandler(PortfolioController.updatePortfolio))
+  .delete(asyncErrorHandler(PortfolioController.deletePortfolio));
 
 export default portfolioRouter;
