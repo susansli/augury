@@ -101,9 +101,30 @@ const updateSession = async (data: Session) => {
   return updatedSession;
 };
 
+/**
+ * Deletes a Session from the database by token
+ * @param token Decoded access token
+ * @returns Deleted session data
+ * @throws `ApiError` if unable to delete the session
+ */
+const deleteSessionByToken = async (token: string) => {
+  const session = await SchemaErrorHandler(
+    SessionSchema.findOneAndDelete({ token })
+  );
+  if (!session) {
+    throw new ApiError(
+      'Could not delete session!',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+  return session;
+};
+
 export default module.exports = {
   getSessionByUserId,
   getSessionByToken,
   createSession,
   updateSession,
+  deleteSessionByToken,
 };

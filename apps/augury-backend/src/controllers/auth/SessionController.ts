@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { AxiosError } from 'axios';
+import { Request, Response } from 'express';
 import jwt from '../../config/utils/jwt';
 import SessionModel from '../../models/auth/SessionModel';
 import Session from '../../config/interfaces/Session';
@@ -7,6 +8,19 @@ import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import ApiError from '../../errors/ApiError';
 import DocumentId from '../../config/interfaces/DocumentId';
+import { assertExists } from '../../config/utils/validation';
+
+function getSessionTokenFromJWT(accessToken: string) {
+  // Verify and decode the JWT
+  const verificationResult = jwt.verifyJwt(accessToken);
+  if (
+    typeof verificationResult.decoded === 'string' ||
+    !verificationResult?.decoded?.session
+  ) {
+    throw new Error();
+  }
+  return verificationResult.decoded.session;
+}
 
 /**
  * Creates or updates the User's current session based on the passed `userId`
@@ -41,18 +55,11 @@ async function getCurrentSession(userId: DocumentId, googleToken: string) {
  * Retrieves a `Session` by the provided access token
  * @param accessToken encoded JWT token
  * @returns `Session` document
+ * @throws `ApiError` if session is invalid
  */
 async function getSessionByToken(accessToken: string) {
   try {
-    // Verify and decode the JWT
-    const verificationResult = jwt.verifyJwt(accessToken);
-    if (
-      typeof verificationResult.decoded === 'string' ||
-      !verificationResult?.decoded?.session
-    ) {
-      throw new Error();
-    }
-    const token = verificationResult.decoded.session;
+    const token = getSessionTokenFromJWT(accessToken);
     const session = await SessionModel.getSessionByToken(token);
     if (!session) {
       throw new Error(); // Invalid Session
@@ -67,7 +74,33 @@ async function getSessionByToken(accessToken: string) {
   }
 }
 
+/**
+ * Request handler that logs the current user out based on their accessToken cookie.
+ * @param req Request with accessToken cookie
+ * @param res Response object
+ * @throws `ApiError` if no session was deleted/other error
+ */
+async function endSession(req: Request, res: Response) {
+  const accessToken = req.cookies?.accessToken;
+  assertExists(accessToken, 'Request must contain access token');
+  const token = getSessionTokenFromJWT(accessToken);
+  // Delete session from database
+  const response = await SessionModel.deleteSessionByToken(token);
+
+  if (response) {
+    res.status(StatusCode.OK).send();
+  } else {
+    // we throw an API error since this means something errored out with our server end
+    throw new ApiError(
+      'Could not end this users session',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+}
+
 export default module.exports = {
   getCurrentSession,
   getSessionByToken,
+  endSession,
 };
