@@ -11,6 +11,14 @@ const userRouter: Router = express.Router();
 userRouter.route('/').post(asyncErrorHandler(UserController.createUser));
 
 userRouter
+  .route('/current')
+  .get(asyncErrorHandler(UserController.getLoggedInUserData));
+
+userRouter
+  .route('/onboard')
+  .post(asyncErrorHandler(UserController.onboardNewUser));
+
+userRouter
   .route('/:id')
   .get(asyncErrorHandler(UserController.getUser))
   .put(asyncErrorHandler(UserController.updateUser));
@@ -19,13 +27,5 @@ userRouter
 userRouter
   .route('/:id/balance')
   .put(asyncErrorHandler(UserController.updateUserBalance));
-
-userRouter
-  .route('/current')
-  .get(asyncErrorHandler(UserController.getLoggedInUserData));
-
-userRouter
-  .route('/onboard')
-  .post(asyncErrorHandler(UserController.onboardNewUser));
 
 export default userRouter;
