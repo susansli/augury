@@ -4,13 +4,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { SimpleGrid, Text, VStack } from '@chakra-ui/react';
 import PortfolioGroupCard from './PortfolioGroupCard';
-import PortfolioGroupModal from './PortfolioGroupModal';
-import AddButton from '../generic/AddButton';
 import { SERVER_URL } from '../../api/Environments';
 import CreatePortfolioModal from './CreatePortfolioModal';
+import AuthStoreManager from '../../helpers/AuthStoreManager';
+import PortfolioGroupModal from './PortfolioGroupModal';
 
 const PortfolioGroupList = () => {
-  const { id: userId } = useParams(); // Assuming `id` is passed as a route parameter
+  const userId = AuthStoreManager.getUserId();
   const [portfolioGroups, setPortfolioGroups] = useState([]); // Initialize as empty array
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,9 +23,10 @@ const PortfolioGroupList = () => {
   // Fetch portfolio groups by userId
   const fetchPortfolioGroups = async () => {
     setLoading(true);
+    console.log(userId);
     try {
       const response = await axios.get(
-        `${SERVER_URL}/portfolio/group/user/672a6e7501ca4cc969f7ac3b`
+        `${SERVER_URL}/portfolio/group/user/${userId}`
       );
       setPortfolioGroups(response.data.groups || []); // Set portfolio groups or default to empty array
     } catch (err) {
@@ -47,7 +48,7 @@ const PortfolioGroupList = () => {
 
   return (
     <VStack spacing={6} align="stretch">
-      <CreatePortfolioModal onSave={handleSave} />
+      <PortfolioGroupModal onSave={handleSave} />
       <SimpleGrid columns={[1, 2, 3]} spacing={4}>
         {portfolioGroups.length > 0 ? (
           portfolioGroups.map((group) => (

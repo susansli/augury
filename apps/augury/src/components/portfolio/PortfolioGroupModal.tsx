@@ -22,26 +22,27 @@ import { useRecoilState } from 'recoil';
 import { portfolioGroupAtom } from './atoms/portfolioAtoms';
 import { PortfolioColor } from './portfolioData';
 import { PortfolioInterface } from './PortfolioCard';
+import AuthStoreManager from '../../helpers/AuthStoreManager';
 export interface PortfolioGroupInterface {
   name: string;
   color: PortfolioColor;
-  userId: any;
+  userId: string;
   portfolios?: string[] | PortfolioInterface[];
   portfolioCurrency?: string; // ISO 4217 currency code for flavour
 }
 function PortfolioGroupModal({ onSave }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-
+  const userId = AuthStoreManager.getUserId();
   // Use Recoil atom for portfolio data
   const [portfolioData, setPortfolioData] = useRecoilState(portfolioGroupAtom);
   useEffect(() => {
     // Set default values if portfolioData is empty
     setPortfolioData((prev) => ({
       ...prev,
-      name: prev.name || 'hello',
+      name: prev.name || 'default',
       color: prev.color || PortfolioColor.RED,
-      userId: prev.userId || '672a6e7501ca4cc969f7ac3b',
+      userId: userId || '',
     }));
   }, [setPortfolioData]);
   // Update secondary risk percentage dynamically
