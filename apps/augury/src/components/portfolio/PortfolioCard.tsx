@@ -50,13 +50,12 @@ function PortfolioCard({ portfolioData }: PortfolioCardProps) {
                 <strong>Bonds:</strong> {portfolioData.riskPercentage2}%
               </Text>
             </>
-
-            <Text>
-              <strong>Sectors:</strong>{' '}
-              {portfolioData.sectorTags?.join(', ') || 'None'}
-            </Text>
           </Box>
         </Flex>
+        <Text>
+          <strong>Sectors:</strong>{' '}
+          {portfolioData.sectorTags?.join(', ') || 'None'}
+        </Text>
       </CardBody>
       <CardFooter></CardFooter>
     </Card>
