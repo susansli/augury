@@ -26,7 +26,7 @@ export interface PortfolioGroupInterface {
   name: string;
   color: PortfolioColor;
   userId: any;
-  portfolios?: string[] | PortfolioInterface[];
+  portfolios?: PortfolioInterface[];
   portfolioCurrency?: string; // ISO 4217 currency code for flavour
 }
 function PortfolioGroupModal({ onSave }) {
