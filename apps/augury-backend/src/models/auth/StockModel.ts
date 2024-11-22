@@ -55,6 +55,36 @@ const createBuyRecord = async (
   return buyRecordEntry;
 };
 
+const getTotalShares = async (portfolioId: DocumentId, symbol: string) => {
+  // Get stock ID from portfolio ID
+  const stock: Stock = {
+    portfolioId,
+    symbol,
+  };
+  const stockEntry = await SchemaErrorHandler(StockSchema.findOne(stock));
+  if (!stockEntry) {
+    throw new ApiError(
+      'Could not find stock for this portfolio',
+      StatusCode.INTERNAL_ERROR,
+      Severity.MED
+    );
+  }
+  // Get all buyRecords and aggregate total current shares
+  const searchRecord: Partial<BuyRecord> = {
+    stockId: stockEntry._id,
+  };
+  const buyRecords = await SchemaErrorHandler(
+    BuyRecordSchema.find(searchRecord)
+  );
+
+  const totalShares = buyRecords.reduce((previous, record) => {
+    return previous + record.shares;
+  }, 0);
+
+  return totalShares;
+};
+
 export default module.exports = {
   createBuyRecord,
+  getTotalShares,
 };
