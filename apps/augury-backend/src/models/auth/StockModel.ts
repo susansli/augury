@@ -12,7 +12,7 @@ import BuyRecord from '../../config/interfaces/BuyRecord';
  * Creates a buy record (purchases/sells a stock) for a portfolio
  * @param portfolioId Mongoose document id of the associated portfolio
  * @param symbol String ticker symbol of the stock to buy
- * @param quantity Float amount of shares purchased/sold (Positive or negative)
+ * @param shares Float amount of shares purchased/sold (Positive or negative)
  * @param price Float current price of stock. Used for later portfolio evaluation
  * @returns a `BuyRecord` document
  * @throws `ApiError` if the stock could not be purchased
@@ -20,7 +20,7 @@ import BuyRecord from '../../config/interfaces/BuyRecord';
 const createBuyRecord = async (
   portfolioId: DocumentId,
   symbol: string,
-  quantity: number,
+  shares: number,
   price: number
 ) => {
   // Get stock ID from portfolio ID
@@ -37,7 +37,7 @@ const createBuyRecord = async (
   // Create buy record from stock ID and passed arguments
   const buyRecord: BuyRecord = {
     stockId: stockEntry._id,
-    shares: quantity, // Quantity may be +/-
+    shares, // Shares may be +/-
     boughtAtPrice: price,
   };
   const buyRecordEntry = await SchemaErrorHandler(
@@ -46,7 +46,7 @@ const createBuyRecord = async (
 
   if (!buyRecordEntry) {
     throw new ApiError(
-      `Unable to ${quantity > 0 ? 'buy' : 'sell'} stock`,
+      `Unable to ${shares > 0 ? 'buy' : 'sell'} stock`,
       StatusCode.INTERNAL_ERROR,
       Severity.MED
     );
