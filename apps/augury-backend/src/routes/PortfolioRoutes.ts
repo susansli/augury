@@ -59,4 +59,8 @@ portfolioRouter
   .route('/:id/buy')
   .post(asyncErrorHandler(StockController.buyStock));
 
+portfolioRouter
+  .route('/:id/sell')
+  .post(asyncErrorHandler(StockController.sellStock));
+
 export default portfolioRouter;
