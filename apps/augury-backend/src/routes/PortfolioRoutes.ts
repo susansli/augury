@@ -4,6 +4,7 @@ import asyncErrorHandler from '../middlewares/AsyncErrorHandler';
 import PortfolioDefaultController from '../controllers/auth/PortfolioDefaultController';
 import PortfolioGroupController from '../controllers/auth/PortfolioGroupController';
 import PortfolioController from '../controllers/auth/PortfolioController';
+import StockController from '../controllers/auth/StockController';
 
 const portfolioRouter: Router = express.Router();
 
@@ -52,5 +53,10 @@ portfolioRouter
   .get(asyncErrorHandler(PortfolioController.getPortfolio))
   .put(asyncErrorHandler(PortfolioController.updatePortfolio))
   .delete(asyncErrorHandler(PortfolioController.deletePortfolio));
+
+// ================ Portfolio Stocks ================
+portfolioRouter
+  .route('/:id/buy')
+  .post(asyncErrorHandler(StockController.buyStock));
 
 export default portfolioRouter;
