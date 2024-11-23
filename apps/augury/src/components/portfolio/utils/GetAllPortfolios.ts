@@ -17,11 +17,10 @@ async function fetchAllPortfoliosForUser(userId: string): Promise<any[]> {
     );
     const portfolioGroups: PortfolioGroup[] = groupResponse.data?.groups || []; // Ensure this is an array
 
-    // Log portfolioGroups to inspect structure
     console.log('Portfolio Groups:', portfolioGroups);
     const portfolioIds = portfolioGroups.flatMap((group) => group.portfolios);
     console.log(portfolioIds);
-    // For each group, retrieve portfolios by their IDs
+
     const portfolioPromises = portfolioGroups.flatMap(
       (group) =>
         group?.portfolios?.map((portfolioId: string) =>
@@ -29,15 +28,13 @@ async function fetchAllPortfoliosForUser(userId: string): Promise<any[]> {
         ) || []
     );
 
-    // Resolve all portfolio requests in parallel
     const portfolioResponses = await Promise.all(portfolioPromises);
 
-    // Extract portfolio data from responses
     const portfolios = portfolioResponses.map(
       (response) => response.data.portfolio
     );
 
-    return portfolios; // Return all portfolios combined across all groups
+    return portfolios;
   } catch (error) {
     console.error('Error fetching portfolios:', error);
     throw new Error('Could not fetch portfolios');

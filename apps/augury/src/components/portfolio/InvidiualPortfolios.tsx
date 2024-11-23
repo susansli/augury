@@ -6,9 +6,8 @@ import { useParams } from 'react-router-dom';
 
 export default function IndividualPortfolio(): JSX.Element {
   const { groupId } = useParams<{ groupId: string }>();
-  const [portfolios, setPortfolios] = useState<PortfolioInterface[]>([]); // State to store portfolios
+  const [portfolios, setPortfolios] = useState<PortfolioInterface[]>([]);
 
-  // Function to add a new portfolio to the portfolios array
   const addPortfolio = (portfolio: PortfolioInterface) => {
     setPortfolios((prevPortfolios) => [...prevPortfolios, portfolio]);
   };
