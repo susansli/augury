@@ -26,13 +26,14 @@ jobs:
       # Cache node_modules
       - uses: pnpm/action-setup@v2
         with:
-          version: 8.5.1 # Specify the desired pnpm version
+          version: 8
+          run_install: |
+           - recursive: true
+             args: [--frozen-lockfile]
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-      - run: pnpm install --frozen-lockfile # Use the correct install command for CI
-      - run: pnpm test
       - uses: nrwl/nx-set-shas@v4
 
       # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
