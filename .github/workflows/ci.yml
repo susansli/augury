@@ -14,37 +14,29 @@ jobs:
   main:
     runs-on: ubuntu-latest
     steps:
-      # Check out the repository
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # Set up Node.js with caching
+      # This enables task distribution via Nx Cloud
+      # Run this command as early as possible, before dependencies are installed
+      # Learn more at https://nx.dev/ci/reference/nx-cloud-cli#npx-nxcloud-startcirun
+      - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
+
+      # Cache node_modules
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 6.32.9
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'pnpm'
-
-      # Install pnpm globally
-      - run: npm install -g pnpm
-
-      # Verify pnpm installation (to debug any issues)
-      - run: pnpm --version
-
-      # Install dependencies with pnpm
-      - run: pnpm install --frozen-lockfile
-
-      # Start Nx Cloud CI run (enables task distribution)
-      - run: npx nx-cloud start-ci-run --distribute-on="3 linux-medium-js" --stop-agents-after="e2e-ci"
-
-      # Set Nx SHAs for caching
+      - run: pnpm install
+      - run: pnpm test
+      - run: npm ci --legacy-peer-deps
       - uses: nrwl/nx-set-shas@v4
 
-      # Run affected commands (lint, test, build, e2e)
-      - run: npx nx affected --target=lint --all --parallel --max-parallel=3
-      - run: npx nx affected --target=test --all --parallel --max-parallel=3
-      - run: npx nx affected --target=build --all --parallel --max-parallel=3
-      - run: npx nx affected --target=e2e-ci --all --parallel --max-parallel=3
-
-      # Stop Nx Cloud CI run
-      - run: npx nx-cloud stop-ci-run
+      # Prepend any command with "nx-cloud record --" to record its logs to Nx Cloud
+      # - run: npx nx-cloud record -- echo Hello World
+      # Nx Affected runs only tasks affected by the changes in this PR/commit. Learn more: https://nx.dev/ci/features/affected
+      - run: npx nx affected -t lint test build e2e-ci
