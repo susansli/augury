@@ -1,5 +1,5 @@
 import ClientError from '../../errors/ClientError';
-import PortfolioRisk from '../enums/PortfolioRisk';
+// import PortfolioRisk from '../enums/PortfolioRisk';
 import Sectors from '../enums/Sectors';
 import StatusCode from '../enums/StatusCode';
 import Portfolio from '../interfaces/Portfolio';
@@ -11,7 +11,7 @@ import Portfolio from '../interfaces/Portfolio';
  * @throws `ClientError` if parameter is `null` or `undefined`
  */
 export function assertExists<T>(param: T, errorMsg: string) {
-  if (!(param != null)) {
+  if (!(param != null) || (typeof param === 'string' && !param)) {
     throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
   }
 }
@@ -30,6 +30,30 @@ export function assertNumber<T>(param: T, errorMsg: string) {
     (typeof param === 'string' && param.trim() !== '');
   // Check isNaN as well to check string number validity
   if (!hasValue || isNaN(param as number)) {
+    throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
+  }
+}
+
+/**
+ * Throws an error if the passed parameter is false
+ * @param boolean Statement that evaluates to true or false
+ * @param errorMsg message to throw as a `ClientError`
+ * @throws `ClientError` if parameter is `null` or `undefined`
+ */
+export function assertTrue(boolean: boolean, errorMsg: string) {
+  if (boolean === false) {
+    throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
+  }
+}
+
+/**
+ * Throws an error if the passed parameter is true
+ * @param boolean Statement that evaluates to true or false
+ * @param errorMsg message to throw as a `ClientError`
+ * @throws `ClientError` if parameter is `null` or `undefined`
+ */
+export function assertFalse(boolean: boolean, errorMsg: string) {
+  if (boolean === true) {
     throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
   }
 }
@@ -57,21 +81,40 @@ export function assertEnum<T, G>(enumObj: T, value: G, errorMsg: string) {
 export function assertPortfolioDefaultsFormat(defaults: Portfolio) {
   assertExists(defaults, 'Invalid defaults provided');
   assertExists(defaults.name, 'Invalid portfolio name provided');
-  if (defaults.useCustomRisk) {
-    assertExists(
-      defaults.customRiskPercentage1,
-      'Invalid customRiskPercentage1 provided'
-    );
-    assertExists(
-      defaults.customRiskPercentage2,
-      'Invalid customRiskPercentage2 provided'
-    );
-  } else {
-    assertEnum(PortfolioRisk, defaults.risk, 'Invalid risk provided');
-  }
+  // if (defaults.useCustomRisk) {
+  assertExists(defaults.riskPercentage1, 'Invalid riskPercentage1 provided');
+  assertExists(defaults.riskPercentage2, 'Invalid riskPercentage2 provided');
+  // } else {
+  //   assertEnum(PortfolioRisk, defaults.risk, 'Invalid risk provided');
+  // }
   if (Array.isArray(defaults.sectorTags)) {
     for (const tag of defaults.sectorTags) {
       assertEnum(Sectors, tag, 'Invalid sector tag provided');
+    }
+  }
+}
+
+/**
+ * Asserts that a passed risk composition is valid and totals to 100%.
+ * @param riskPercentage1 Number
+ * @param riskPercentage2 Number
+ * @throws `ClientError` if risk composition doesn't add to 100.
+ */
+export function assertValidRiskComposition(
+  riskPercentage1?: number,
+  riskPercentage2?: number,
+  required = true
+) {
+  // If required == true, short-circuit and assert both were passed, else see if any was passed.
+  if (required || riskPercentage1 || riskPercentage2) {
+    // Assert that updating one risk percentage should update the other
+    assertNumber(riskPercentage1, 'Invalid risk percentage 1 provided');
+    assertNumber(riskPercentage2, 'Invalid risk percentage 2 provided');
+    if (riskPercentage1 + riskPercentage2 != 100) {
+      throw new ClientError(
+        'Invalid risk composition provided (must add to 100)',
+        StatusCode.BAD_REQUEST
+      );
     }
   }
 }

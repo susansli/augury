@@ -15,6 +15,7 @@ import googleOauthHandler from './middlewares/GoogleOAuthHandler';
 // Routers
 import userRouter from './routes/UserRoutes';
 import portfolioRouter from './routes/PortfolioRoutes';
+import SessionController from './controllers/auth/SessionController';
 
 const app = express();
 
@@ -36,13 +37,14 @@ app.use('/assets', express.static(path.join(__dirname, 'assets')));
 
 // Application routers that register handlers
 app.use('/user', userRouter);
-app.use('/user/portfolio', portfolioRouter);
+app.use('/portfolio', portfolioRouter);
 
 // API Routes
 app.get('/google/callback', asyncErrorHandler(googleOauthHandler)); // Google Callback route that is used after OAuth redirect
 app.get('/ping', (req, res) => {
   res.send({ message: '[augury-backend] Pong!' });
 });
+app.post('/logout', asyncErrorHandler(SessionController.endSession));
 
 const server = app.listen(SERVER_PORT, () => {
   mongoose.set('strictQuery', false);

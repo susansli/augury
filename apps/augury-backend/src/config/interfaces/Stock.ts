@@ -1,7 +1,12 @@
-import { Types } from 'mongoose';
+import DocumentId from './DocumentId';
 import Identifiable from './Identifiable';
 
 export default interface Stock extends Identifiable {
-  portfolioId: Types.ObjectId | string;
+  portfolioId: DocumentId;
   symbol: string;
+}
+
+export interface StockRequestBody {
+  symbol: string;
+  shares: number;
 }

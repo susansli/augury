@@ -1,9 +1,10 @@
-import { Types } from 'mongoose';
 import PortfolioDefaultSchema from '../../config/schemas/PortfolioDefaultSchema';
 import ApiError from '../../errors/ApiError';
 import StatusCode from '../../config/enums/StatusCode';
 import Severity from '../../config/enums/Severity';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
+import DocumentId from '../../config/interfaces/DocumentId';
+import SchemaErrorHandler from '../../middlewares/SchemaErrorHandler';
 
 /**
  * Retrieves the portfolio defaults for the provided `userId`
@@ -11,8 +12,10 @@ import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
  * @returns a `PorfolioDefault` document
  * @throws `ApiError` if defaults could not be retrieved
  */
-const getPortfolioDefaults = async (userId: string | Types.ObjectId) => {
-  const defaults = await PortfolioDefaultSchema.findOne({ userId });
+const getPortfolioDefaults = async (userId: DocumentId) => {
+  const defaults = await SchemaErrorHandler(
+    PortfolioDefaultSchema.findOne({ userId })
+  );
 
   if (!defaults) {
     throw new ApiError(
@@ -32,7 +35,9 @@ const getPortfolioDefaults = async (userId: string | Types.ObjectId) => {
  * @throws `ApiError` if defaults could not be created
  */
 const createPortfolioDefaults = async (data: PortfolioDefault) => {
-  const defaults = await PortfolioDefaultSchema.create(data);
+  const defaults = await SchemaErrorHandler(
+    PortfolioDefaultSchema.create(data)
+  );
   if (!defaults) {
     throw new ApiError(
       'Portfolio defaults could not be created.',
@@ -52,9 +57,10 @@ const createPortfolioDefaults = async (data: PortfolioDefault) => {
  */
 const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
   const { userId, ...updateData }: Partial<PortfolioDefault> = data;
-  const updatedDefaults = await PortfolioDefaultSchema.findOneAndUpdate(
-    { userId },
-    updateData
+  const updatedDefaults = await SchemaErrorHandler(
+    PortfolioDefaultSchema.findOneAndUpdate({ userId }, updateData, {
+      new: true,
+    })
   );
 
   if (!updatedDefaults) {
@@ -74,10 +80,12 @@ const updatePortfolioDefaults = async (data: Partial<PortfolioDefault>) => {
  * @returns Removed user defaults data
  * @throws `ApiError` if defaults could not be deleted
  */
-const deletePortfolioDefaults = async (userId: string | Types.ObjectId) => {
-  const defaults = await PortfolioDefaultSchema.findOneAndDelete({
-    userId,
-  });
+const deletePortfolioDefaults = async (userId: DocumentId) => {
+  const defaults = await SchemaErrorHandler(
+    PortfolioDefaultSchema.findOneAndDelete({
+      userId,
+    })
+  );
 
   if (!defaults) {
     throw new ApiError(
@@ -95,8 +103,10 @@ const deletePortfolioDefaults = async (userId: string | Types.ObjectId) => {
  * @param userId Mongoose document id of the user
  * @returns True if defaults exist, false otherwise.
  */
-const userHasDefaults = async (userId: string | Types.ObjectId) => {
-  const defaults = await PortfolioDefaultSchema.findOne({ userId });
+const userHasDefaults = async (userId: DocumentId) => {
+  const defaults = await SchemaErrorHandler(
+    PortfolioDefaultSchema.findOne({ userId })
+  );
   return defaults != null;
 };
 

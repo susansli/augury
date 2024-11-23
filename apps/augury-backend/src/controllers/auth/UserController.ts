@@ -13,6 +13,7 @@ import Severity from '../../config/enums/Severity';
 import Portfolio from '../../config/interfaces/Portfolio';
 import PortfolioDefault from '../../config/interfaces/PortfolioDefault';
 import PortfolioDefaultModel from '../../models/auth/PortfolioDefaultModel';
+import Identifiable from '../../config/interfaces/Identifiable';
 
 type UserReponse = {
   user: User;
@@ -20,16 +21,16 @@ type UserReponse = {
 
 /**
  * Retrieves a User from the database based on their ID
- * @param req Request with body containing a string `id` field
+ * @param req Request with URL parameter containing an `id`
  * @param res Response with user data
  * @throws ClientError if request is invalid
  * @throws ApiError if unable to retrieve user
  */
 const getUser = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable>,
   res: Response<UserReponse>
 ): Promise<void> => {
-  const { id: userId } = req.body;
+  const { id: userId } = req.params;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
 
@@ -130,12 +131,14 @@ const createUser = async (
  * @throws ApiError if unable to update user
  */
 const updateUser = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable, unknown, User>,
   res: Response<UserReponse>
 ): Promise<void> => {
-  const { id: userId, email, googleId, firstName, lastName } = req.body;
+  // Get id from URLparams, rest of the user data from body
+  const { id } = req.params;
+  const { email, googleId, firstName, lastName } = req.body;
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID provided!');
+  assertExists(id, 'Invalid ID provided!');
 
   // Update the User in the DB using request parameters/data
   const user: Partial<User> = {
@@ -144,7 +147,7 @@ const updateUser = async (
     firstName: firstName || undefined,
     lastName: lastName || undefined,
   };
-  const response = await UserModel.updateUser(userId, user);
+  const response = await UserModel.updateUser(id, user);
 
   if (response) {
     // send the user back after model runs logic
@@ -167,19 +170,20 @@ const updateUser = async (
  * @throws ApiError if unable to update user
  */
 const updateUserBalance = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable, unknown, User>,
   res: Response<UserReponse>
 ): Promise<void> => {
-  const { id: userId, balance } = req.body;
+  const { id } = req.params;
+  const { balance } = req.body;
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID provided!');
+  assertExists(id, 'Invalid ID provided!');
   assertNumber(balance, 'Invalid balance provided');
 
   // Update the User in the DB using request parameters/data
   const updatedUserFields: Partial<User> = {
     balance,
   };
-  const response = await UserModel.updateUser(userId, updatedUserFields);
+  const response = await UserModel.updateUser(id, updatedUserFields);
 
   if (response) {
     // send the user back after model runs logic
@@ -201,14 +205,14 @@ const updateUserBalance = async (
  * @param res Deleted user's information
  */
 const deleteUser = async (
-  req: Request<unknown, unknown, User>,
+  req: Request<Identifiable>,
   res: Response<UserReponse>
 ): Promise<void> => {
-  const { id: userId } = req.body;
+  const { id } = req.params;
   // Assert the request format was valid
-  assertExists(userId, 'Invalid ID provided');
+  assertExists(id, 'Invalid ID provided');
   // Delete the User from the DB
-  const response = await UserModel.deleteUser(userId);
+  const response = await UserModel.deleteUser(id);
 
   if (response) {
     // send the user back after model runs logic
@@ -252,20 +256,20 @@ const onboardNewUser = async (
   assertPortfolioDefaultsFormat(defaults);
   const {
     name,
-    risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   }: Portfolio = defaults;
 
   const newDefaults: PortfolioDefault = {
     userId,
     name,
-    risk: useCustomRisk ? undefined : risk,
-    useCustomRisk,
-    customRiskPercentage1,
-    customRiskPercentage2,
+    // risk: useCustomRisk ? undefined : risk,
+    // useCustomRisk,
+    riskPercentage1,
+    riskPercentage2,
     sectorTags,
   };
   const [defaultsResponse, updateUserResponse] = await Promise.all([

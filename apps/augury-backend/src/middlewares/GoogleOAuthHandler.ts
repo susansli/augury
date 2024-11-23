@@ -86,7 +86,7 @@ async function googleOauthHandler(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, refreshCookieOptions);
 
   //redirect back to client
-  const url = CLIENT_URL + (newUser ? `/onboarding?id=${user._id.toString()}` : `/?id=${user._id.toString()}`);
+  const url = CLIENT_URL + (newUser ? `/onboarding?id=${user._id.toString()}` : `/portfolio?id=${user._id.toString()}`);
   // const url = `${
   //   process.env.FRONTEND_URL || 'http://localhost'
   // }:${clientPort}/Test.html`;
