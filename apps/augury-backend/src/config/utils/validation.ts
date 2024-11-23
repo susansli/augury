@@ -35,6 +35,30 @@ export function assertNumber<T>(param: T, errorMsg: string) {
 }
 
 /**
+ * Throws an error if the passed parameter is false
+ * @param boolean Statement that evaluates to true or false
+ * @param errorMsg message to throw as a `ClientError`
+ * @throws `ClientError` if parameter is `null` or `undefined`
+ */
+export function assertTrue(boolean: boolean, errorMsg: string) {
+  if (boolean === false) {
+    throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
+  }
+}
+
+/**
+ * Throws an error if the passed parameter is true
+ * @param boolean Statement that evaluates to true or false
+ * @param errorMsg message to throw as a `ClientError`
+ * @throws `ClientError` if parameter is `null` or `undefined`
+ */
+export function assertFalse(boolean: boolean, errorMsg: string) {
+  if (boolean === true) {
+    throw new ClientError(errorMsg, StatusCode.BAD_REQUEST);
+  }
+}
+
+/**
  * Throws an error if the passed value exists within the source enumerator
  * @param enumObj Enumerator
  * @param value to check
