@@ -43,7 +43,6 @@ function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
       </CardHeader>
       <CardBody>
         <Flex direction="row">
-          <PortfolioStats flexGrow={1} portfolios={[portfolioData]} />
           <Box>
             <>
               <Text>
