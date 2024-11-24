@@ -73,7 +73,6 @@ function PortfolioModal({ groupId, onSave }: CreatePortfolioModalProps) {
     PortfolioInterface[]
   >([]);
   const [selectedPortfolioIds, setSelectedPortfolioIds] = useState<string>('');
-
   /*useEffect(() => {
     // Fetch all portfolios for this user
     async function loadPortfolios() {

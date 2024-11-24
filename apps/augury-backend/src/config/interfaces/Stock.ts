@@ -5,3 +5,8 @@ export default interface Stock extends Identifiable {
   portfolioId: DocumentId;
   symbol: string;
 }
+
+export interface StockRequestBody {
+  symbol: string;
+  shares: number;
+}
