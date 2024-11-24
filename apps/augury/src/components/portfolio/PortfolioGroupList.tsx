@@ -38,8 +38,9 @@ const PortfolioGroupList = () => {
   const enterPortfolioGroup = (portfolioGroupId: string) => {
     navigate(`/portfolios/${portfolioGroupId}`);
   };
+
   const handleSave = () => {
-    fetchPortfolioGroups(); // Refresh the list after creating a new portfolio group
+    fetchPortfolioGroups();
   };
 
   if (loading) return <Text>Loading...</Text>;

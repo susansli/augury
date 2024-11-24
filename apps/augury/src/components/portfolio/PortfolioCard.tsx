@@ -5,11 +5,16 @@ import {
   CardBody,
   CardFooter,
   Text,
+  HStack,
+  VStack,
+  Flex,
+  Box,
 } from '@chakra-ui/react';
-import colors from '../../theme/foundations/colours';
+import PortfolioStats from './PortfolioStats';
 
 export interface PortfolioCardProps {
   portfolioData: PortfolioInterface;
+  onClick: () => void;
 }
 
 export type PortfolioInterface = {
@@ -22,29 +27,33 @@ export type PortfolioInterface = {
   valuePrev?: number;
 };
 
-function PortfolioCard({ portfolioData }: PortfolioCardProps) {
+function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
   return (
     <Card
+      onClick={onClick}
       as="button"
       borderWidth="1px"
       borderRadius="lg"
       overflow="hidden"
       shadow="md"
-      backgroundColor={colors.background.selBg}
+      backgroundColor="background.selBg"
     >
       <CardHeader>
         <Heading size="md">{portfolioData.name} </Heading>
       </CardHeader>
       <CardBody>
-        <>
-          <Text>
-            <strong>Stocks:</strong> {portfolioData.riskPercentage1}%
-          </Text>
-          <Text>
-            <strong>Bonds:</strong> {portfolioData.riskPercentage2}%
-          </Text>
-        </>
-
+        <Flex direction="row">
+          <Box>
+            <>
+              <Text>
+                <strong>Stocks:</strong> {portfolioData.riskPercentage1}%
+              </Text>
+              <Text>
+                <strong>Bonds:</strong> {portfolioData.riskPercentage2}%
+              </Text>
+            </>
+          </Box>
+        </Flex>
         <Text>
           <strong>Sectors:</strong>{' '}
           {portfolioData.sectorTags?.join(', ') || 'None'}

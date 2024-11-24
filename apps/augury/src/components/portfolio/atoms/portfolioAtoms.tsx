@@ -11,12 +11,16 @@ const portfolioAtom = atom<PortfolioInterface>({
     sectorTags: [],
   },
 });
+export const portfolioIdAtom = atom<string>({
+  key: 'portfolioIdAtom',
+  default: '',
+});
 export const portfolioGroupAtom = atom<PortfolioGroupInterface>({
   key: 'portfolioGroupAtom',
   default: {
     name: 'hello',
     color: PortfolioColor.RED,
-    userId: '672a6e7501ca4cc969f7ac3b',
+    userId: '',
     portfolios: [],
   },
 });
