@@ -1,4 +1,4 @@
-import IndividualPortfolio from '../components/portfolio/InvidiualPortfolio';
+import IndividualPortfolio from '../components/portfolio/InvidiualPortfolios';
 
 export default function Portfolio(): JSX.Element {
   return <IndividualPortfolio />;
