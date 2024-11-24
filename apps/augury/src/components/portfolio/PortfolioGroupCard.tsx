@@ -5,15 +5,9 @@ import {
   CardBody,
   CardFooter,
   Text,
-  StatGroup,
-  StatNumber,
-  Stat,
-  StatHelpText,
-  StatArrow,
 } from '@chakra-ui/react';
 import colors from '../../theme/foundations/colours';
 import { PortfolioGroupInterface } from './PortfolioGroupModal';
-import { PortfolioInterface } from './PortfolioCard';
 import PortfolioStats from './PortfolioStats';
 
 interface PortfolioGroupCardProps {
@@ -24,8 +18,6 @@ function PortfolioGroupCard({
   portfolioGroup,
   onClick,
 }: PortfolioGroupCardProps) {
-
-
   return (
     <Card
       onClick={onClick}
@@ -48,7 +40,10 @@ function PortfolioGroupCard({
         </Text>
       </CardHeader>
       <CardBody>
-        <PortfolioStats portfolios={portfolioGroup.portfolios || []} currency={portfolioGroup.portfolioCurrency} />
+        <PortfolioStats
+          portfolios={portfolioGroup.portfolios || []}
+          currency={portfolioGroup.portfolioCurrency}
+        />
       </CardBody>
       <CardFooter></CardFooter>
     </Card>
