@@ -7,6 +7,7 @@ import Portfolio from '../pages/Portfolio';
 import Settings from '../pages/Settings';
 import PageWrapper from '../components/navigation/PageWrapper';
 import Portfolios from '../pages/Portfolios';
+import Stock from '../pages/Stock';
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,14 @@ const router = createBrowserRouter([
     element: (
       <PageWrapper>
         <Portfolios />
+      </PageWrapper>
+    ),
+  },
+  {
+    path: '/stock/:portfolioId?',
+    element: (
+      <PageWrapper>
+        <Stock />
       </PageWrapper>
     ),
   },

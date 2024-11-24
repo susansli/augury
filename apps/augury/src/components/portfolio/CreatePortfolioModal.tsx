@@ -34,6 +34,8 @@ import fetchAllPortfoliosForUser from './utils/GetAllPortfolios';
 import { PortfolioInterface } from './PortfolioCard';
 import makeAnimated from 'react-select/animated';
 import { sectorOptions } from '../onboarding/onboardingData';
+import portfolioIdAtom from './atoms/portfolioAtoms';
+import { useRecoilState } from 'recoil';
 interface CreatePortfolioModalProps {
   groupId?: string;
   onSave: (portfolio: PortfolioInterface) => void; // onSave should accept a PortfolioInterface
@@ -57,9 +59,8 @@ const colourStyles: StylesConfig = {
 };
 function PortfolioModal({ groupId, onSave }: CreatePortfolioModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [portfolioId, setPortfolioId] = useRecoilState(portfolioIdAtom);
   const toast = useToast();
-
-  // States for creating a new portfolio
   const [portfolioData, setPortfolioData] = useState({
     name: '',
     riskPercentage1: 0,
@@ -95,9 +96,7 @@ function PortfolioModal({ groupId, onSave }: CreatePortfolioModalProps) {
       );
       const newPortfolio = createResponse.data.portfolio;
       console.log('Create response:', createResponse.data);
-      if (!newPortfolio || !newPortfolio.id) {
-        throw new Error('Portfolio creation failed: missing portfolio ID.');
-      }
+      setPortfolioId(createResponse.data.portfolio.id);
       console.log(groupId);
       if (groupId) {
         await axios.put(`${SERVER_URL}/portfolio/group/${groupId}`, {

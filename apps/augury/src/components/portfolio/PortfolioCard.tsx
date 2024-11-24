@@ -10,6 +10,7 @@ import colors from '../../theme/foundations/colours';
 
 export interface PortfolioCardProps {
   portfolioData: PortfolioInterface;
+  onClick: () => void;
 }
 
 export type PortfolioInterface = {
@@ -22,9 +23,10 @@ export type PortfolioInterface = {
   valuePrev?: number;
 };
 
-function PortfolioCard({ portfolioData }: PortfolioCardProps) {
+function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
   return (
     <Card
+      onClick={onClick}
       as="button"
       borderWidth="1px"
       borderRadius="lg"
