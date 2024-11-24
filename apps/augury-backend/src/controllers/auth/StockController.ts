@@ -15,6 +15,7 @@ import {
   StockValuation,
   ValuationResult,
 } from '../../config/interfaces/Valuation';
+import UserModel from '../../models/auth/UserModel';
 
 const alpaca = TradeApi.getInstance();
 
@@ -23,7 +24,7 @@ const buyStock = async (
   res: Response
 ) => {
   const { id: portfolioId } = req.params;
-  const { symbol, shares } = req.body;
+  const { symbol, shares, userId } = req.body;
   // Assert the request format was valid
   assertExists(portfolioId, 'Invalid portfolio ID provided');
   assertExists(symbol, 'Invalid stock symbol provided');
@@ -32,6 +33,12 @@ const buyStock = async (
   // Get the current stock price from
   const quoteData = await alpaca.getQuote(symbol);
   const price = quoteData.BidPrice;
+  // Check if user has the balance for this purchase
+  const user = await UserModel.getUser(userId);
+  assertTrue(
+    user.balance >= price * shares,
+    'User must have more funds to purchase this stock'
+  );
   // Create a buy record for the requested stock
   const buyRecord = await StockModel.createBuyRecord(
     portfolioId,
@@ -48,6 +55,10 @@ const buyStock = async (
     );
   }
 
+  // Remove balance to the users account
+  user.balance -= shares * price;
+  await user.save();
+
   res.status(StatusCode.OK).send({ stock: buyRecord });
 };
 
@@ -56,7 +67,7 @@ const sellStock = async (
   res: Response
 ) => {
   const { id: portfolioId } = req.params;
-  const { symbol, shares } = req.body;
+  const { symbol, shares, userId } = req.body;
   // Assert the request format was valid
   assertExists(portfolioId, 'Invalid portfolio ID provided');
   assertExists(symbol, 'Invalid stock symbol provided');
@@ -86,6 +97,11 @@ const sellStock = async (
       Severity.MED
     );
   }
+
+  // Add balance to the users account
+  const user = await UserModel.getUser(userId);
+  user.balance += shares * price;
+  await user.save();
 
   res.status(StatusCode.OK).send({ stock: buyRecord });
 };
