@@ -37,6 +37,7 @@ const PortfolioGroupList = () => {
   const enterPortfolioGroup = (portfolioGroupId: string) => {
     navigate(`/portfolios/${portfolioGroupId}`);
   };
+
   // Handle save callback from modal
   const handleSave = () => {
     fetchPortfolioGroups(); // Refresh the list after creating a new portfolio group
