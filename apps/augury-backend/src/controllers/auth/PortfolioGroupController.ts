@@ -15,7 +15,7 @@ import Identifiable from '../../config/interfaces/Identifiable';
 /**
  * Creates a new portfolio group based on the passed request body
  * @param req Request with `PortfolioGroup` fields
- * @param res Response with new portfolio group
+ * @param res Response with new portfolio group & portfolio ids
  * @throws `ClientError` if request is invalid
  * @throws `ApiError` if unable to create group
  */
@@ -35,40 +35,24 @@ const createPortfolioGroup = async (
     name,
     color,
   };
-  const groupResponse = await PortfolioGroupModel.createPortfolioGroup(
-    newGroup
-  );
+  const { group, portfolios: addedPortfolios } =
+    await PortfolioGroupModel.createPortfolioGroup(newGroup, portfolios);
   // Throw error if somehow we errored on the server-side
-  if (!groupResponse) {
+  if (!group) {
     throw new ApiError(
       'Unable to create portfolio group',
       StatusCode.INTERNAL_ERROR,
       Severity.MED
     );
   }
-  // Create relations for each portfolio
-  const groupId = groupResponse.id;
-  if (Array.isArray(portfolios) && portfolios.length > 0) {
-    const addPortfoliosResponse =
-      await PortfolioGroupModel.addPortfoliosToGroup(groupId, portfolios);
 
-    // Throw error if somehow we errored on the server-side
-    if (!addPortfoliosResponse) {
-      throw new ApiError(
-        'Unable to add portfolios to group',
-        StatusCode.INTERNAL_ERROR,
-        Severity.MED
-      );
-    }
-  }
-  // Return response data
-  res.status(StatusCode.OK).send({ group: groupResponse });
+  res.status(StatusCode.OK).send({ group, portfolios: addedPortfolios });
 };
 
 /**
  * Updates a portfolio group's details.
  * @param req Request with PortfolioGroup fields
- * @param res Updated portfolio group's information
+ * @param res Updated portfolio group's information & portfolio ids
  * @throws `ClientError` if request is invalid
  * @throws `ApiError` if unable to update group
  */
@@ -86,12 +70,12 @@ const updatePortfolioGroup = async (
     assertEnum(PortfolioColor, updatedData.color, 'Invalid color provided');
   }
   // Update the group in the DB
-  const response = await PortfolioGroupModel.updatePortfolioGroup(
+  const { group, portfolios } = await PortfolioGroupModel.updatePortfolioGroup(
     id,
     updatedData
   );
   // Throw error if somehow we errored on the server-side
-  if (!response) {
+  if (!group) {
     throw new ApiError(
       'Unable to update portfolio group',
       StatusCode.INTERNAL_ERROR,
@@ -99,35 +83,36 @@ const updatePortfolioGroup = async (
     );
   }
   // Return response data
-  res.status(StatusCode.OK).send({ group: response });
+  res.status(StatusCode.OK).send({ group, portfolios });
 };
 
 /**
  * Deletes a portfolio group and it's relations from the database.
  * @param req Request with an `id` field
- * @param res Deleted portfolio group's information
+ * @param res OK Status Code if successful
  * @throws `ClientError` if request is invalid
  * @throws `ApiError` if unable to delete group
  */
 const deletePortfolioGroup = async (
   req: Request<unknown, unknown, Identifiable>,
-  res: Response<PortfolioGroupResponse>
+  res: Response
 ): Promise<void> => {
   const { id: userId } = req.body;
   // Assert the request format was valid
   assertExists(userId, 'Invalid ID provided');
   // Delete the group + relations from the DB
-  const response = await PortfolioGroupModel.deletePortfolioGroup(userId);
-  // Throw error if somehow we errored on the server-side
-  if (!response) {
+  try {
+    await PortfolioGroupModel.deletePortfolioGroup(userId);
+  } catch (err: unknown) {
+    // Throw error if somehow we errored on the server-side
     throw new ApiError(
       'Unable to delete portfolio group',
       StatusCode.INTERNAL_ERROR,
       Severity.LOW
     );
   }
-  // Return response data
-  res.status(StatusCode.OK).send({ group: response });
+  // Return response
+  res.sendStatus(StatusCode.OK);
 };
 
 /**
@@ -145,9 +130,9 @@ const getPortfolioGroup = async (
   // Assert the request format was valid
   assertExists(id, 'Invalid ID provided');
   // Retrieve data
-  const response = await PortfolioGroupModel.getPortfolioGroup(id);
+  const { group, portfolios } = await PortfolioGroupModel.getPortfolioGroup(id);
   // Throw error if somehow we errored on the server-side
-  if (!response) {
+  if (!group) {
     throw new ApiError(
       'Unable to retrieve portfolio group',
       StatusCode.INTERNAL_ERROR,
@@ -155,7 +140,7 @@ const getPortfolioGroup = async (
     );
   }
   // Return response data
-  res.status(StatusCode.OK).send({ group: response });
+  res.status(StatusCode.OK).send({ group, portfolios });
 };
 
 /**
@@ -175,12 +160,10 @@ const addPortfoliosToGroup = async (
   assertExists(id, 'Invalid Id provided');
   assertExists(portfolios, 'Invalid Portfolios array provided'); // Basic validation
   // Add portfolios
-  const response = await PortfolioGroupModel.addPortfoliosToGroup(
-    id,
-    portfolios
-  );
+  const { group, portfolios: addedPortfolios } =
+    await PortfolioGroupModel.addPortfoliosToGroup(id, portfolios);
   // Throw error if somehow we errored on the server-side
-  if (!response) {
+  if (!group || !addedPortfolios) {
     throw new ApiError(
       'Unable to add portfolios to group',
       StatusCode.INTERNAL_ERROR,
@@ -188,7 +171,7 @@ const addPortfoliosToGroup = async (
     );
   }
   // Return response data
-  res.status(StatusCode.OK).send({ group: response });
+  res.status(StatusCode.OK).send({ group, portfolios: addedPortfolios });
 };
 
 /**
@@ -208,12 +191,10 @@ const removePortfoliosFromGroup = async (
   assertExists(id, 'Invalid Id provided');
   assertExists(portfolios, 'Invalid Portfolios array provided'); // Basic validation
   // Remove portfolios from group
-  const response = await PortfolioGroupModel.removePortfoliosFromGroup(
-    id,
-    portfolios
-  );
+  const { group, portfolios: _portfolios } =
+    await PortfolioGroupModel.removePortfoliosFromGroup(id, portfolios);
   // Throw error if somehow we errored on the server-side
-  if (!response) {
+  if (!group) {
     throw new ApiError(
       'Unable to remove portfolios from group',
       StatusCode.INTERNAL_ERROR,
@@ -221,7 +202,7 @@ const removePortfoliosFromGroup = async (
     );
   }
   // Return response data
-  res.status(StatusCode.OK).send({ group: response });
+  res.status(StatusCode.OK).send({ group, portfolios: _portfolios });
 };
 
 /**
