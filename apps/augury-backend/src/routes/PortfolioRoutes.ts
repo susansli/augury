@@ -40,6 +40,10 @@ portfolioRouter
   );
 
 portfolioRouter
+  .route('/group/:id/valuation')
+  .get(asyncErrorHandler(StockController.calculatePortfolioGroupValuation));
+
+portfolioRouter
   .route('/group/user/:id')
   .get(asyncErrorHandler(PortfolioGroupController.getPortfolioGroupsByUserId));
 
@@ -62,5 +66,9 @@ portfolioRouter
 portfolioRouter
   .route('/:id/sell')
   .post(asyncErrorHandler(StockController.sellStock));
+
+portfolioRouter
+  .route('/:id/valuation')
+  .get(asyncErrorHandler(StockController.calculatePortfolioValuation));
 
 export default portfolioRouter;
