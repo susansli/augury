@@ -68,6 +68,28 @@ class TradeApi {
         }
       });
   }
+
+  public getAllSymbols(): string[] {
+    // Type required to extract symbol. Ref: https://docs.alpaca.markets/reference/get-v2-assets-1)
+    // For some reason, the Asset type exists within the README.md but not in the type defs
+    type Asset = { symbol: string; status: string; tradable: boolean };
+    return this.alpaca
+      .getAssets()
+      .then((assets: Asset[]) => {
+        const isValidAsset = (asset: Asset) => {
+          return asset.status == 'active' && asset.tradable;
+        };
+        // Return array of mapped symbol strings
+        return assets.filter(isValidAsset).map((asset) => asset.symbol);
+      })
+      .catch((err: unknown) => {
+        throw new ApiError(
+          'Unable to retrieve stock symbols',
+          StatusCode.INTERNAL_ERROR,
+          Severity.MED
+        );
+      });
+  }
 }
 
 export default TradeApi;
