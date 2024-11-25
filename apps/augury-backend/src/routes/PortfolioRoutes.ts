@@ -71,4 +71,9 @@ portfolioRouter
   .route('/:id/valuation')
   .get(asyncErrorHandler(StockController.calculatePortfolioValuation));
 
+// ================ Portfolio AI Functionality ================
+portfolioRouter
+  .route('/:id/ai/recommendation')
+  .get(asyncErrorHandler(StockController.getPortfolioRecommendation));
+
 export default portfolioRouter;

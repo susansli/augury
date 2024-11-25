@@ -16,8 +16,10 @@ import {
   ValuationResult,
 } from '../../config/interfaces/Valuation';
 import UserModel from '../../models/auth/UserModel';
+import HuggingFaceInferenceApi from '../../config/ai/HuggingFaceInferenceApi';
 
 const alpaca = TradeApi.getInstance();
+const huggingface = HuggingFaceInferenceApi.getInstance();
 
 const buyStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
@@ -158,7 +160,7 @@ const calculatePortfolioGroupValuation = async (
   );
   if (!valuations) {
     throw new ApiError(
-      'Could not valuate this portfolio',
+      'Could not valuate this portfolio group',
       StatusCode.BAD_REQUEST,
       Severity.MED
     );
@@ -223,9 +225,46 @@ const _calculatePortfolioValuation = async (valuation: ValuationResult) => {
   return { totalPriceDifference, symbolPriceDifferences };
 };
 
+const getPortfolioRecommendation = async (
+  req: Request<Identifiable>,
+  res: Response
+) => {
+  const { id: portfolioId } = req.params;
+  // Assert the request format was valid
+  assertExists(portfolioId, 'Invalid portfolio ID provided');
+  // Get portfolios valuation
+  const valuation = await StockModel.calculatePortfolioValuation(portfolioId);
+  if (!valuation) {
+    throw new ApiError(
+      'Could not valuate this portfolio',
+      StatusCode.BAD_REQUEST,
+      Severity.MED
+    );
+  }
+  // Call helper function
+  const { totalPriceDifference, symbolPriceDifferences } =
+    await _calculatePortfolioValuation(valuation);
+
+  // Sort stock symbols to get top performing
+  const numTopStocks = 5;
+  const topStockSymbols = symbolPriceDifferences
+    .sort((stockA, stockB) => stockA.priceDifference - stockB.priceDifference)
+    .slice(0, numTopStocks)
+    .map((stock) => stock.symbol);
+
+  // Generate a response
+  const output = await huggingface.generateResponse(
+    `These are the current top performing stock options: ${topStockSymbols}. This portfolio is evaluated at ${totalPriceDifference}. Please recommend some ways or general advice on how to utilize these options! Please keep it to a maximum of three recommendations.`
+  );
+
+  // console.log('Output: ' + output);
+  res.status(StatusCode.OK).send(output);
+};
+
 export default module.exports = {
   buyStock,
   sellStock,
   calculatePortfolioValuation,
   calculatePortfolioGroupValuation,
+  getPortfolioRecommendation,
 };
