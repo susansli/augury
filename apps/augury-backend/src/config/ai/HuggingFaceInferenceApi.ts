@@ -2,18 +2,10 @@ import { HfInference } from '@huggingface/inference';
 import AbstractAiApi from './AiApiInterface';
 
 class HuggingFaceInferenceApi implements AbstractAiApi {
-  static instance: HuggingFaceInferenceApi;
   private client: HfInference;
 
-  private constructor() {
+  public constructor() {
     this.client = new HfInference(process.env.HUGGINGFACE_API_KEY);
-  }
-
-  public static getInstance() {
-    if (!HuggingFaceInferenceApi.instance) {
-      HuggingFaceInferenceApi.instance = new HuggingFaceInferenceApi();
-    }
-    return HuggingFaceInferenceApi.instance;
   }
 
   public generateResponse(input: string): Promise<string> {

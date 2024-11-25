@@ -19,7 +19,7 @@ import UserModel from '../../models/auth/UserModel';
 import HuggingFaceInferenceApi from '../../config/ai/HuggingFaceInferenceApi';
 
 const alpaca = TradeApi.getInstance();
-const huggingface = HuggingFaceInferenceApi.getInstance();
+const huggingface = new HuggingFaceInferenceApi();
 
 const buyStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
@@ -254,7 +254,7 @@ const getPortfolioRecommendation = async (
 
   // Generate a response
   const output = await huggingface.generateResponse(
-    `These are the current top performing stock options: ${topStockSymbols}. This portfolio is evaluated at ${totalPriceDifference}. Please recommend some ways or general advice on how to utilize these options! Please keep it to a maximum of three recommendations.`
+    `These are the current top performing stock options: ${topStockSymbols}. This portfolio is evaluated at ${totalPriceDifference}. Please recommend some ways or general advice on how to utilize these options! Please keep it to a maximum of three short recommendations.`
   );
 
   // console.log('Output: ' + output);
