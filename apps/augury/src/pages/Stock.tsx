@@ -11,7 +11,7 @@ export default function Stock(): JSX.Element {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    // void fetchAllStockSymbols();
+   void fetchAllStocks();
   }, []);
 
   async function fetchAllStocks(): Promise<void> {

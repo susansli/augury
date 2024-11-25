@@ -28,7 +28,7 @@ export default function BuyStockModal(props: Props): JSX.Element {
   }
 
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
+    <Modal isOpen={props.isOpen} onClose={props.onClose}>
       <ModalOverlay />
       <ModalContent margin="1rem">
         <ModalHeader>Buy Stocks</ModalHeader>

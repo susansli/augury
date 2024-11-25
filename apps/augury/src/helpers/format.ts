@@ -6,17 +6,6 @@ export function parseValues(val: string): string {
   return val.replace(/^\$/, '');
 }
 
-// export async function jsonifyOnboarding(onboardingData: any) {
-//   const id = await getUserId();
-//   return JSON.stringify({
-//     id: id,
-//     balance: onboardingData.balance,
-//     defaults: {
-// //       useCustomRisk: onboardingData.risk || 'false',
-//       name: 'default',
-//       riskPercentage1: onboardingData.composition,
-//       riskPercentage2: 100 - onboardingData.composition,
-//       sectorTags: onboardingData.sectors,
-//     },
-//   });
-// }
+export function truncateToTwoDecimals(num: number) {
+  return Math.trunc(num * 100) / 100;
+}
