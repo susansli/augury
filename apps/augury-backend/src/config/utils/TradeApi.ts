@@ -45,6 +45,29 @@ class TradeApi {
         }
       });
   }
+
+  public getQuotes(symbol: string[]): Promise<Map<string, AlpacaQuote>> {
+    return this.alpaca
+      .getLatestQuotes(symbol)
+      .then((quotes: Map<string, AlpacaQuote>) => {
+        return quotes;
+      })
+      .catch((err: unknown) => {
+        // May potentially 404 when invalid symbol is provided, but DB symbols should already be valid stocks.
+        if (err instanceof Error && err.message.startsWith('code: 404')) {
+          throw new ClientError(
+            'Invalid Stock symbol provided',
+            StatusCode.BAD_REQUEST
+          );
+        } else {
+          throw new ApiError(
+            'Unable to retrieve stock quote',
+            StatusCode.INTERNAL_ERROR,
+            Severity.MED
+          );
+        }
+      });
+  }
 }
 
 export default TradeApi;
