@@ -6,7 +6,7 @@ import { Box, Flex, useDisclosure } from '@chakra-ui/react';
 import BuyStockModal from '../components/stocks/BuyStockModal';
 
 export default function Stock(): JSX.Element {
-  const [symbols, setSymbols] = useState<StockSymbolInterface[]>([]);
+  const [stocks, setStocks] = useState<StockSymbolInterface[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -14,20 +14,20 @@ export default function Stock(): JSX.Element {
     // void fetchAllStockSymbols();
   }, []);
 
-  async function fetchAllStockSymbols(): Promise<void> {
+  async function fetchAllStocks(): Promise<void> {
     const response = await Stocks.getStockSymbols();
 
     if (!response) {
       toast.error('Could not fetch stock symbols, please refresh the page.');
     } else {
       console.log('response: ', response);
-      setSymbols(response);
+      setStocks(response);
     }
   }
 
   return (
     <Flex direction="column" gap="2" margin="10">
-      <BuyStockModal isOpen={isOpen} onClose={onClose} />
+      <BuyStockModal isOpen={isOpen} onClose={onClose} stocks={stocks} />
       <AddButton
         onClick={onOpen}
         aria-label="Open Stock Modal"

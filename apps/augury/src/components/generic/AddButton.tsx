@@ -6,6 +6,7 @@ import { MouseEventHandler } from 'react';
 interface Props {
   onClick: MouseEventHandler<HTMLButtonElement> | undefined;
   'aira-label': string;
+  isDisabled?: boolean;
 }
 
 export default function AddButton(props: Props): JSX.Element {

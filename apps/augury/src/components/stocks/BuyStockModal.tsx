@@ -7,21 +7,42 @@ import {
   ModalBody,
   ModalFooter,
   Button,
+  Accordion,
+  Spinner,
+  Center,
 } from '@chakra-ui/react';
+import { StockSymbolInterface } from '../../api/stock/Stocks';
+import StockAccordion from './StockAccordion';
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
+  stocks: StockSymbolInterface[];
 }
 
 export default function BuyStockModal(props: Props): JSX.Element {
+  function renderAccordionItem(): JSX.Element[] {
+    return props.stocks.map((stock, index) => {
+      return <StockAccordion stock={stock} key={index} />;
+    });
+  }
+
   return (
     <Modal isOpen={props.isOpen} onClose={props.onClose} isCentered>
       <ModalOverlay />
       <ModalContent margin="1rem">
-        <ModalHeader>Modal Title</ModalHeader>
+        <ModalHeader>Buy Stocks</ModalHeader>
         <ModalCloseButton />
-        <ModalBody>hello world</ModalBody>
+        <ModalBody>
+            {props.stocks.length ? 
+              <Accordion>
+                {renderAccordionItem()}
+              </Accordion> :
+              <Center>
+                <Spinner />
+              </Center>
+            }
+          </ModalBody>
         <ModalFooter>
           <Button colorScheme="blue" mr={3} onClick={props.onClose}>
             Close
