@@ -36,7 +36,7 @@ async function updatePortfolioDefaults(reqBody: PortfolioDefaultBody) {
       return false;
     }
     return true;
-  } catch (err) {
+  } catch {
     return false;
   }
 }

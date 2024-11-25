@@ -228,10 +228,32 @@ const _calculatePortfolioValuation = async (valuation: ValuationResult) => {
  * @param req Incoming request
  * @param res Object with array of stock symbols
  */
-const getAllSymbols = async (req: Request, res: Response) => {
-  // Possibly cache/memoize this in future
-  const symbols = await alpaca.getAllSymbols();
-  res.status(StatusCode.OK).send({ symbols });
+const getAllSymbols = async (_req: Request, res: Response) => {
+  // Possibly cache/memoize this in future\
+
+  const symbols = (await alpaca.getAllSymbols())
+  .sort((a, b) => a.localeCompare(b))
+  .slice(0, 200);
+
+  const truncatedSymbols = [];
+
+  for (const symbol of symbols) {
+    try {
+      const quoteData = await alpaca.getQuote(symbol);
+
+      // possibly getting rate limited
+      const delay = () => new Promise((resolve) => setTimeout(resolve, 100));
+      delay().then();
+
+      if (quoteData.AskPrice > 0) {
+        truncatedSymbols.push({ symbol: symbol, price: quoteData.AskPrice });
+      }
+    } catch {
+      // some symbols are apparently invalid; just catch them
+    }
+  }
+
+  res.status(StatusCode.OK).send({ symbols: truncatedSymbols });
 };
 
 export default module.exports = {
