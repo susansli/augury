@@ -14,6 +14,7 @@ export type PortfolioGroupRequestBody = PortfolioGroup & {
 
 export type PortfolioGroupResponse = {
   group: PortfolioGroup;
+  portfolios?: DocumentId[];
 };
 
 export type PortfolioGroupsResponse = {

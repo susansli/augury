@@ -45,9 +45,7 @@ function PortfolioGroupModal({ onSave }) {
       userId: userId || '',
     }));
   }, [setPortfolioData]);
-  // Update secondary risk percentage dynamically
 
-  // Save portfolio data and send to parent component
   async function handleSave() {
     try {
       console.log(portfolioData);
@@ -55,8 +53,7 @@ function PortfolioGroupModal({ onSave }) {
       const response = await axios.post(
         `${SERVER_URL}/portfolio/group`,
         portfolioData
-      ); // Send POST request to /portfolio route
-      // Show success message and log response
+      );
       toast({
         title: 'Portfolio group created.',
         description: `Portfolio group created successfully.`,
@@ -67,7 +64,6 @@ function PortfolioGroupModal({ onSave }) {
 
       console.log(response.data);
 
-      // Clear the form and close modal
       setPortfolioData({
         name: '',
         color: PortfolioColor.WHITE,
@@ -75,7 +71,6 @@ function PortfolioGroupModal({ onSave }) {
       });
       onClose();
     } catch (error) {
-      // Handle errors and show error message
       toast({
         title: 'Error creating portfolio.',
         description: error.response?.data?.message || 'An error occurred.',

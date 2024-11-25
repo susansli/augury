@@ -11,7 +11,7 @@ import PortfolioGroupModal from './PortfolioGroupModal';
 
 const PortfolioGroupList = () => {
   const userId = AuthStoreManager.getUserId();
-  const [portfolioGroups, setPortfolioGroups] = useState([]); // Initialize as empty array
+  const [portfolioGroups, setPortfolioGroups] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -28,7 +28,7 @@ const PortfolioGroupList = () => {
       const response = await axios.get(
         `${SERVER_URL}/portfolio/group/user/${userId}`
       );
-      setPortfolioGroups(response.data.groups || []); // Set portfolio groups or default to empty array
+      setPortfolioGroups(response.data.groups || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -38,9 +38,9 @@ const PortfolioGroupList = () => {
   const enterPortfolioGroup = (portfolioGroupId: string) => {
     navigate(`/portfolios/${portfolioGroupId}`);
   };
-  // Handle save callback from modal
+
   const handleSave = () => {
-    fetchPortfolioGroups(); // Refresh the list after creating a new portfolio group
+    fetchPortfolioGroups();
   };
 
   if (loading) return <Text>Loading...</Text>;
