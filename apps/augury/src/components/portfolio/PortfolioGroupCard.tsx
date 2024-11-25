@@ -5,15 +5,10 @@ import {
   CardBody,
   CardFooter,
   Text,
-  StatGroup,
-  StatNumber,
-  Stat,
-  StatHelpText,
-  StatArrow,
 } from '@chakra-ui/react';
 import colors from '../../theme/foundations/colours';
 import { PortfolioGroupInterface } from './PortfolioGroupModal';
-import { PortfolioInterface } from './PortfolioCard';
+import PortfolioStats from './PortfolioStats';
 
 interface PortfolioGroupCardProps {
   portfolioGroup: PortfolioGroupInterface;
@@ -23,22 +18,6 @@ function PortfolioGroupCard({
   portfolioGroup,
   onClick,
 }: PortfolioGroupCardProps) {
-  let totalValue = 0;
-  let totalPrevValue = 0;
-  let hasValue = false;
-  portfolioGroup.portfolios?.forEach((portfolio) => {
-    if (typeof portfolio !== 'string' && portfolio.value) {
-      hasValue = true;
-      totalValue += portfolio.value;
-      if (portfolio.valuePrev) {
-        totalPrevValue += portfolio.valuePrev;
-      } else {
-        totalPrevValue += portfolio.value;
-      }
-    }
-  });
-  const changePercentage = totalValue / totalPrevValue - 1 || 0;
-
   return (
     <Card
       onClick={onClick}
@@ -61,29 +40,10 @@ function PortfolioGroupCard({
         </Text>
       </CardHeader>
       <CardBody>
-        {true && (
-          <StatGroup>
-            <Stat>
-              <StatNumber>
-                {totalValue.toLocaleString(undefined, {
-                  style: 'currency',
-                  currencyDisplay: 'narrowSymbol',
-                  currency: portfolioGroup.portfolioCurrency || 'USD',
-                })}
-              </StatNumber>
-              <StatHelpText>
-                <StatArrow
-                  type={changePercentage < 0 ? 'decrease' : 'increase'}
-                ></StatArrow>
-                {changePercentage.toLocaleString(undefined, {
-                  style: 'percent',
-                  maximumFractionDigits: 2,
-                  minimumFractionDigits: 2,
-                })}
-              </StatHelpText>
-            </Stat>
-          </StatGroup>
-        )}
+        <PortfolioStats
+          portfolios={portfolioGroup.portfolios || []}
+          currency={portfolioGroup.portfolioCurrency}
+        />
       </CardBody>
       <CardFooter></CardFooter>
     </Card>
