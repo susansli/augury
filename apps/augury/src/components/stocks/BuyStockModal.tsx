@@ -23,7 +23,7 @@ interface Props {
 export default function BuyStockModal(props: Props): JSX.Element {
   function renderAccordionItem(): JSX.Element[] {
     return props.stocks.map((stock, index) => {
-      return <StockAccordion stock={stock} key={index} />;
+      return <StockAccordion stock={stock} onClose={props.onClose} key={index} />;
     });
   }
 

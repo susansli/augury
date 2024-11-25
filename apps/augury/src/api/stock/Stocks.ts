@@ -6,6 +6,13 @@ export interface StockSymbolInterface {
   price: number; 
 }
 
+export interface BuyStockRequestBody {
+  portfolioId: string;
+  userId: string;
+  symbol: string;
+  shares: number;
+}
+
 async function getStockSymbols(): Promise<StockSymbolInterface[] | null> {
   try {
     const response = await axios.get(
@@ -27,8 +34,35 @@ async function getStockSymbols(): Promise<StockSymbolInterface[] | null> {
   }
 }
 
+async function buyStock(requestBody: BuyStockRequestBody): Promise<boolean> {
+  try {
+    const response = await axios.post(
+      `${SERVER_URL}/portfolio/buy`,
+      {
+        ...requestBody
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response) {
+      return false;
+    }
+
+    return true;
+
+  } catch {
+    return false;
+  }
+
+}
+
 const Stocks = {
   getStockSymbols,
+  buyStock
 };
 
 export default Stocks;

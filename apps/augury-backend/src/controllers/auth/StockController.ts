@@ -23,8 +23,8 @@ const buyStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
   res: Response
 ) => {
-  const { id: portfolioId } = req.params;
-  const { symbol, shares, userId } = req.body;
+  const { portfolioId, symbol, shares, userId } = req.body;
+
   // Assert the request format was valid
   assertExists(portfolioId, 'Invalid portfolio ID provided');
   assertExists(symbol, 'Invalid stock symbol provided');
