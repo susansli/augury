@@ -7,6 +7,8 @@ import StockSchema from '../../config/schemas/StockSchema';
 import Stock from '../../config/interfaces/Stock';
 import BuyRecordSchema from '../../config/schemas/BuyRecordSchema';
 import BuyRecord from '../../config/interfaces/BuyRecord';
+import { ValuationResult } from '../../config/interfaces/Valuation';
+import PortfolioGroupModel from './PortfolioGroupModel';
 
 /**
  * Creates a buy record (purchases/sells a stock) for a portfolio
@@ -84,7 +86,86 @@ const getTotalShares = async (portfolioId: DocumentId, symbol: string) => {
   return totalShares;
 };
 
+const calculateAllPortfolioValuations = async () => {
+  const valuations: ValuationResult[] = await StockSchema.aggregate([
+    {
+      $lookup: {
+        from: 'buyrecords',
+        localField: '_id',
+        foreignField: 'stockId',
+        as: 'buyrecords',
+      },
+    },
+    {
+      $unwind: '$buyrecords',
+    },
+    {
+      $group: {
+        _id: '$_id',
+        symbol: {
+          $first: '$symbol',
+        },
+        portfolioId: {
+          $first: '$portfolioId',
+        },
+        totalValue: {
+          $sum: {
+            $multiply: ['$buyrecords.shares', '$buyrecords.boughtAtPrice'],
+          },
+        },
+        totalShares: {
+          $sum: '$buyrecords.shares',
+        },
+      },
+    },
+    {
+      $group: {
+        _id: '$portfolioId',
+        stocks: {
+          $push: {
+            symbol: '$symbol',
+            totalValue: '$totalValue',
+            totalShares: '$totalShares',
+          },
+        },
+      },
+    },
+  ]).exec();
+
+  if (valuations == null || valuations == undefined) {
+    throw new ApiError(
+      'Something went wrong during aggregation',
+      StatusCode.INTERNAL_ERROR,
+      Severity.HIGH
+    );
+  }
+
+  return valuations;
+};
+
+const calculatePortfolioValuation = async (portfolioId: DocumentId) => {
+  // ! Warning: Potentially inefficient call
+  const valuations = await calculateAllPortfolioValuations();
+  return valuations.find((result: ValuationResult) => {
+    return result._id == portfolioId;
+  });
+};
+
+const calculatePortfolioGroupValuation = async (id: DocumentId) => {
+  const { group, portfolios } = await PortfolioGroupModel.getPortfolioGroup(id);
+  const valuations = await calculateAllPortfolioValuations();
+  const filteredValuations = valuations.filter((result: ValuationResult) => {
+    return portfolios.some((portfolioId: string) => {
+      return portfolioId == result._id.toString();
+    });
+  });
+  return filteredValuations;
+};
+
 export default module.exports = {
   createBuyRecord,
   getTotalShares,
+  calculateAllPortfolioValuations,
+  calculatePortfolioValuation,
+  calculatePortfolioGroupValuation,
 };
