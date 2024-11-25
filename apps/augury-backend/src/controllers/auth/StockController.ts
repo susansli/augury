@@ -261,10 +261,22 @@ const getPortfolioRecommendation = async (
   res.status(StatusCode.OK).send(output);
 };
 
+/**
+ * Retrieves all stock symbols from Alpaca
+ * @param req Incoming request
+ * @param res Object with array of stock symbols
+ */
+const getAllSymbols = async (req: Request, res: Response) => {
+  // Possibly cache/memoize this in future
+  const symbols = await alpaca.getAllSymbols();
+  res.status(StatusCode.OK).send({ symbols });
+};
+
 export default module.exports = {
   buyStock,
   sellStock,
   calculatePortfolioValuation,
   calculatePortfolioGroupValuation,
   getPortfolioRecommendation,
+  getAllSymbols,
 };
