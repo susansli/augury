@@ -60,7 +60,7 @@ portfolioRouter
 
 // ================ Portfolio Stocks ================
 portfolioRouter
-  .route('/:id/buy')
+  .route('/buy')
   .post(asyncErrorHandler(StockController.buyStock));
 
 portfolioRouter

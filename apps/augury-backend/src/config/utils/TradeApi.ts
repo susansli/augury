@@ -69,7 +69,7 @@ class TradeApi {
       });
   }
 
-  public getAllSymbols(): string[] {
+  public async getAllSymbols(): Promise<string[]> {
     // Type required to extract symbol. Ref: https://docs.alpaca.markets/reference/get-v2-assets-1)
     // For some reason, the Asset type exists within the README.md but not in the type defs
     type Asset = { symbol: string; status: string; tradable: boolean };
