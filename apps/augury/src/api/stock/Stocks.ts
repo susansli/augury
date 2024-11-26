@@ -75,7 +75,6 @@ async function getAllStocksOfPortfolio(portfolioId: string): Promise<StockCardDa
     if (!response) {
       return null;
     }
-    console.log(response.data);
     return response.data.symbolPriceDifferences;
 
   } catch {
