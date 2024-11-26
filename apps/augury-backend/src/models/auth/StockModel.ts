@@ -152,7 +152,7 @@ const calculatePortfolioValuation = async (portfolioId: DocumentId) => {
 };
 
 const calculatePortfolioGroupValuation = async (id: DocumentId) => {
-  const { group, portfolios } = await PortfolioGroupModel.getPortfolioGroup(id);
+  const { portfolios } = await PortfolioGroupModel.getPortfolioGroup(id);
   const valuations = await calculateAllPortfolioValuations();
   const filteredValuations = valuations.filter((result: ValuationResult) => {
     return portfolios.some((portfolioId: string) => {
