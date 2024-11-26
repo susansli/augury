@@ -5,12 +5,12 @@ import {
   CardBody,
   CardFooter,
   Text,
-  HStack,
-  VStack,
   Flex,
   Box,
+  Spinner,
 } from '@chakra-ui/react';
-import PortfolioStats from './PortfolioStats';
+import { useEffect, useState } from 'react';
+import Portfolio from '../../api/portfolio/Portfolio';
 
 export interface PortfolioCardProps {
   portfolioData: PortfolioInterface;
@@ -28,6 +28,31 @@ export type PortfolioInterface = {
 };
 
 function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
+  const [valuation, setValuation] = useState<number | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  useEffect(() => {
+    async function loadValuation() {
+      if (portfolioData.id) {
+        setLoading(true);
+        try {
+          const valuationData = await Portfolio.getValuationofPortfolio(
+            portfolioData.id
+          );
+          setValuation(valuationData);
+        } catch (error) {
+          console.error(
+            `Error fetching valuation for portfolio ${portfolioData.id}:`,
+            error
+          );
+        } finally {
+          setLoading(false);
+        }
+      }
+    }
+
+    loadValuation();
+  }, [portfolioData.id]);
+
   return (
     <Card
       onClick={onClick}
@@ -53,6 +78,18 @@ function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
               </Text>
             </>
           </Box>
+          <Box>
+            <Text>
+              <strong>Valuation:</strong>{' '}
+              {loading ? (
+                <Spinner size="sm" />
+              ) : valuation !== null ? (
+                `$${valuation.toFixed(2)}`
+              ) : (
+                'N/A'
+              )}
+            </Text>
+          </Box>
         </Flex>
         <Text>
           <strong>Sectors:</strong>{' '}
@@ -63,5 +100,4 @@ function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
     </Card>
   );
 }
-
 export default PortfolioCard;
