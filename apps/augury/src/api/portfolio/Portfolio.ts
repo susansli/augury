@@ -85,6 +85,7 @@ async function getAiRecommentation(
 const Portfolio = {
   updatePortfolioDefaults,
   getAiRecommentation,
+  getValuationofPortfolio,
 };
 
 export default Portfolio;

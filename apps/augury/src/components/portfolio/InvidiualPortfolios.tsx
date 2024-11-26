@@ -1,12 +1,4 @@
-import {
-  Button,
-  Divider,
-  Flex,
-  FormLabel,
-  Icon,
-  Spacer,
-  Stack,
-} from '@chakra-ui/react';
+import { Divider, Flex, FormLabel, Spacer, Stack } from '@chakra-ui/react';
 import CreateGroupModal from './CreatePortfolioModal';
 import PortfolioCard, { PortfolioInterface } from './PortfolioCard';
 import { useEffect, useState } from 'react';
@@ -14,10 +6,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SERVER_URL } from '../../api/Environments';
 import axios from 'axios';
 import fetchPortfolioIdsByGroupId from './utils/GetAllPortfolios';
-import { faWandSparkles } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import AddButton from '../generic/AddButton';
-import BuyStockModal from '../stocks/BuyStockModal';
 
 export default function IndividualPortfolio(): JSX.Element {
   const { groupId } = useParams<{ groupId: string }>();

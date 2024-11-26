@@ -46,6 +46,7 @@ const PortfolioGroupList = () => {
   const enterPortfolioGroup = (portfolioGroupId: string) => {
     navigate(`/portfolios/${portfolioGroupId}`);
   };
+  AuthStoreManager.storeUserId();
 
   const handleSave = () => {
     fetchPortfolioGroups();
