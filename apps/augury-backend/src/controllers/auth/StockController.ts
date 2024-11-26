@@ -208,6 +208,10 @@ const _calculatePortfolioValuation = async (valuation: ValuationResult) => {
       return {
         symbol: stock.symbol,
         priceDifference: currentShareValue - stock.totalValue, // Total Value already accounts for sold stock
+        totalShares: stock.totalShares,
+        currentStockValue: currentShareValue,
+        percentageChange:
+          ((currentShareValue - stock.totalValue) / stock.totalValue) * 100,
       };
     }
   );
