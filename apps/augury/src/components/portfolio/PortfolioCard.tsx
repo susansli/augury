@@ -8,9 +8,11 @@ import {
   Flex,
   Box,
   Spinner,
+  Spacer,
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import Portfolio from '../../api/portfolio/Portfolio';
+import colors from '../../theme/foundations/colours';
 
 export interface PortfolioCardProps {
   portfolioData: PortfolioInterface;
@@ -54,50 +56,57 @@ function PortfolioCard({ portfolioData, onClick }: PortfolioCardProps) {
   }, [portfolioData.id]);
 
   return (
-    <Card
+    <Flex
       onClick={onClick}
       as="button"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      shadow="md"
-      backgroundColor="background.selBg"
+      direction="column"
+      borderRadius="10"
+      padding="1rem 1rem 1.5rem 1rem"
+      maxW="22.5rem"
+      margin="1.25rem"
+      mx="auto"
+      width="100%"
+      backgroundColor={colors.background.selBg}
+      marginTop="5"
+      gap="0.1875rem"
     >
-      <CardHeader>
-        <Heading size="md">{portfolioData.name} </Heading>
-      </CardHeader>
-      <CardBody>
-        <Flex direction="row">
-          <Box>
-            <>
-              <Text>
-                <strong>Stocks:</strong> {portfolioData.riskPercentage1}%
-              </Text>
-              <Text>
-                <strong>Bonds:</strong> {portfolioData.riskPercentage2}%
-              </Text>
-            </>
-          </Box>
-          <Box>
-            <Text>
-              <strong>Valuation:</strong>{' '}
-              {loading ? (
-                <Spinner size="sm" />
-              ) : valuation !== null ? (
-                `$${valuation.toFixed(2)}`
-              ) : (
-                'N/A'
-              )}
-            </Text>
-          </Box>
+      <Flex alignItems="center">
+        <Text fontSize="M" fontWeight="bold">
+          {portfolioData.name}
+        </Text>
+        <Spacer />
+        <Flex alignItems="center" gap="0.25rem">
+          <Flex direction="row">
+            <Box>
+              <>
+                <Text>
+                  <strong>Stocks:</strong> {portfolioData.riskPercentage1}%
+                </Text>
+                <Text>
+                  <strong>Bonds:</strong> {portfolioData.riskPercentage2}%
+                </Text>
+              </>
+            </Box>
+          </Flex>
         </Flex>
+        <Box>
+          <Text>
+            <strong>Valuation:</strong>{' '}
+            {loading ? (
+              <Spinner size="sm" />
+            ) : valuation !== null ? (
+              `$${valuation.toFixed(2)}`
+            ) : (
+              'N/A'
+            )}
+          </Text>
+        </Box>
         <Text>
           <strong>Sectors:</strong>{' '}
           {portfolioData.sectorTags?.join(', ') || 'None'}
         </Text>
-      </CardBody>
-      <CardFooter></CardFooter>
-    </Card>
+      </Flex>
+    </Flex>
   );
 }
 export default PortfolioCard;

@@ -1,4 +1,12 @@
-import { Stack } from '@chakra-ui/react';
+import {
+  Button,
+  Divider,
+  Flex,
+  FormLabel,
+  Icon,
+  Spacer,
+  Stack,
+} from '@chakra-ui/react';
 import CreateGroupModal from './CreatePortfolioModal';
 import PortfolioCard, { PortfolioInterface } from './PortfolioCard';
 import { useEffect, useState } from 'react';
@@ -6,6 +14,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { SERVER_URL } from '../../api/Environments';
 import axios from 'axios';
 import fetchPortfolioIdsByGroupId from './utils/GetAllPortfolios';
+import { faWandSparkles } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AddButton from '../generic/AddButton';
+import BuyStockModal from '../stocks/BuyStockModal';
 
 export default function IndividualPortfolio(): JSX.Element {
   const { groupId } = useParams<{ groupId: string }>();
@@ -52,15 +64,24 @@ export default function IndividualPortfolio(): JSX.Element {
   return (
     <>
       <CreateGroupModal groupId={groupId} onSave={addPortfolio} />
-      <Stack spacing={4} mt={5}>
-        {portfolios.map((portfolio) => (
-          <PortfolioCard
-            key={portfolio.id}
-            portfolioData={portfolio}
-            onClick={() => enterPortfolio(portfolio.id)}
-          />
-        ))}
-      </Stack>
+      <Flex direction="column" gap="2" margin="10">
+        <Flex alignItems="center">
+          <FormLabel color="text.header" fontSize="28" fontWeight="bold">
+            Portfolios
+          </FormLabel>
+          <Spacer />
+        </Flex>
+        <Divider />
+        <Stack spacing={4} mt={5}>
+          {portfolios.map((portfolio) => (
+            <PortfolioCard
+              key={portfolio.id}
+              portfolioData={portfolio}
+              onClick={() => enterPortfolio(portfolio.id)}
+            />
+          ))}
+        </Stack>
+      </Flex>
     </>
   );
 }
