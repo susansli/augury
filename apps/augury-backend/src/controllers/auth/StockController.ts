@@ -237,7 +237,7 @@ const getAllSymbols = async (_req: Request, res: Response) => {
 
   const symbols = (await alpaca.getAllSymbols())
   .sort((a, b) => a.localeCompare(b))
-  .slice(0, 200);
+  .slice(0, 100);
 
   const truncatedSymbols = [];
 
@@ -257,7 +257,7 @@ const getAllSymbols = async (_req: Request, res: Response) => {
     }
   }
 
-  res.status(StatusCode.OK).send({ symbols: truncatedSymbols });
+  res.status(StatusCode.OK).send({ symbols: [] });
 };
 
 export default module.exports = {

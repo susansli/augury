@@ -22,7 +22,7 @@ import toast from 'react-hot-toast';
 
 interface Props {
   stock: StockSymbolInterface;
-  onClose: () => void;
+  onClose: (refresh: boolean) => void;
 }
 
 export default function StockAccordion(props: Props): JSX.Element {
@@ -49,7 +49,7 @@ export default function StockAccordion(props: Props): JSX.Element {
           `You've successfully purchased ${totalShares} of ${props.stock.symbol}`
         );
         setTotalShares(0);
-        props.onClose();
+        props.onClose(true);
         return;
       }
     } else {

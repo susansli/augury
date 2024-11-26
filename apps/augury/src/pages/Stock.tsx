@@ -16,6 +16,7 @@ import BuyStockModal from '../components/stocks/BuyStockModal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faWandSparkles } from '@fortawesome/free-solid-svg-icons';
 import StockCard from '../components/stocks/StockCard';
+import { useParams } from 'react-router-dom';
 
 export interface StockCardData {
   symbol: string;
@@ -24,35 +25,16 @@ export interface StockCardData {
   percentageChange: number;
 }
 
-const placeHolderStockData: StockCardData[] = [
-  {
-    symbol: 'AA',
-    currentStockValue: 1502.43,
-    totalShares: 100,
-    percentageChange: 5.67,
-  },
-  {
-    symbol: 'AAPL',
-    currentStockValue: 5982.67,
-    totalShares: 99,
-    percentageChange: -0.56,
-  },
-  {
-    symbol: 'TSLA',
-    currentStockValue: 12134.74,
-    totalShares: 502,
-    percentageChange: 20.45,
-  },
-];
-
 export default function Stock(): JSX.Element {
   const [stocks, setStocks] = useState<StockSymbolInterface[]>([]);
   const [stockCardData, setStockCardData] = useState<StockCardData[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const params = useParams();
+
   useEffect(() => {
-    // void fetchAllStocks();
+    void fetchAllStocks();
     void fetchPortfolioStocks();
   }, []);
 
@@ -67,8 +49,14 @@ export default function Stock(): JSX.Element {
   }
 
   async function fetchPortfolioStocks(): Promise<void> {
-    // TODO
-    setStockCardData(placeHolderStockData);
+    if (params.portfolioId) {
+      const response = await Stocks.getAllStocksOfPortfolio(params.portfolioId);
+      if (!response) {
+        toast.error('Could not fetch stocks, please refresh the page.');
+      } else {
+        setStockCardData(response);
+      }
+    }
   }
 
   function renderStockCards(): JSX.Element[] {
@@ -77,9 +65,21 @@ export default function Stock(): JSX.Element {
     });
   }
 
+  function toggleModal(refresh: boolean) {
+    onClose();
+    if (refresh) {
+      void fetchPortfolioStocks();
+    }
+
+  }
+
   return (
     <Flex direction="column" gap="2" margin="10">
-      <BuyStockModal isOpen={isOpen} onClose={onClose} stocks={stocks} />
+      <BuyStockModal
+        isOpen={isOpen}
+        onClose={toggleModal}
+        stocks={stocks}
+      />
       <AddButton
         onClick={onOpen}
         aria-label="Open Stock Modal"

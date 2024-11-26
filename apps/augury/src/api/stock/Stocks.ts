@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { SERVER_URL } from '../Environments';
+import { StockCardData } from '../../pages/Stock';
 
 export interface StockSymbolInterface {
   symbol: string;
@@ -60,9 +61,32 @@ async function buyStock(requestBody: BuyStockRequestBody): Promise<boolean> {
 
 }
 
+async function getAllStocksOfPortfolio(portfolioId: string): Promise<StockCardData[] | null> {
+  try {
+    const response = await axios.get(
+      `${SERVER_URL}/portfolio/${portfolioId}/valuation`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response) {
+      return null;
+    }
+    console.log(response.data);
+    return response.data.symbolPriceDifferences;
+
+  } catch {
+    return null;
+  }
+}
+
 const Stocks = {
   getStockSymbols,
-  buyStock
+  buyStock,
+  getAllStocksOfPortfolio
 };
 
 export default Stocks;

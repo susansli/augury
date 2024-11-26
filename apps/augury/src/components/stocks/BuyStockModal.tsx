@@ -16,7 +16,7 @@ import StockAccordion from './StockAccordion';
 
 interface Props {
   isOpen: boolean;
-  onClose: () => void;
+  onClose: (refresh: boolean) => void;
   stocks: StockSymbolInterface[];
 }
 
@@ -28,7 +28,7 @@ export default function BuyStockModal(props: Props): JSX.Element {
   }
 
   return (
-    <Modal isOpen={props.isOpen} onClose={props.onClose}>
+    <Modal isOpen={props.isOpen} onClose={() => props.onClose(false)}>
       <ModalOverlay />
       <ModalContent margin="1rem">
         <ModalHeader>Buy Stocks</ModalHeader>
@@ -44,7 +44,7 @@ export default function BuyStockModal(props: Props): JSX.Element {
             }
           </ModalBody>
         <ModalFooter>
-          <Button colorScheme="blue" mr={3} onClick={props.onClose}>
+          <Button colorScheme="blue" mr={3} onClick={() => props.onClose(false)}>
             Close
           </Button>
         </ModalFooter>
