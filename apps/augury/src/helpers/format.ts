@@ -9,3 +9,12 @@ export function parseValues(val: string): string {
 export function truncateToTwoDecimals(num: number) {
   return Math.trunc(num * 100) / 100;
 }
+
+export function formatToUSD(amount: number): string {
+  return amount.toLocaleString("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+}
