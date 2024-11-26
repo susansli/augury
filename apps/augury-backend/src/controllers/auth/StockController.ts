@@ -280,6 +280,7 @@ const getAllSymbols = async (_req: Request, res: Response) => {
   const truncatedSymbols = [];
 
   for (const symbol of symbols) {
+    console.log(symbol);
     try {
       const quoteData = await alpaca.getQuote(symbol);
 
@@ -294,8 +295,9 @@ const getAllSymbols = async (_req: Request, res: Response) => {
       // some symbols are apparently invalid; just catch them
     }
   }
+  console.log("done");
 
-  res.status(StatusCode.OK).send({ symbols: [] });
+  res.status(StatusCode.OK).send({ symbols: truncatedSymbols });
 };
 
 export default module.exports = {
