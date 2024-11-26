@@ -2,17 +2,29 @@ import { useEffect, useState } from 'react';
 import Stocks, { StockSymbolInterface } from '../api/stock/Stocks';
 import toast from 'react-hot-toast';
 import AddButton from '../components/generic/AddButton';
-import { Divider, Flex, FormLabel, useDisclosure } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Divider,
+  Flex,
+  FormLabel,
+  Icon,
+  Spacer,
+  useDisclosure,
+} from '@chakra-ui/react';
 import BuyStockModal from '../components/stocks/BuyStockModal';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faWandSparkles } from '@fortawesome/free-solid-svg-icons';
+import StockCard from '../components/stocks/StockCard';
 
-export interface StockCard {
+export interface StockCardData {
   symbol: string;
   currentStockValue: number;
   totalShares: number;
   percentageChange: number;
 }
 
-const placeHolderStockData: StockCard[] = [
+const placeHolderStockData: StockCardData[] = [
   {
     symbol: 'AA',
     currentStockValue: 1502.43,
@@ -35,11 +47,13 @@ const placeHolderStockData: StockCard[] = [
 
 export default function Stock(): JSX.Element {
   const [stocks, setStocks] = useState<StockSymbolInterface[]>([]);
+  const [stockCardData, setStockCardData] = useState<StockCardData[]>([]);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     // void fetchAllStocks();
+    void fetchPortfolioStocks();
   }, []);
 
   async function fetchAllStocks(): Promise<void> {
@@ -52,6 +66,17 @@ export default function Stock(): JSX.Element {
     }
   }
 
+  async function fetchPortfolioStocks(): Promise<void> {
+    // TODO
+    setStockCardData(placeHolderStockData);
+  }
+
+  function renderStockCards(): JSX.Element[] {
+    return stockCardData.map((cardData, index) => {
+      return <StockCard cardData={cardData} key={index} />;
+    });
+  }
+
   return (
     <Flex direction="column" gap="2" margin="10">
       <BuyStockModal isOpen={isOpen} onClose={onClose} stocks={stocks} />
@@ -60,10 +85,25 @@ export default function Stock(): JSX.Element {
         aria-label="Open Stock Modal"
         aira-label={''}
       />
-      <FormLabel color="text.header" fontSize="28" fontWeight="bold">
-        Stocks Held
-      </FormLabel>
+      <Flex alignItems="center">
+        <FormLabel color="text.header" fontSize="28" fontWeight="bold">
+          Stocks Held
+        </FormLabel>
+        <Spacer />
+        <Button
+          leftIcon={
+            <Icon
+              as={FontAwesomeIcon}
+              icon={faWandSparkles}
+              color="text.body"
+            />
+          }
+        >
+          Ask AI
+        </Button>
+      </Flex>
       <Divider />
+      {renderStockCards()}
     </Flex>
   );
 }
