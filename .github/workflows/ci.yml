@@ -26,12 +26,12 @@ jobs:
       - name: ⎔ Setup pnpm
         uses: pnpm/action-setup@v2
         with:
-          version: 8.3.1
+          version: 9.7.0
       
       - name: ⎔ Setup node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 21.7.3
           cache: 'pnpm'
 
       - run: pnpm install --shamefully-hoist
