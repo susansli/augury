@@ -41,8 +41,30 @@ async function updatePortfolioDefaults(reqBody: PortfolioDefaultBody) {
   }
 }
 
+async function getAiRecommentation(portfolioId: string): Promise<string | null> {
+  try {
+    const response = await axios.get(
+      `${SERVER_URL}/portfolio/${portfolioId}/ai/recommendation`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+
+    if (!response) {
+      return null;
+    }
+    return response.data;
+
+  } catch {
+    return null;
+  }
+}
+
 const Portfolio = {
   updatePortfolioDefaults,
+  getAiRecommentation
 };
 
 export default Portfolio;
