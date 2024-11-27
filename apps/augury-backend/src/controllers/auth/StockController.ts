@@ -125,11 +125,10 @@ const calculatePortfolioValuation = async (
   // Get portfolios valuation
   const valuation = await StockModel.calculatePortfolioValuation(portfolioId);
   if (!valuation) {
-    throw new ApiError(
-      'Could not valuate this portfolio',
-      StatusCode.BAD_REQUEST,
-      Severity.MED
-    );
+    // There was no valuation or possibly no buy records for this portfolio, return 0 values instead
+    return res
+      .status(StatusCode.OK)
+      .send({ totalPriceDifference: 0, symbolPriceDifferences: [] });
   }
   // Call helper function
   const { totalPriceDifference, symbolPriceDifferences } =
@@ -274,8 +273,8 @@ const getAllSymbols = async (_req: Request, res: Response) => {
   // Possibly cache/memoize this in future\
 
   const symbols = (await alpaca.getAllSymbols())
-  .sort((a, b) => a.localeCompare(b))
-  .slice(0, 100);
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, 100);
 
   const truncatedSymbols = [];
 
