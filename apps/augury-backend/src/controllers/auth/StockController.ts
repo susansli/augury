@@ -21,6 +21,11 @@ import HuggingFaceInferenceApi from '../../config/ai/HuggingFaceInferenceApi';
 const alpaca = TradeApi.getInstance();
 const huggingface = new HuggingFaceInferenceApi();
 
+/**
+ * Purchases a specific amount of shares for stock in a portfolio
+ * @param req Request with portfolioId, symbol, shares, and userId in request body
+ * @param res Response with buyRecord of bought shares
+ */
 const buyStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
   res: Response
@@ -64,6 +69,11 @@ const buyStock = async (
   res.status(StatusCode.OK).send({ stock: buyRecord });
 };
 
+/**
+ * Sells a specific amount of shares for stock in a portfolio
+ * @param req Request with portfolioId, symbol, shares, and userId in request body
+ * @param res Response with buyRecord of sold shares
+ */
 const sellStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
   res: Response
@@ -228,6 +238,12 @@ const _calculatePortfolioValuation = async (valuation: ValuationResult) => {
   return { totalPriceDifference, symbolPriceDifferences };
 };
 
+/**
+ * Retrieves an AI-generated recommendation for things to do in order to improve
+ * a specific portfolio.
+ * @param req Incoming request with portfolio id in body
+ * @param res AI generated response text
+ */
 const getPortfolioRecommendation = async (
   req: Request<Identifiable>,
   res: Response
