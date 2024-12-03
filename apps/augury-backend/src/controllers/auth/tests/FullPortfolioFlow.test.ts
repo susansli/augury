@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import axios from 'axios';
+import 'dotenv/config';
 
 const baseURL = 'http://localhost:3333/portfolio'; // Base URL for portfolio routes
 let createdGroupId: string;
@@ -7,9 +8,7 @@ let createdPortfolioId: string;
 
 beforeAll(async () => {
   // Establish MongoDB connection
-  await mongoose.connect(
-    'mongodb+srv://test-db-user:6yBOSFOBEEqdx2wb@test.o9tlk.mongodb.net/?retryWrites=true&w=majority&appName=test'
-  );
+  mongoose.connect(`${process.env.MONGO_URL}`);
 });
 
 afterAll(async () => {
