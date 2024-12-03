@@ -57,6 +57,12 @@ const createBuyRecord = async (
   return buyRecordEntry;
 };
 
+/**
+ * Retrieves the total share count for a specific stock symbol within a portfolio
+ * @param portfolioId Document ID
+ * @param symbol Stock ticker symbol value
+ * @returns Count of current stocks held
+ */
 const getTotalShares = async (portfolioId: DocumentId, symbol: string) => {
   // Get stock ID from portfolio ID
   const stock: Stock = {
@@ -86,6 +92,10 @@ const getTotalShares = async (portfolioId: DocumentId, symbol: string) => {
   return totalShares;
 };
 
+/**
+ * Completes an aggregation over all portfolio groups & the portfolios within them.
+ * @returns Array of valuation records, grouped by portfolio ID
+ */
 const calculateAllPortfolioValuations = async () => {
   const valuations: ValuationResult[] = await StockSchema.aggregate([
     {
@@ -143,6 +153,11 @@ const calculateAllPortfolioValuations = async () => {
   return valuations;
 };
 
+/**
+ * Calculates a single portfolios current valuation
+ * @param portfolioId Document ID
+ * @returns Single Portfolio Valuation
+ */
 const calculatePortfolioValuation = async (portfolioId: DocumentId) => {
   // ! Warning: Potentially inefficient call
   const valuations = await calculateAllPortfolioValuations();
@@ -151,6 +166,11 @@ const calculatePortfolioValuation = async (portfolioId: DocumentId) => {
   });
 };
 
+/**
+ * Calculates a portfolio groups current valuation & the portfolios within it
+ * @param id Group ID
+ * @returns Array of Portfolio Valuations from the Portfolio group
+ */
 const calculatePortfolioGroupValuation = async (id: DocumentId) => {
   const { portfolios } = await PortfolioGroupModel.getPortfolioGroup(id);
   const valuations = await calculateAllPortfolioValuations();
