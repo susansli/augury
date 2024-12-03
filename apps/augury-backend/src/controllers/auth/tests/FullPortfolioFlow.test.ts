@@ -8,7 +8,7 @@ let createdPortfolioId: string;
 
 beforeAll(async () => {
   // Establish MongoDB connection
-  mongoose.connect(`${process.env.MONGO_URL}`);
+  mongoose.connect(`${process.env.MONGO_TEST_URL}`);
 });
 
 afterAll(async () => {
