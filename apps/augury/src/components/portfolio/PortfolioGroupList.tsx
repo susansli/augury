@@ -2,7 +2,15 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { SimpleGrid, Text, VStack } from '@chakra-ui/react';
+import {
+  Divider,
+  Flex,
+  FormLabel,
+  SimpleGrid,
+  Spacer,
+  Text,
+  VStack,
+} from '@chakra-ui/react';
 import PortfolioGroupCard from './PortfolioGroupCard';
 import { SERVER_URL } from '../../api/Environments';
 import CreatePortfolioModal from './CreatePortfolioModal';
@@ -38,6 +46,7 @@ const PortfolioGroupList = () => {
   const enterPortfolioGroup = (portfolioGroupId: string) => {
     navigate(`/portfolios/${portfolioGroupId}`);
   };
+  AuthStoreManager.storeUserId();
 
   const handleSave = () => {
     fetchPortfolioGroups();
@@ -47,22 +56,31 @@ const PortfolioGroupList = () => {
   if (error) return <Text color="red.500">{error}</Text>;
 
   return (
-    <VStack spacing={6} align="stretch">
-      <PortfolioGroupModal onSave={handleSave} />
-      <SimpleGrid columns={[1, 2, 3]} spacing={4}>
-        {portfolioGroups.length > 0 ? (
-          portfolioGroups.map((group) => (
-            <PortfolioGroupCard
-              key={group._id}
-              portfolioGroup={group}
-              onClick={() => enterPortfolioGroup(group.id)}
-            />
-          ))
-        ) : (
-          <Text>No portfolio groups found for this user.</Text>
-        )}
-      </SimpleGrid>
-    </VStack>
+    <Flex direction="column" gap="2" margin="10">
+      <Flex alignItems="center">
+        <FormLabel color="text.header" fontSize="28" fontWeight="bold">
+          Portfolio Groups
+        </FormLabel>
+        <Spacer />
+      </Flex>
+      <Divider />
+      <VStack spacing={6} align="stretch">
+        <PortfolioGroupModal onSave={handleSave} />
+        <SimpleGrid columns={[1, 2, 3]} spacing={4}>
+          {portfolioGroups.length > 0 ? (
+            portfolioGroups.map((group) => (
+              <PortfolioGroupCard
+                key={group._id}
+                portfolioGroup={group}
+                onClick={() => enterPortfolioGroup(group.id)}
+              />
+            ))
+          ) : (
+            <Text>No portfolio groups found for this user.</Text>
+          )}
+        </SimpleGrid>
+      </VStack>
+    </Flex>
   );
 };
 

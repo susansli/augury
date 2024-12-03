@@ -9,7 +9,26 @@ export interface PortfolioDefaultBody {
   risk: boolean;
   sectors: string[];
 }
+async function getValuationofPortfolio(portfolioId: string) {
+  try {
+    const response = await axios.get(
+      `${SERVER_URL}/portfolio/${portfolioId}/valuation`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
 
+    if (!response) {
+      return null;
+    }
+    console.log(response.data);
+    return response.data.totalPriceDifference;
+  } catch {
+    return null;
+  }
+}
 async function updatePortfolioDefaults(reqBody: PortfolioDefaultBody) {
   try {
     const response = await axios.post(
@@ -41,7 +60,9 @@ async function updatePortfolioDefaults(reqBody: PortfolioDefaultBody) {
   }
 }
 
-async function getAiRecommentation(portfolioId: string): Promise<string | null> {
+async function getAiRecommentation(
+  portfolioId: string
+): Promise<string | null> {
   try {
     const response = await axios.get(
       `${SERVER_URL}/portfolio/${portfolioId}/ai/recommendation`,
@@ -56,7 +77,6 @@ async function getAiRecommentation(portfolioId: string): Promise<string | null> 
       return null;
     }
     return response.data;
-
   } catch {
     return null;
   }
@@ -64,7 +84,8 @@ async function getAiRecommentation(portfolioId: string): Promise<string | null> 
 
 const Portfolio = {
   updatePortfolioDefaults,
-  getAiRecommentation
+  getAiRecommentation,
+  getValuationofPortfolio,
 };
 
 export default Portfolio;

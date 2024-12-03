@@ -5,6 +5,9 @@ import {
   CardBody,
   CardFooter,
   Text,
+  Box,
+  Flex,
+  VStack,
 } from '@chakra-ui/react';
 import colors from '../../theme/foundations/colours';
 import { PortfolioGroupInterface } from './PortfolioGroupModal';
@@ -14,39 +17,57 @@ interface PortfolioGroupCardProps {
   portfolioGroup: PortfolioGroupInterface;
   onClick: () => void;
 }
+const renderColorDot = (color: string) => (
+  <Box
+    display="inline-block"
+    width="0.75rem"
+    height="0.75rem"
+    borderRadius="50%"
+    backgroundColor={color.toLowerCase()}
+    marginRight="0.5rem"
+  />
+);
 function PortfolioGroupCard({
   portfolioGroup,
   onClick,
 }: PortfolioGroupCardProps) {
   return (
-    <Card
+    <Flex
       onClick={onClick}
       as="button"
-      borderWidth="1px"
-      borderRadius="lg"
-      overflow="hidden"
-      shadow="md"
+      direction="column"
+      borderRadius="0.625rem"
+      padding="1rem 1rem 1.5rem 1rem"
+      maxW="22.5rem"
+      width="100%"
       backgroundColor={colors.background.selBg}
+      margin="1.25rem"
+      mx="auto"
+      gap="0.1875rem"
+      boxShadow="md"
     >
-      <CardHeader>
-        <Heading size="md">{portfolioGroup.name} </Heading>
-
+      <VStack align="start" spacing="0.5rem">
+        <Text fontSize="1.3rem" fontWeight="bold">
+          {portfolioGroup.name}
+        </Text>
         <Text>
           {portfolioGroup.portfolios?.length || 0} portfolio
           {portfolioGroup.portfolios?.length !== 1 && 's'}
         </Text>
-        <Text>
-          <strong>Color:</strong> {portfolioGroup.color}
-        </Text>
-      </CardHeader>
-      <CardBody>
+        <Flex align="center">
+          <Text fontWeight="bold" marginRight="0.5rem">
+            Color:
+          </Text>
+          {renderColorDot(portfolioGroup.color)}
+        </Flex>
+      </VStack>
+      <Box mt="0.75rem">
         <PortfolioStats
           portfolios={portfolioGroup.portfolios || []}
           currency={portfolioGroup.portfolioCurrency}
         />
-      </CardBody>
-      <CardFooter></CardFooter>
-    </Card>
+      </Box>
+    </Flex>
   );
 }
 

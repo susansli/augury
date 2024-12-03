@@ -3,6 +3,7 @@ import GoogleIcon from '../../assets/icons/GoogleIcon';
 import { useNavigate } from 'react-router-dom';
 import Authentication from '../../api/user/Authentication';
 import toast from 'react-hot-toast';
+import AuthStoreManager from '../../helpers/AuthStoreManager';
 
 export default function LoginComponents(): JSX.Element {
   const navigate = useNavigate();
@@ -24,7 +25,9 @@ export default function LoginComponents(): JSX.Element {
           if (googleUrl) {
             window.location.href = googleUrl;
           } else {
-            toast.error("There was an error generating the correct Google URL!");
+            toast.error(
+              'There was an error generating the correct Google URL!'
+            );
           }
         }}
       >

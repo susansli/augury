@@ -21,6 +21,11 @@ import HuggingFaceInferenceApi from '../../config/ai/HuggingFaceInferenceApi';
 const alpaca = TradeApi.getInstance();
 const huggingface = new HuggingFaceInferenceApi();
 
+/**
+ * Purchases a specific amount of shares for stock in a portfolio
+ * @param req Request with portfolioId, symbol, shares, and userId in request body
+ * @param res Response with buyRecord of bought shares
+ */
 const buyStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
   res: Response
@@ -64,6 +69,11 @@ const buyStock = async (
   res.status(StatusCode.OK).send({ stock: buyRecord });
 };
 
+/**
+ * Sells a specific amount of shares for stock in a portfolio
+ * @param req Request with portfolioId, symbol, shares, and userId in request body
+ * @param res Response with buyRecord of sold shares
+ */
 const sellStock = async (
   req: Request<Identifiable, unknown, StockRequestBody>,
   res: Response
@@ -125,11 +135,10 @@ const calculatePortfolioValuation = async (
   // Get portfolios valuation
   const valuation = await StockModel.calculatePortfolioValuation(portfolioId);
   if (!valuation) {
-    throw new ApiError(
-      'Could not valuate this portfolio',
-      StatusCode.BAD_REQUEST,
-      Severity.MED
-    );
+    // There was no valuation or possibly no buy records for this portfolio, return 0 values instead
+    return res
+      .status(StatusCode.OK)
+      .send({ totalPriceDifference: 0, symbolPriceDifferences: [] });
   }
   // Call helper function
   const { totalPriceDifference, symbolPriceDifferences } =
@@ -229,6 +238,12 @@ const _calculatePortfolioValuation = async (valuation: ValuationResult) => {
   return { totalPriceDifference, symbolPriceDifferences };
 };
 
+/**
+ * Retrieves an AI-generated recommendation for things to do in order to improve
+ * a specific portfolio.
+ * @param req Incoming request with portfolio id in body
+ * @param res AI generated response text
+ */
 const getPortfolioRecommendation = async (
   req: Request<Identifiable>,
   res: Response
@@ -274,8 +289,8 @@ const getAllSymbols = async (_req: Request, res: Response) => {
   // Possibly cache/memoize this in future\
 
   const symbols = (await alpaca.getAllSymbols())
-  .sort((a, b) => a.localeCompare(b))
-  .slice(0, 100);
+    .sort((a, b) => a.localeCompare(b))
+    .slice(0, 100);
 
   const truncatedSymbols = [];
 
@@ -295,7 +310,7 @@ const getAllSymbols = async (_req: Request, res: Response) => {
     }
   }
 
-  res.status(StatusCode.OK).send({ symbols: [] });
+  res.status(StatusCode.OK).send({ symbols: truncatedSymbols });
 };
 
 export default module.exports = {

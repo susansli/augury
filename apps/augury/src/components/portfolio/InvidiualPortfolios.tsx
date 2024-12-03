@@ -1,4 +1,4 @@
-import { Stack } from '@chakra-ui/react';
+import { Divider, Flex, FormLabel, Spacer, Stack } from '@chakra-ui/react';
 import CreateGroupModal from './CreatePortfolioModal';
 import PortfolioCard, { PortfolioInterface } from './PortfolioCard';
 import { useEffect, useState } from 'react';
@@ -52,15 +52,24 @@ export default function IndividualPortfolio(): JSX.Element {
   return (
     <>
       <CreateGroupModal groupId={groupId} onSave={addPortfolio} />
-      <Stack spacing={4} mt={5}>
-        {portfolios.map((portfolio) => (
-          <PortfolioCard
-            key={portfolio.id}
-            portfolioData={portfolio}
-            onClick={() => enterPortfolio(portfolio.id)}
-          />
-        ))}
-      </Stack>
+      <Flex direction="column" gap="2" margin="10">
+        <Flex alignItems="center">
+          <FormLabel color="text.header" fontSize="28" fontWeight="bold">
+            Portfolios
+          </FormLabel>
+          <Spacer />
+        </Flex>
+        <Divider />
+        <Stack spacing={4} mt={5}>
+          {portfolios.map((portfolio) => (
+            <PortfolioCard
+              key={portfolio.id}
+              portfolioData={portfolio}
+              onClick={() => enterPortfolio(portfolio.id)}
+            />
+          ))}
+        </Stack>
+      </Flex>
     </>
   );
 }
