@@ -1,0 +1,808 @@
+{
+  "info": {
+    "_postman_id": "7f2eb0bd-445b-43d4-8b39-b6e1ba649630",
+    "name": "Augury.ai",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "19996686"
+  },
+  "item": [
+    {
+      "name": "User",
+      "item": [
+        {
+          "name": "Create User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"testuser@invalidmailserver.bad\",\r\n    \"googleId\": \"ABCD\",\r\n    \"firstName\": \"John\",\r\n    \"lastName\": \"Doe\",\r\n    \"balance\": 1111.1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user",
+              "host": ["{{server_url}}"],
+              "path": ["user"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/{{userId}}",
+              "host": ["{{server_url}}"],
+              "path": ["user", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"balance\": 0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/{{userId}}/balance",
+              "host": ["{{server_url}}"],
+              "path": ["user", "{{userId}}", "balance"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"{{newEmail}}\"\r\n    // \"googleId\": \"ABCD\",\r\n    // \"firstName\": \"Jane\",\r\n    // \"lastName\": \"Doe\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/{{userId}}",
+              "host": ["{{server_url}}"],
+              "path": ["user", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "*Delete User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/{{userId}}",
+              "host": ["{{server_url}}"],
+              "path": ["user", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [""],
+                "type": "text/javascript",
+                "packages": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/current",
+              "host": ["{{server_url}}"],
+              "path": ["user", "current"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Onboard New User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"{{userId}}\",\r\n    \"balance\": 145.23,\r\n    \"defaults\": {\r\n        \"name\": \"New Defaults\",\r\n        // \"risk\": \"moderate\",\r\n        // \"useCustomRisk\": false,\r\n        \"riskPercentage1\": 20.0,\r\n        \"riskPercentage2\": 80.0,\r\n        \"sectorTags\": [\r\n            \"information technology\"\r\n        ]\r\n    }\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/onboard",
+              "host": ["{{server_url}}"],
+              "path": ["user", "onboard"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/logout",
+              "host": ["{{server_url}}"],
+              "path": ["logout"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [""]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Has User values\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an(\"object\");\r",
+              "    pm.expect(jsonData.user).to.be.an(\"object\");\r",
+              "    pm.expect(jsonData.user.id).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.user.email).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.user.googleId).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.user.firstName).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.user.lastName).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.user.balance).to.be.a(\"number\");\r",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PortfolioDefault",
+      "item": [
+        {
+          "name": "Get Defaults",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/defaults/{{userId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "defaults", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Defaults",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Test Portfolio Update\"\r\n    // \"riskPercentage1\": 50,\r\n    // \"riskPercentage2\": 50,\r\n    // \"sectorTags\": [\r\n        // \"technology\"\r\n    // ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/defaults/{{userId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "defaults", "{{userId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Defaults",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": \"{{userId}}\",\r\n    \"name\": \"Test Portfolio Defaults\",\r\n    \"risk\": \"moderate\",\r\n    \"useCustomRisk\": true,\r\n    \"customRiskPercentage1\": 50,\r\n    \"customRiskPercentage2\": 50,\r\n    \"sectorTags\": [\r\n        \"technology\"\r\n    ]\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/portfolio/defaults",
+              "host": ["{{server_url}}"],
+              "path": ["user", "portfolio", "defaults"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "*Delete Defaults",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"{{userId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/user/portfolio/defaults",
+              "host": ["{{server_url}}"],
+              "path": ["user", "portfolio", "defaults"]
+            }
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [""]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {\r",
+              "    pm.response.to.have.status(200);\r",
+              "});\r",
+              "\r",
+              "pm.test(\"Has Default values\", function () {\r",
+              "    var jsonData = pm.response.json();\r",
+              "    pm.expect(jsonData).to.be.an(\"object\");\r",
+              "    pm.expect(jsonData.defaults).to.be.an(\"object\");\r",
+              "    pm.expect(jsonData.defaults.userId).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.defaults.name).to.be.a(\"string\");\r",
+              "    pm.expect(jsonData.defaults.useCustomRisk).to.be.a(\"boolean\");\r",
+              "    if (jsonData.defaults.useCustomRisk) {\r",
+              "        pm.expect(jsonData.defaults.customRiskPercentage1).to.be.a(\"number\");\r",
+              "        pm.expect(jsonData.defaults.customRiskPercentage2).to.be.a(\"number\");\r",
+              "    } else {\r",
+              "        pm.expect(jsonData.defaults.risk).to.be.a(\"string\");\r",
+              "    }\r",
+              "    if (jsonData.defaults.sectorTags) {\r",
+              "        pm.expect(jsonData.defaults.sectorTags).to.be.an(\"array\");\r",
+              "    }\r",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "PortfolioGroup",
+      "item": [
+        {
+          "name": "Create Group",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": \"{{userId}}\",\r\n    \"name\": \"Test Group\",\r\n    \"color\": \"white\",\r\n    \"portfolios\": [\r\n        \"ABCDEFABCDEFABCDEFABCDEF\",\r\n        \"ABCDEFABCDEFABCDEFABCDEE\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/group",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Group Details",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"{{groupId}}\",\r\n    \"userId\": \"ABCDEFABCDEFABCDEFABCDEE\",\r\n    \"name\": \"Updated Group Name\",\r\n    \"color\": \"blue\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/group",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"{{groupId}}\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/group",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Group",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/group/{{groupId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group", "{{groupId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Group Valuation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/group/{{groupId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group", "{{groupId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Add Portfolios to Group",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"portfolios\": [\r\n        // \"ABCDEFABCDEFABCDEFABCDEF\",\r\n        \"ABCDEFABCDEFABCDEFABCDEE\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/group/{{groupId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group", "{{groupId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Portfolios from Group",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"portfolios\": [\r\n        \"ABCDEFABCDEFABCDEFABCDEF\",\r\n        \"ABCDEFABCDEFABCDEFABCDEE\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/group/{{groupId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group", "{{groupId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Groups by UserId",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/group/user/{{userId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "group", "user", "{{userId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Portfolio",
+      "item": [
+        {
+          "name": "Create Portfolio",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Test Portfolio\",\r\n    \"riskPercentage1\": 90.0,\r\n    \"riskPercentage2\": 10.0,\r\n    \"sectors\": [\r\n        \"information technology\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Portfolio",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Portfolio Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Portfolio Valuation",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}/valuation",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}", "valuation"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Portfolio",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Test Portfolio\",\r\n    \"riskPercentage1\": 70.0,\r\n    \"riskPercentage2\": 30.0,\r\n    \"sectorTags\": [\r\n        \"information technology\"\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Portfolio",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Stocks",
+      "item": [
+        {
+          "name": "Buy Stock",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"symbol\": \"TSLA\", \r\n    \"shares\": 10\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}/buy",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}", "buy"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Sell Stock",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"userId\": \"{{userId}}\",\r\n    \"symbol\": \"TSLA\", \r\n    \"shares\": 50\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{server_url}}/portfolio/{{portfolioId}}/sell",
+              "host": ["{{server_url}}"],
+              "path": ["portfolio", "{{portfolioId}}", "sell"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Get all stock symbols",
+      "request": {
+        "method": "GET",
+        "header": []
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "scope",
+        "value": "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email",
+        "type": "string"
+      },
+      {
+        "key": "tokenName",
+        "value": "Client Access Token",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "https://oauth2.googleapis.com/token",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "https://accounts.google.com/o/oauth2/v2/auth",
+        "type": "string"
+      },
+      {
+        "key": "clientSecret",
+        "value": "{{CLIENT_SECRET}}",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "{{CLIENT_ID}}",
+        "type": "string"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "exec": [""]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "server_url",
+      "value": "localhost:3333",
+      "type": "string"
+    },
+    {
+      "key": "groupId",
+      "value": "672bc75b88b84130242d4977",
+      "type": "default"
+    },
+    {
+      "key": "portfolioId",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
