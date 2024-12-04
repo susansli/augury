@@ -8,7 +8,12 @@ let createdPortfolioId: string;
 
 beforeAll(async () => {
   // Establish MongoDB connection
-  mongoose.connect(`${process.env.MONGO_TEST_URL}`);
+  await mongoose.connect(`${process.env.MONGO_TEST_URL}`);
+  // Drop all existing data that may hamper test results
+  const collections = await mongoose.connection.db.collections();
+  for (const collection of collections) {
+    await collection.drop();
+  }
 });
 
 afterAll(async () => {
@@ -31,6 +36,7 @@ describe('Portfolio System Full Flow Test', () => {
     );
     expect(createGroupResponse.status).toBe(200);
     expect(createGroupResponse.data.group.name).toBe('Test Group');
+    expect(createGroupResponse.data.group.id).toBeTruthy();
     createdGroupId = createGroupResponse.data.group.id; // Save group ID
 
     // Step 2: Create a Portfolio
@@ -47,6 +53,7 @@ describe('Portfolio System Full Flow Test', () => {
     );
     expect(createPortfolioResponse.status).toBe(200);
     expect(createPortfolioResponse.data.portfolio.name).toBe('Test Portfolio');
+    expect(createPortfolioResponse.data.portfolio.id).toBeTruthy();
     createdPortfolioId = createPortfolioResponse.data.portfolio.id; // Save portfolio ID
 
     // Step 3: Add Portfolio to Group
