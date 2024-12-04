@@ -1,10 +1,10 @@
-import PortfolioGroupController from '../PortfolioGroupController';
-import PortfolioGroupModel from '../../../models/auth/PortfolioGroupModel';
+import PortfolioGroupController from '../../../augury-backend/src/controllers/auth/PortfolioGroupController';
+import PortfolioGroupModel from '../../../augury-backend/src/models/auth/PortfolioGroupModel';
 import { Request, Response } from 'express';
 import ApiError from 'apps/augury-backend/src/errors/ApiError';
 import ClientError from 'apps/augury-backend/src/errors/ClientError';
 
-jest.mock('../../../models/auth/PortfolioGroupModel');
+jest.mock('../../../augury-backend/src/models/auth/PortfolioGroupModel');
 
 describe('PortfolioGroupController', () => {
   let mockRequest: Partial<Request>;

@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
-import UserController from '../UserController';
-import UserModel from '../../../models/auth/UserModel';
-import PortfolioDefaultModel from '../../../models/auth/PortfolioDefaultModel';
-import ClientError from '../../../errors/ApiError';
+import UserController from '../../../augury-backend/src/controllers/auth/UserController';
+import UserModel from '../../../augury-backend/src/models/auth/UserModel';
+import PortfolioDefaultModel from '../../../augury-backend/src/models/auth/PortfolioDefaultModel';
+import ClientError from '../../../augury-backend/src/errors/ApiError';
 
-jest.mock('../../../models/auth/UserModel');
-jest.mock('../../../models/auth/PortfolioDefaultModel');
+jest.mock('../../../augury-backend/src/models/auth/PortfolioDefaultModel');
+jest.mock('../../../augury-backend/src/models/auth/UserModel');
 
 describe('UserController', () => {
   let mockRequest: Partial<Request>;

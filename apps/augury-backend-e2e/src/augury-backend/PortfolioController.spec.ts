@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import PortfolioModel from '../../../models/auth/PortfolioModel';
-import PortfolioController from '../PortfolioController';
+import PortfolioModel from '../../../augury-backend/src/models/auth/PortfolioModel';
+import PortfolioController from '../../../augury-backend/src/controllers/auth/PortfolioController';
 import ApiError from 'apps/augury-backend/src/errors/ApiError';
 import ClientError from 'apps/augury-backend/src/errors/ClientError';
 
-jest.mock('../../../models/auth/PortfolioModel'); // Mock PortfolioModel
+jest.mock('../../../augury-backend/src/models/auth/PortfolioModel'); // Mock PortfolioModel
 
 describe('PortfolioController', () => {
   let req: Partial<Request>;
